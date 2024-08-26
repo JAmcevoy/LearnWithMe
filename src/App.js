@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
+import PostContent from "./components/PostContent";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,11 +29,7 @@ function App() {
       <div
         className={`transition-all duration-300 flex-grow ${isSidebarOpen && !isMobile ? "ml-20" : "ml-6"}`}
       >
-        {/* Placeholder for where your main content would go */}
-        <div className="text-white text-center mt-10">
-          <h1>Main Content Area</h1>
-          <p>This is where the posts will be displayed.</p>
-        </div>
+        <PostContent />
       </div>
 
       {/* Sidebar Component */}
