@@ -14,7 +14,7 @@ const Profile = () => {
   return (
     <div className="flex flex-col items-center p-6 min-h-screen">
       <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="relative">
+        <div className="relative bg-white">
           <img
             src={user.image}
             alt={`${user.name}'s profile`}

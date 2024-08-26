@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import PostContent from "./components/PostContent";
 import Profile from "./components/Profile";
+import InterestCircles from "./components/InterestCircles";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -31,7 +32,8 @@ function App() {
         className={`transition-all duration-300 flex-grow ${isSidebarOpen && !isMobile ? "ml-20" : "ml-6"}`}
       >
         {/* <PostContent /> */}
-        <Profile />
+        {/* <Profile /> */}
+        <InterestCircles />
       </div>
 
       {/* Sidebar Component */}
