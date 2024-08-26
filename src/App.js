@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import PostContent from "./components/PostContent";
+import Profile from "./components/Profile";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -29,7 +30,8 @@ function App() {
       <div
         className={`transition-all duration-300 flex-grow ${isSidebarOpen && !isMobile ? "ml-20" : "ml-6"}`}
       >
-        <PostContent />
+        {/* <PostContent /> */}
+        <Profile />
       </div>
 
       {/* Sidebar Component */}
