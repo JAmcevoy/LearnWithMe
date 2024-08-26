@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import PostContent from "./components/PostContent";
 import Profile from "./components/Profile";
 import InterestCircles from "./components/InterestCircles";
+import Chats from "./components/Chats";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,7 +34,8 @@ function App() {
       >
         {/* <PostContent /> */}
         {/* <Profile /> */}
-        <InterestCircles />
+        {/* <InterestCircles /> */}
+        <Chats />
       </div>
 
       {/* Sidebar Component */}
