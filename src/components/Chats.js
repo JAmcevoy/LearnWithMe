@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
+import styles from "../styles/Chats.module.css";
+
 
 const Chats = () => {
   const [messages] = useState([
@@ -9,9 +11,8 @@ const Chats = () => {
   ]);
   const [newMessage] = useState("");
 
-
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className={`flex flex-col h-screen bg-gray-100 ${styles.fitting}`}>
       <header className="bg-blue-600 text-white p-4 shadow-md">
         <h1 className="text-2xl font-bold">Chats</h1>
       </header>

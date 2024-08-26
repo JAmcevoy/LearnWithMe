@@ -29,12 +29,7 @@ function App() {
   return (
     <div className="bg-slate-400 min-h-screen flex">
       {/* Main Content Area */}
-      <div
-        className={`transition-all duration-300 flex-grow ${isSidebarOpen && !isMobile ? "ml-20" : "ml-6"}`}
-      >
-        {/* <PostContent /> */}
-        {/* <Profile /> */}
-        {/* <InterestCircles /> */}
+      <div className="transition-all duration-300 flex-grow">
         <Chats />
       </div>
 
