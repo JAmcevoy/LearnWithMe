@@ -1,27 +1,33 @@
 import { useState, useEffect } from 'react';
 
-export const useSidebar = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); 
+export const useSidebar = (initialIsOpen = false, initialIsMobile = window.innerWidth <= 768) => {
+  // State management for sidebar open/close
+  const [isSidebarOpen, setIsSidebarOpen] = useState(initialIsOpen);
+  // State management for mobile view
+  const [isMobileView, setIsMobileView] = useState(initialIsMobile);
 
+  // Toggle sidebar visibility
   const toggleSidebar = () => {
     setIsSidebarOpen(prevState => !prevState);
   };
 
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
-
   useEffect(() => {
+    // Handle window resize to update mobile view
+    const handleResize = () => setIsMobileView(window.innerWidth <= 768);
+
     window.addEventListener('resize', handleResize);
-    handleResize(); 
+    handleResize();
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
-    if (isMobile) setIsSidebarOpen(false);
-  }, [isMobile]);
+    if (isMobileView) setIsSidebarOpen(false);
+  }, [isMobileView]);
 
-  return { isSidebarOpen, toggleSidebar, isMobile };
+  useEffect(() => {
+    setIsSidebarOpen(initialIsOpen);
+  }, [initialIsOpen]);
+
+  return { isSidebarOpen, toggleSidebar, isMobileView, setIsSidebarOpen };
 };

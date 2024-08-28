@@ -1,42 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FaUserCircle, FaHome, FaUsers, FaBars, FaSignOutAlt } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
+import { useSidebar } from '../hooks/useSidebar';  // Adjust the path as necessary
 
 function Sidebar({ isOpen, toggleSidebar, isMobile }) {
-  // Local state and effect for sidebar
-  const [isSidebarOpen, setIsSidebarOpen] = useState(isOpen);
-  const [isMobileView, setIsMobileView] = useState(isMobile);
-
-  useEffect(() => {
-    // Handle window resize to update mobile view
-    const handleResize = () => setIsMobileView(window.innerWidth <= 768);
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (isMobileView) setIsSidebarOpen(false);
-  }, [isMobileView]);
-
-  useEffect(() => {
-    setIsSidebarOpen(isOpen);
-  }, [isOpen]);
-
-  // Toggle sidebar visibility
-  const handleToggle = () => {
-    setIsSidebarOpen(prevState => !prevState);
-    toggleSidebar(); // Prop function to sync with parent
-  };
+  const { isSidebarOpen, toggleSidebar: handleToggle, isMobileView } = useSidebar(isOpen, isMobile);
 
   return (
     <div
       className={`bg-gray-800 p-4 transition-all duration-300 z-20 ${
         isMobileView
           ? 'fixed top-0 left-0 right-0 h-16 flex items-center justify-between'
-          : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64' : 'w-16'}`
+          : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-6' : 'w-0'}`
       }`}
     >
       {/* Sidebar Toggle and Mobile Links */}
@@ -46,10 +21,10 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
         </button>
         {isMobileView && isSidebarOpen && (
           <div className="flex space-x-4 ml-4">
-            <NavLink to="/" onClick={handleToggle}>
+            <NavLink to="/" onClick={handleToggle} className="text-white">
               <FaHome size={24} />
             </NavLink>
-            <NavLink to="/interest-circles" onClick={handleToggle}>
+            <NavLink to="/interest-circles" onClick={handleToggle} className="text-white">
               <FaUsers size={24} />
             </NavLink>
           </div>
