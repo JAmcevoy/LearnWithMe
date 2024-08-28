@@ -11,7 +11,7 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
       className={`bg-gray-800 p-4 transition-all duration-300 z-20 ${
         isMobileView
           ? 'fixed top-0 left-0 right-0 h-16 flex items-center justify-between'
-          : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-6' : 'w-0'}`
+          : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64' : 'w-16'}`
       }`}
     >
       {/* Sidebar Toggle and Mobile Links */}
