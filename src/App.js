@@ -1,34 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import PostContent from './components/PostContent';
-import InterestCircles from "./components/InterestCircles"
-import Profile from "./components/Profile"
+import InterestCircles from "./components/InterestCircles";
+import Profile from "./components/Profile";
+import Chats from "./components/Chats";
+import { useSidebar } from './hooks/useSidebar';  // Import the custom hook
 
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  // Toggle Sidebar function
-  const toggleSidebar = () => {
-    setIsSidebarOpen(prevState => !prevState);
-  };
-
-  // Update mobile state on window resize
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
-
-  React.useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  React.useEffect(() => {
-    if (isMobile) setIsSidebarOpen(false);
-  }, [isMobile]);
+  const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();  // Use the custom hook
 
   return (
     <Router>
@@ -47,6 +27,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={PostContent} />
             <Route path="/interest-circles" exact component={InterestCircles} />
+            <Route path="/chats/:id" component={Chats} />
             <Route path="/Profile" exact component={Profile} />
           </Switch>
         </main>
