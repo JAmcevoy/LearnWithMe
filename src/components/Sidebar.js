@@ -1,10 +1,25 @@
 import React from 'react';
-import { FaUserCircle, FaHome, FaUsers, FaBars, FaSignOutAlt } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
-import { useSidebar } from '../hooks/useSidebar';  // Adjust the path as necessary
+import { FaUserCircle, FaHome, FaUsers, FaBars, FaSignOutAlt, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
+import { NavLink, useHistory } from 'react-router-dom';
+import { useSidebar } from '../hooks/useSidebar';
+import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext.js';
+import axios from 'axios';
 
 function Sidebar({ isOpen, toggleSidebar, isMobile }) {
   const { isSidebarOpen, toggleSidebar: handleToggle, isMobileView } = useSidebar(isOpen, isMobile);
+  const currentUser = useCurrentUser();
+  const setCurrentUser = useSetCurrentUser();
+  const history = useHistory();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/dj-rest-auth/logout/');
+      setCurrentUser(null); // Clear the user from context
+      history.push('/signin'); // Redirect to sign-in page
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
 
   return (
     <div
@@ -24,9 +39,11 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
             <NavLink to="/" onClick={handleToggle} className="text-white">
               <FaHome size={24} />
             </NavLink>
-            <NavLink to="/interest-circles" onClick={handleToggle} className="text-white">
-              <FaUsers size={24} />
-            </NavLink>
+            {currentUser && (
+              <NavLink to="/interest-circles" onClick={handleToggle} className="text-white">
+                <FaUsers size={24} />
+              </NavLink>
+            )}
           </div>
         )}
       </div>
@@ -36,11 +53,17 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
         {!isMobileView && (
           <>
             <div className="text-white flex flex-col items-center mb-8">
-              <FaUserCircle
-                size={isSidebarOpen ? 80 : 40}
-                className="text-white mb-4"
-              />
-              {isSidebarOpen && <p className="text-white text-center">John Doe</p>}
+              {currentUser ? (
+                <>
+                  <FaUserCircle
+                    size={isSidebarOpen ? 80 : 40}
+                    className="text-white mb-4"
+                  />
+                  {isSidebarOpen && <p className="text-white text-center">{currentUser.username}</p>}
+                </>
+              ) : (
+                <p className="text-white text-center">Please Log In</p>
+              )}
             </div>
             <nav>
               <ul className="space-y-4">
@@ -51,19 +74,45 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
                     activeClassName="font-bold"
                   >
                     <FaHome size={24} />
-                    {isSidebarOpen && <span className="ml-4">Feed</span>}
+                    {isSidebarOpen && <span className="ml-4">Home</span>}
                   </NavLink>
                 </li>
-                <li className="flex items-center justify-center">
-                  <NavLink
-                    to="/interest-circles"
-                    className="flex items-center text-white"
-                    activeClassName="font-bold"
-                  >
-                    <FaUsers size={24} />
-                    {isSidebarOpen && <span className="ml-4">Interest Circles</span>}
-                  </NavLink>
-                </li>
+                {currentUser && (
+                  <li className="flex items-center justify-center">
+                    <NavLink
+                      to="/interest-circles"
+                      className="flex items-center text-white"
+                      activeClassName="font-bold"
+                    >
+                      <FaUsers size={24} />
+                      {isSidebarOpen && <span className="ml-4">Interest Circles</span>}
+                    </NavLink>
+                  </li>
+                )}
+                {!currentUser && (
+                  <>
+                    <li className="flex items-center justify-center">
+                      <NavLink
+                        to="/signin"
+                        className="flex items-center text-white"
+                        activeClassName="font-bold"
+                      >
+                        <FaSignInAlt size={24} />
+                        {isSidebarOpen && <span className="ml-4">Sign In</span>}
+                      </NavLink>
+                    </li>
+                    <li className="flex items-center justify-center">
+                      <NavLink
+                        to="/signup"
+                        className="flex items-center text-white"
+                        activeClassName="font-bold"
+                      >
+                        <FaUserPlus size={24} />
+                        {isSidebarOpen && <span className="ml-4">Sign Up</span>}
+                      </NavLink>
+                    </li>
+                  </>
+                )}
               </ul>
             </nav>
           </>
@@ -71,25 +120,23 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
       </div>
 
       {/* Logout Button */}
-      <div
-        className={`${
-          isMobileView
-            ? 'text-white'
-            : 'absolute bottom-4 left-0 right-0 text-white'
-        } flex justify-center items-center`}
-      >
-        <NavLink
-          to="/"
-          className="flex items-center text-white"
-          onClick={() => {
-            // Add your logout logic here
-            console.log('Logging out');
-          }}
+      {currentUser && (
+        <div
+          className={`${
+            isMobileView
+              ? 'text-white'
+              : 'absolute bottom-4 left-0 right-0 text-white'
+          } flex justify-center items-center`}
         >
-          <FaSignOutAlt size={24} />
-          {!isMobileView && isSidebarOpen && <span className="ml-4">Logout</span>}
-        </NavLink>
-      </div>
+          <button
+            className="flex items-center text-white"
+            onClick={handleLogout} // Logout function triggered here
+          >
+            <FaSignOutAlt size={24} />
+            {!isMobileView && isSidebarOpen && <span className="ml-4">Logout</span>}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

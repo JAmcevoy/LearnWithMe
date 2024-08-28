@@ -5,10 +5,11 @@ import PostContent from './components/PostContent';
 import InterestCircles from "./components/InterestCircles";
 import Profile from "./components/Profile";
 import Chats from "./components/Chats";
-import { useSidebar } from './hooks/useSidebar';  // Import the custom hook
+import { useSidebar } from './hooks/useSidebar';
+import SignIn from './components/SignIn';
 
 function App() {
-  const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();  // Use the custom hook
+  const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
 
   return (
     <Router>
@@ -29,6 +30,7 @@ function App() {
             <Route path="/interest-circles" exact component={InterestCircles} />
             <Route path="/chats/:id" component={Chats} />
             <Route path="/Profile" exact component={Profile} />
+            <Route path="/signin" exact component={SignIn} />
           </Switch>
         </main>
 
