@@ -9,6 +9,7 @@ import { useSidebar } from './hooks/useSidebar';
 import SignIn from './pages/User/SignIn';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
+import SignUp from './pages/User/SignUp';
 
 function App() {
   const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
@@ -33,6 +34,7 @@ function App() {
             <ProtectedRoute path="/interest-circles" component={InterestCircles} />
             <Route path="/Profile" exact component={Profile} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signup" exact component={SignUp} />
             <Route component={NotFound} />
           </Switch>
         </main>
