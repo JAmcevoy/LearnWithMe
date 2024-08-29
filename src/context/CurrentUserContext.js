@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
 import { useHistory } from "react-router-dom";
@@ -13,6 +13,7 @@ export const CurrentUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const history = useHistory();
 
+    // Function to fetch current user data
     const handleMount = async () => {
         try {
             const { data } = await axiosRes.get("dj-rest-auth/user/");
@@ -26,8 +27,9 @@ export const CurrentUserProvider = ({ children }) => {
         handleMount();
     }, []);
 
-    useMemo(() => {
-        axiosReq.interceptors.request.use(
+    useEffect(() => {
+        // Set up interceptors
+        const requestInterceptor = axiosReq.interceptors.request.use(
             async (config) => {
                 try {
                     await axios.post('/dj-rest-auth/token/refresh/');
@@ -40,13 +42,11 @@ export const CurrentUserProvider = ({ children }) => {
                     });
                 }
                 return config;
-            }, 
-            (err) => {
-                return Promise.reject(err);
-            }
+            },
+            (err) => Promise.reject(err)
         );
 
-        axiosRes.interceptors.response.use(
+        const responseInterceptor = axiosRes.interceptors.response.use(
             (response) => response,
             async (err) => {
                 if (err.response?.status === 401) {
@@ -65,6 +65,12 @@ export const CurrentUserProvider = ({ children }) => {
                 return Promise.reject(err);
             }
         );
+
+        // Cleanup interceptors on unmount
+        return () => {
+            axiosReq.interceptors.request.eject(requestInterceptor);
+            axiosRes.interceptors.response.eject(responseInterceptor);
+        };
     }, [history]);
 
     // Logout function

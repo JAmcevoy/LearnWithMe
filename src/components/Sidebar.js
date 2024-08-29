@@ -3,23 +3,12 @@ import { FaUserCircle, FaHome, FaUsers, FaBars, FaSignOutAlt, FaSignInAlt, FaUse
 import { NavLink, useHistory } from 'react-router-dom';
 import { useSidebar } from '../hooks/useSidebar';
 import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext.js';
-import axios from 'axios';
 
 function Sidebar({ isOpen, toggleSidebar, isMobile }) {
   const { isSidebarOpen, toggleSidebar: handleToggle, isMobileView } = useSidebar(isOpen, isMobile);
   const currentUser = useCurrentUser();
-  const setCurrentUser = useSetCurrentUser();
+  const { handleLogout } = useSetCurrentUser(); // Destructure handleLogout
   const history = useHistory();
-
-  const handleLogout = async () => {
-    try {
-      await axios.post('/dj-rest-auth/logout/');
-      setCurrentUser(null);
-      history.push('/signin');
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
-  };
 
   return (
     <div
