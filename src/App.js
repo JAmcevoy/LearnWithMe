@@ -1,12 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import PostContent from './components/PostContent';
-import InterestCircles from "./components/InterestCircles";
-import Profile from "./components/Profile";
-import Chats from "./components/Chats";
+import PostContent from './pages/Posts/PostContent';
+import InterestCircles from "./pages/Circles/InterestCircles";
+import Profile from "./pages/User/Profile";
+import Chats from "./pages/Circles/Chats";
 import { useSidebar } from './hooks/useSidebar';
-import SignIn from './components/SignIn';
+import SignIn from './pages/User/SignIn';
+import ProtectedRoute from './components/ProtectedRoute';
+import NotFound from './pages/NotFound';
 
 function App() {
   const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
@@ -27,10 +29,11 @@ function App() {
         >
           <Switch>
             <Route path="/" exact component={PostContent} />
-            <Route path="/interest-circles" exact component={InterestCircles} />
-            <Route path="/chats/:id/" component={Chats} />
+            <ProtectedRoute path="/chats" component={Chats} />
+            <ProtectedRoute path="/interest-circles" component={InterestCircles} />
             <Route path="/Profile" exact component={Profile} />
             <Route path="/signin" exact component={SignIn} />
+            <Route component={NotFound} />
           </Switch>
         </main>
 

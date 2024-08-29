@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import { useSetCurrentUser } from '../context/CurrentUserContext.js';
+import { useSetCurrentUser } from '../../context/CurrentUserContext';
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { setCurrentUser } = useSetCurrentUser(); // Ensure this is a function
+  const { setCurrentUser } = useSetCurrentUser();
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous errors
+    setError(''); 
 
     try {
       const response = await axios.post('/dj-rest-auth/login/', {
@@ -21,19 +21,14 @@ const SignIn = () => {
       });
 
       const { data } = response;
-      // Assuming data contains user information and possibly a token
-      setCurrentUser(data); // Set current user context
-      history.push('/'); // Redirect to home page or a relevant page
+      setCurrentUser(data);
+      history.push('/');
     } catch (err) {
-      // Detailed error handling
       if (err.response) {
-        // Server responded with a status other than 200 range
         setError(`Error: ${err.response.data.detail || 'Invalid credentials. Please try again.'}`);
       } else if (err.request) {
-        // Request was made but no response received
         setError('Network error. Please try again.');
       } else {
-        // Something happened in setting up the request
         setError('An unexpected error occurred. Please try again.');
       }
       console.error('Sign-in error:', err);

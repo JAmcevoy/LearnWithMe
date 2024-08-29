@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { axiosReq } from "../api/axiosDefaults";
+import { axiosReq } from "../../api/axiosDefaults";
 import { FaPaperPlane } from "react-icons/fa";
-import styles from "../styles/Chats.module.css";
+import styles from "../../styles/Chats.module.css";
 
 const Chats = () => {
   const { id } = useParams();

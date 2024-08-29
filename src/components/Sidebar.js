@@ -7,7 +7,7 @@ import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext
 function Sidebar({ isOpen, toggleSidebar, isMobile }) {
   const { isSidebarOpen, toggleSidebar: handleToggle, isMobileView } = useSidebar(isOpen, isMobile);
   const currentUser = useCurrentUser();
-  const { handleLogout } = useSetCurrentUser(); // Destructure handleLogout
+  const { handleLogout } = useSetCurrentUser();
   const history = useHistory();
 
   return (
@@ -119,7 +119,7 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
         >
           <button
             className="flex items-center text-white"
-            onClick={handleLogout} // Logout function triggered here
+            onClick={handleLogout}
           >
             <FaSignOutAlt size={24} />
             {!isMobileView && isSidebarOpen && <span className="ml-4">Logout</span>}

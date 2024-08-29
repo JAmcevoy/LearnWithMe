@@ -13,7 +13,6 @@ export const CurrentUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const history = useHistory();
 
-    // Function to fetch current user data
     const handleMount = async () => {
         try {
             const { data } = await axiosRes.get("dj-rest-auth/user/");
@@ -28,7 +27,6 @@ export const CurrentUserProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        // Set up interceptors
         const requestInterceptor = axiosReq.interceptors.request.use(
             async (config) => {
                 try {
@@ -66,7 +64,6 @@ export const CurrentUserProvider = ({ children }) => {
             }
         );
 
-        // Cleanup interceptors on unmount
         return () => {
             axiosReq.interceptors.request.eject(requestInterceptor);
             axiosRes.interceptors.response.eject(responseInterceptor);
@@ -77,8 +74,8 @@ export const CurrentUserProvider = ({ children }) => {
     const handleLogout = async () => {
         try {
             await axios.post('/dj-rest-auth/logout/');
-            setCurrentUser(null); // Clear the user from context
-            history.push('/signin'); // Redirect to sign-in page
+            setCurrentUser(null);
+            history.push('/signin');
         } catch (err) {
             console.error('Logout error:', err);
         }
