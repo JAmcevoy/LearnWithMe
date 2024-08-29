@@ -14,8 +14,8 @@ function Sidebar({ isOpen, toggleSidebar, isMobile }) {
   const handleLogout = async () => {
     try {
       await axios.post('/dj-rest-auth/logout/');
-      setCurrentUser(null); // Clear the user from context
-      history.push('/signin'); // Redirect to sign-in page
+      setCurrentUser(null);
+      history.push('/signin');
     } catch (err) {
       console.error('Logout error:', err);
     }

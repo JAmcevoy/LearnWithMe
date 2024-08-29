@@ -28,7 +28,7 @@ function App() {
           <Switch>
             <Route path="/" exact component={PostContent} />
             <Route path="/interest-circles" exact component={InterestCircles} />
-            <Route path="/chats/:id" component={Chats} />
+            <Route path="/chats/:id/" component={Chats} />
             <Route path="/Profile" exact component={Profile} />
             <Route path="/signin" exact component={SignIn} />
           </Switch>

@@ -25,7 +25,6 @@ const InterestCircles = () => {
   }, []);
 
   const handleCircleClick = (id) => {
-    // Navigate to the corresponding chat route
     history.push(`/chats/${id}`);
   };
 
