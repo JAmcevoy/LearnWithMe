@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { axiosReq, axiosRes } from "../api/axiosDefaults";
 import { useHistory } from "react-router-dom";
 
 export const CurrentUserContext = createContext();
@@ -13,68 +12,26 @@ export const CurrentUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const history = useHistory();
 
-    const handleMount = async () => {
+    const fetchCurrentUser = async () => {
         try {
-            const { data } = await axiosRes.get("dj-rest-auth/user/");
+            const { data } = await axios.get("/dj-rest-auth/user/");
             setCurrentUser(data);
         } catch (err) {
-            console.log(err);
+            setCurrentUser(null);
         }
     };
 
     useEffect(() => {
-        handleMount();
+        fetchCurrentUser();
     }, []);
 
-    useEffect(() => {
-        const requestInterceptor = axiosReq.interceptors.request.use(
-            async (config) => {
-                try {
-                    await axios.post('/dj-rest-auth/token/refresh/');
-                } catch (err) {
-                    setCurrentUser((prevCurrentUser) => {
-                        if (prevCurrentUser) {
-                            history.push('/signin');
-                        }
-                        return null;
-                    });
-                }
-                return config;
-            },
-            (err) => Promise.reject(err)
-        );
-
-        const responseInterceptor = axiosRes.interceptors.response.use(
-            (response) => response,
-            async (err) => {
-                if (err.response?.status === 401) {
-                    try {
-                        await axios.post('/dj-rest-auth/token/refresh/');
-                    } catch (err) {
-                        setCurrentUser((prevCurrentUser) => {
-                            if (prevCurrentUser) {
-                                history.push('/signin');
-                            }
-                            return null;
-                        });
-                    }
-                    return axios(err.config);
-                }
-                return Promise.reject(err);
-            }
-        );
-
-        return () => {
-            axiosReq.interceptors.request.eject(requestInterceptor);
-            axiosRes.interceptors.response.eject(responseInterceptor);
-        };
-    }, [history]);
-
-    // Logout function
     const handleLogout = async () => {
         try {
             await axios.post('/dj-rest-auth/logout/');
             setCurrentUser(null);
+            // Clear any cookies or tokens if needed
+            document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            localStorage.removeItem("authToken");
             history.push('/signin');
         } catch (err) {
             console.error('Logout error:', err);

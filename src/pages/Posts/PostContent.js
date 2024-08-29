@@ -2,18 +2,20 @@ import React, { useEffect, useState } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useHistory } from "react-router-dom";
 
 const PostContent = () => {
   const [posts, setPosts] = useState({ results: [], next: null });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const history = useHistory();
 
   const fetchPosts = async (url) => {
     try {
       const response = await axios.get(url);
-      setPosts(prevPosts => ({
+      setPosts((prevPosts) => ({
         results: [...prevPosts.results, ...response.data.results],
-        next: response.data.next
+        next: response.data.next,
       }));
     } catch (err) {
       setError("Error fetching posts");
@@ -44,6 +46,10 @@ const PostContent = () => {
     );
   }
 
+  const handlePostClick = (id) => {
+    history.push(`/posts/${id}`);
+  };
+
   return (
     <div className="flex flex-row flex-wrap justify-center gap-6 py-8 px-4 min-h-screen">
       <InfiniteScroll
@@ -59,12 +65,12 @@ const PostContent = () => {
           >
             <div className="flex items-center p-4 border-b border-gray-200">
               <img
-                src={post.profile_image|| "default-profile-pic.jpg"}
+                src={post.profile_image || "default-profile-pic.jpg"}
                 alt={`${post.owner}'s profile`}
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div className="ml-4">
-                <h2 className="font-semibold">{post.owner}</h2> 
+                <h2 className="font-semibold">{post.owner}</h2>
                 <p className="text-gray-500 text-sm">{new Date(post.created_at).toLocaleDateString()}</p>
               </div>
             </div>
@@ -74,11 +80,20 @@ const PostContent = () => {
               className="w-full h-auto object-cover"
             />
             <div className="p-4">
-              <p className="text-gray-700 mb-4">{post.title}</p>
-              <div className="flex items-center space-x-6">
+              <div className="flex justify-between items-center">
                 <button className="flex items-center text-gray-500 hover:text-blue-500">
                   <FaThumbsUp className="mr-2" /> Like
                 </button>
+                <a
+                  href={`/posts/${post.id}`}
+                  className="text-gray-700 font-semibold hover:text-blue-500"
+                  onClick={(e) => {
+                    e.preventDefault(); 
+                    handlePostClick(post.id); 
+                  }}
+                >
+                  {post.title}
+                </a>
               </div>
             </div>
           </div>
