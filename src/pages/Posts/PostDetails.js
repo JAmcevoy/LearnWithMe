@@ -65,7 +65,7 @@ const PostDetails = () => {
                         </div>
                         <div className="mb-6">
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Category</h3>
-                            <p className="text-gray-700">{post?.category || 'No category assigned.'}</p>
+                            <p className="text-gray-700">{post?.category_name || 'No category assigned.'}</p>
                         </div>
                         <div className="mb-6">
                             <p className="text-gray-700">

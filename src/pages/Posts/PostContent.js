@@ -51,13 +51,14 @@ const PostContent = () => {
   };
 
   return (
-    <div className="flex flex-row flex-wrap justify-center gap-6 py-8 px-4 min-h-screen">
-      <InfiniteScroll
+    <InfiniteScroll
         dataLength={posts.results.length}
         next={() => fetchPosts(posts.next)}
         hasMore={!!posts.next}
         loader={<p className="text-center mt-8">Loading more posts...</p>}
       >
+    <div className="flex flex-row flex-wrap justify-center gap-6 py-8 px-4 min-h-screen">
+    
         {posts.results.map((post) => (
           <div
             key={post.id}
@@ -88,8 +89,8 @@ const PostContent = () => {
                   href={`/posts/${post.id}`}
                   className="text-gray-700 font-semibold hover:text-blue-500"
                   onClick={(e) => {
-                    e.preventDefault(); 
-                    handlePostClick(post.id); 
+                    e.preventDefault(); // Prevent default link behavior
+                    handlePostClick(post.id); // Navigate programmatically
                   }}
                 >
                   {post.title}
@@ -98,8 +99,10 @@ const PostContent = () => {
             </div>
           </div>
         ))}
-      </InfiniteScroll>
+        
     </div>
+    </InfiniteScroll>
+    
   );
 };
 

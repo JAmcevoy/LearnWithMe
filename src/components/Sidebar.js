@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaUserCircle, FaHome, FaUsers, FaBars, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaPlusCircle } from 'react-icons/fa';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useSidebar } from '../hooks/useSidebar';
 import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext.js';
 
-function Sidebar({ isOpen, toggleSidebar, isMobile }) {
+function Sidebar({ isOpen, isMobile }) {
     const { isSidebarOpen, toggleSidebar: handleToggle, isMobileView } = useSidebar(isOpen, isMobile);
     const currentUser = useCurrentUser();
-    const { handleLogout } = useSetCurrentUser();
-    const history = useHistory();
+    const { handleLogOut } = useSetCurrentUser(); // Correctly use the hook to get handleLogOut
 
     const handleSignOut = async () => {
-        await handleLogout();
-        history.push('/signin');
+        try {
+            await handleLogOut(); // Use handleLogOut from the context
+        } catch (err) {
+            console.error('Error during logout:', err);
+        }
     };
 
     return (

@@ -7,7 +7,6 @@ import Profile from "./pages/User/Profile";
 import Chats from "./pages/Circles/Chats";
 import { useSidebar } from './hooks/useSidebar';
 import SignIn from './pages/User/SignIn';
-import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
 import SignUp from './pages/User/SignUp';
 import PostDetails from './pages/Posts/PostDetails';
@@ -32,8 +31,8 @@ function App() {
           <Switch>
             <Route path="/" exact component={PostContent} />
             <Route path="/posts/:id" exact component={PostDetails} />
-            <ProtectedRoute path="/chats" component={Chats} />
-            <ProtectedRoute path="/interest-circles" component={InterestCircles} />
+            <Route path="/chats/:id" component={Chats} />
+            <Route path="/interest-circles" component={InterestCircles} />
             <Route path="/Profile" exact component={Profile} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signup" exact component={SignUp} />
