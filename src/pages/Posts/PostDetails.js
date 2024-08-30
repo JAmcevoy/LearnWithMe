@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaThumbsUp, FaEdit, FaTrash } from "react-icons/fa";
 import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
+import { axiosReq } from '../../api/axiosDefaults';
 
 const PostDetails = () => {
     const { id } = useParams();
+    const history = useHistory(); // Use useHistory for navigation
     const [post, setPost] = useState(null);
     const [error, setError] = useState('');
 
@@ -26,10 +28,11 @@ const PostDetails = () => {
 
     const handleDelete = async () => {
         try {
-          await axios.delete(`/posts/${id}/`);
-          history.goBack();
+          await axiosReq.delete(`/posts/${id}/`);
+          history.goBack(); // Navigate back after successful deletion
         } catch (err) {
-          console.log(err);
+          console.log('Error deleting post:', err);
+          setError('Error deleting post.'); // Optionally, display an error message
         }
       };
 
