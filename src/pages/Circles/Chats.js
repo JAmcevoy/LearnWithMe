@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import { FaPaperPlane } from "react-icons/fa";
 import styles from "../../styles/Chats.module.css";
+import { useCurrentUser } from "../../context/CurrentUserContext";
 
 const Chats = () => {
   const { id } = useParams();
@@ -10,19 +11,15 @@ const Chats = () => {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const currentUser = useCurrentUser();
+  
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axiosReq.get(`/chats/${id}`);
-        console.log("Fetched messages response:", response);
-        if (Array.isArray(response.data)) {
-          setMessages(response.data);
-        } else if (response.data) {
-          setMessages([response.data]);
-        } else {
-          setMessages([]);
-        }
+        const response = await axiosReq.get(`/chats/circle/${id}/`);
+        console.log("Fetched messages:", response.data);
+        setMessages(response.data.results); 
       } catch (err) {
         console.error("Error fetching messages:", err.response ? err.response.data : err.message);
         setError(`Error fetching messages: ${err.response ? err.response.data : err.message}`);
@@ -40,17 +37,15 @@ const Chats = () => {
 
   const handleSend = async () => {
     try {
-      const response = await axiosReq.post(`/chats/${id}`, { content: newMessage });
+      const response = await axiosReq.post(`/chats/circle/${id}/`, {
+        content: newMessage,
+        circle: id,
+        owner: currentUser.pk
+      });
       if (response.status === 201) {
         setNewMessage("");
-        const updatedMessages = await axiosReq.get(`/chats/${id}`);
-        if (Array.isArray(updatedMessages.data)) {
-          setMessages(updatedMessages.data);
-        } else if (updatedMessages.data) {
-          setMessages([updatedMessages.data]);
-        } else {
-          setMessages([]);
-        }
+        const updatedMessages = await axiosReq.get(`/chats/circle/${id}/`);
+        setMessages(updatedMessages.data.results); // Refresh messages
       } else {
         throw new Error(`Unexpected response status: ${response.status}`);
       }

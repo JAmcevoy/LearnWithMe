@@ -11,7 +11,7 @@ const InterestCircles = () => {
   useEffect(() => {
     const fetchCircles = async () => {
       try {
-        const response = await axios.get("/interestcircles/"); 
+        const response = await axios.get("/interest-circles/");
         setCircles(response.data);
       } catch (err) {
         setError("Error fetching interest circles");
@@ -25,7 +25,7 @@ const InterestCircles = () => {
   }, []);
 
   const handleCircleClick = (id) => {
-    history.push(`/chats/${id}`);
+    history.push(`/interest-circles/${id}/chats`);
   };
 
   if (loading) {

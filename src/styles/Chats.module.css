@@ -1,3 +1,9 @@
 .fitting {
     margin-right: 4em;
 }
+
+@media (max-width: 760px) {
+    .fitting {
+        margin-right: 0;
+    }
+}
