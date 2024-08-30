@@ -10,6 +10,7 @@ import SignIn from './pages/User/SignIn';
 import NotFound from './pages/NotFound';
 import SignUp from './pages/User/SignUp';
 import PostDetails from './pages/Posts/PostDetails';
+import PostCreation from './pages/Posts/PostCreation';
 
 function App() {
   const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
@@ -30,6 +31,7 @@ function App() {
         >
           <Switch>
             <Route path="/" exact component={PostContent} />
+            <Route path="/posts/create" exact component={PostCreation} />
             <Route path="/posts/:id" exact component={PostDetails} />
             <Route path="/chats/:id" component={Chats} />
             <Route path="/interest-circles" component={InterestCircles} />

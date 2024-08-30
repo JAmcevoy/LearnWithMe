@@ -114,7 +114,7 @@ function Sidebar({ isOpen, isMobile }) {
                                 {currentUser && (
                                     <li className="flex items-center justify-center">
                                         <NavLink
-                                            to="/post/create"
+                                            to="/posts/create"
                                             className="flex items-center text-white"
                                             activeClassName="font-bold"
                                         >
