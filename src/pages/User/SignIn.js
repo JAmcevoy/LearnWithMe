@@ -7,7 +7,7 @@ const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { setCurrentUser } = useSetCurrentUser();
+  const setCurrentUser = useSetCurrentUser();
   const history = useHistory();
 
   const handleSubmit = async (e) => {

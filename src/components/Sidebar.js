@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { FaUserCircle, FaHome, FaUsers, FaBars, FaSignOutAlt, FaSignInAlt, FaUserPlus, FaPlusCircle } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import { useSidebar } from '../hooks/useSidebar';
@@ -7,15 +8,16 @@ import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext
 function Sidebar({ isOpen, isMobile }) {
     const { isSidebarOpen, toggleSidebar: handleToggle, isMobileView } = useSidebar(isOpen, isMobile);
     const currentUser = useCurrentUser();
-    const { handleLogOut } = useSetCurrentUser(); // Correctly use the hook to get handleLogOut
+    const setCurrentUser = useSetCurrentUser();
 
     const handleSignOut = async () => {
-        try {
-            await handleLogOut(); // Use handleLogOut from the context
-        } catch (err) {
-            console.error('Error during logout:', err);
-        }
-    };
+        try{
+            await axios.post("dj-rest-auth/logout/");
+            setCurrentUser(null);
+          }catch(err){
+            console.log(err);
+          }
+        };
 
     return (
         <div
@@ -49,10 +51,12 @@ function Sidebar({ isOpen, isMobile }) {
                         <div className="text-white flex flex-col items-center mb-8">
                             {currentUser ? (
                                 <>
-                                    <FaUserCircle
-                                        size={isSidebarOpen ? 80 : 40}
-                                        className="text-white mb-4"
-                                    />
+                                    <NavLink to={`/profile/${currentUser.pk}`} className="text-white">
+                                        <FaUserCircle
+                                            size={isSidebarOpen ? 80 : 40}
+                                            className="text-white mb-4"
+                                        />
+                                    </NavLink>
                                     {isSidebarOpen && <p className="text-white text-center">{currentUser.username}</p>}
                                 </>
                             ) : (

@@ -33,7 +33,7 @@ function App() {
             <Route path="/posts/:id" exact component={PostDetails} />
             <Route path="/chats/:id" component={Chats} />
             <Route path="/interest-circles" component={InterestCircles} />
-            <Route path="/Profile" exact component={Profile} />
+            <Route path="/Profile/:id" exact component={Profile} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signup" exact component={SignUp} />
             <Route component={NotFound} />
