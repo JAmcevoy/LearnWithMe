@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import PostContent from './pages/Posts/PostContent';
+import PostContent from './pages/Posts/PostList';
 import InterestCircles from "./pages/Circles/InterestCircles";
 import Profile from "./pages/User/Profile";
 import Chats from "./pages/Circles/Chats";
@@ -15,6 +15,7 @@ import PostEdit from './pages/Posts/PostEdit';
 
 function App() {
   const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
+  
 
   return (
     <Router>

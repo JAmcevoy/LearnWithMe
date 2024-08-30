@@ -3,12 +3,14 @@ import { FaThumbsUp } from "react-icons/fa";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
 const PostContent = () => {
   const [posts, setPosts] = useState({ results: [], next: null });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const history = useHistory();
+  
 
   const fetchPosts = async (url) => {
     if (!url) return; 
@@ -96,14 +98,14 @@ const PostContent = () => {
             key={post.id}
             className="bg-white rounded-2xl shadow-lg overflow-hidden w-full max-w-sm"
           >
-            <div className="flex items-center p-4 border-b border-gray-200">
+            <div className="flex items-center p-4 border-b border-gray-200 cursor-pointer">
               <img
                 src={post.profile_image || "default-profile-pic.jpg"}
                 alt={`${post.owner}'s profile`}
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div className="ml-4">
-                <h2 className="font-semibold">{post.owner}</h2>
+                <Link to={`/profile/${post.owner_profile_id}`} className="font-semibold">{post.owner}</Link>
                 <p className="text-gray-500 text-sm">
                   {new Date(post.created_at).toLocaleDateString()}
                 </p>

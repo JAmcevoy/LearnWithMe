@@ -29,10 +29,10 @@ const PostDetails = () => {
     const handleDelete = async () => {
         try {
           await axiosReq.delete(`/posts/${id}/`);
-          history.goBack(); // Navigate back after successful deletion
+          history.goBack();
         } catch (err) {
           console.log('Error deleting post:', err);
-          setError('Error deleting post.'); // Optionally, display an error message
+          setError('Error deleting post.'); 
         }
       };
 
@@ -67,7 +67,11 @@ const PostDetails = () => {
                                 className="w-12 h-12 rounded-full mr-4"
                             />
                             <div>
-                                <p className="text-xl font-semibold text-gray-900">{post?.owner}</p>
+                                <Link 
+                                to={`/profile/${post?.owner_profile_id}`} 
+                                className="text-xl font-semibold text-gray-900">
+                                    {post?.owner} 
+                                </Link>
                                 <p className="text-sm text-gray-500">{new Date(post?.created_at).toLocaleDateString()}</p>
                             </div>
                         </div>
