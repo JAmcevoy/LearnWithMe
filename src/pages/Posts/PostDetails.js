@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FaThumbsUp } from "react-icons/fa";
+import { FaThumbsUp, FaEdit } from "react-icons/fa";
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const PostDetails = () => {
     const { id } = useParams();
@@ -77,6 +77,10 @@ const PostDetails = () => {
                                 <button className="flex items-center text-gray-500 hover:text-blue-500">
                                     <FaThumbsUp className="mr-2" /> Like
                                 </button>
+                                {/* Edit Button with Link */}
+                                <Link to={`/posts/edit/${id}`} className="flex items-center text-gray-500 hover:text-blue-500">
+                                    <FaEdit className="mr-2" /> Edit
+                                </Link>
                             </div>
                         </div>
                     </div>
