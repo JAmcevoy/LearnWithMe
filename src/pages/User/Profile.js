@@ -42,7 +42,7 @@ const Profile = () => {
           alt={`${profile.username || 'Profile'}'s profile`}
           className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-4"
         />
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{profile.username || 'Username'}</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">{profile.owner || 'Username'}</h1>
         <p className="text-black-600 text-lg mb-6">{profile.about_me || 'About Me'}</p>
       </div>
 

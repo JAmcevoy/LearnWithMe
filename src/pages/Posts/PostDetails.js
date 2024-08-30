@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaThumbsUp, FaEdit } from "react-icons/fa";
+import { FaThumbsUp, FaEdit, FaTrash } from "react-icons/fa";
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 
@@ -23,6 +23,15 @@ const PostDetails = () => {
     }, [id]);
 
     if (error) return <p className="text-red-500 text-center">{error}</p>;
+
+    const handleDelete = async () => {
+        try {
+          await axios.delete(`/posts/${id}/`);
+          history.goBack();
+        } catch (err) {
+          console.log(err);
+        }
+      };
 
     return (
         <div className="flex flex-col items-center min-h-screen bg-slate-400 p-4">
@@ -77,10 +86,12 @@ const PostDetails = () => {
                                 <button className="flex items-center text-gray-500 hover:text-blue-500">
                                     <FaThumbsUp className="mr-2" /> Like
                                 </button>
-                                {/* Edit Button with Link */}
                                 <Link to={`/posts/edit/${id}`} className="flex items-center text-gray-500 hover:text-blue-500">
                                     <FaEdit className="mr-2" /> Edit
                                 </Link>
+                                <button className="flex items-center text-gray-500 hover:text-blue-500" onClick={handleDelete}>
+                                    <FaTrash className="mr-2" /> Delete
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 
 const PostEdit = () => {
-    const { id } = useParams(); // Get the post ID from the URL
+    const { id } = useParams();
     const [title, setTitle] = useState('');
     const [steps, setSteps] = useState('');
     const [image, setImage] = useState(null);
@@ -24,7 +24,7 @@ const PostEdit = () => {
                 setTitle(post.title);
                 setSteps(post.steps);
                 setSelectedCategory(post.category);
-                setExistingImage(post.image_or_video); // Assuming this is the correct field name
+                setExistingImage(post.image_or_video); 
             } catch (err) {
                 console.error('Error fetching post details:', err);
                 setError('Error fetching post details.');
@@ -71,7 +71,6 @@ const PostEdit = () => {
                 },
             });
 
-            // Redirect to the updated post view page
             history.push(`/posts/${id}`);
         } catch (err) {
             console.error('Error updating post:', err);
