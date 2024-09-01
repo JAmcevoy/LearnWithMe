@@ -17,10 +17,17 @@ const PostCreation = () => {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('/categories/');
-                setCategories(response.data);
+                console.log('Categories response:', response.data);
+
+                // Extract results array
+                if (response.data && Array.isArray(response.data.results)) {
+                    setCategories(response.data.results);
+                } else {
+                    throw new Error('Data is not in expected format');
+                }
             } catch (err) {
                 console.error('Error fetching categories:', err);
-                setError('Error fetching categories.');
+                setError(`Error fetching categories: ${err.message}`);
             }
         };
 
@@ -37,23 +44,23 @@ const PostCreation = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
-    
+
         const formData = new FormData();
         formData.append('title', title.trim());
         formData.append('steps', steps.trim());
         formData.append('category', selectedCategory);
         if (image) {
-            formData.append('image_or_video', image); 
+            formData.append('image_or_video', image);
         }
-    
+
         try {
             const response = await axios.post('/posts/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-    
-            
+
+
             history.push(`/posts/${response.data.id}`);
         } catch (err) {
             console.error('Error creating post:', err);
@@ -62,7 +69,7 @@ const PostCreation = () => {
             setLoading(false);
         }
     };
-    
+
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-slate-400 p-4 md:p-8 mt-16 md:mt-0">
@@ -104,9 +111,13 @@ const PostCreation = () => {
                                 className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
                             >
                                 <option value="">Select a category</option>
-                                {categories.map((cat) => (
-                                    <option key={cat.id} value={cat.id}>{cat.type}</option>
-                                ))}
+                                {categories.length > 0 ? (
+                                    categories.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>{cat.type}</option>
+                                    ))
+                                ) : (
+                                    <option disabled>No categories available</option>
+                                )}
                             </select>
                         </div>
                         <button

@@ -38,7 +38,8 @@ const Profile = () => {
     try {
       if (isFollowing) {
         // Unfollow
-        await axiosReq.delete(`/followers/${profile.id}/`);
+        await axiosReq.delete(`/followers/${profile.following_id
+        }/`);
         setIsFollowing(false);
         setProfile(prevProfile => ({
           ...prevProfile,
@@ -60,6 +61,7 @@ const Profile = () => {
       console.error('Error following/unfollowing:', err.message);
     }
   };
+
 
   if (loading) return <div className="text-center p-6">Loading...</div>;
 

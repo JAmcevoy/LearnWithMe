@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import PostContent from './pages/Posts/PostList';
 import InterestCircles from "./pages/Circles/InterestCircles";
+import InterestCircleCreation from './pages/Circles/InterestCircleCreation';
 import Profile from "./pages/User/Profile";
 import Chats from "./pages/Circles/Chats";
 import { useSidebar } from './hooks/useSidebar';
@@ -36,8 +37,11 @@ function App() {
             <Route path="/posts/create" exact component={PostCreation} />
             <Route path="/posts/:id" exact component={PostDetails} />
             <Route path="/posts/edit/:id" component={PostEdit} />
+
+            <Route path="/interest-circles/create" exact component={InterestCircleCreation} />
             <Route path="/interest-circles/:id/chats" component={Chats} />
             <Route path="/interest-circles" component={InterestCircles} />
+            
             <Route path="/Profile/:id" exact component={Profile} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signup" exact component={SignUp} />
