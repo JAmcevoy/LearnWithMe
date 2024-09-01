@@ -18,7 +18,7 @@ const Profile = () => {
         console.log("Profile Data:", profileResponse.data); 
 
         setProfile(profileResponse.data);
-        setIsFollowing(profileResponse.data.is_followed); 
+        setIsFollowing(profileResponse.data.following_id); 
 
         const postsResponse = await axiosReq.get(`/posts/?owner=${id}`); 
         console.log('Posts Response:', postsResponse.data); 
