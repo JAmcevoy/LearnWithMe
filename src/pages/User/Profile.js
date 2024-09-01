@@ -1,28 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentUser } from "../../context/CurrentUserContext";
 
 const Profile = () => {
-  const { id } = useParams(); // Get profile ID from URL
+  const { id } = useParams(); 
   const [profile, setProfile] = useState(null);
-  const [recentPosts, setRecentPosts] = useState([]); // State for recent posts
+  const [recentPosts, setRecentPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false); 
+  const currentUser = useCurrentUser();
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const profileResponse = await axiosReq.get(`/profiles/${id}/`); // Fetch profile data
+        const profileResponse = await axiosReq.get(`/profiles/${id}/`);
+        console.log("Profile Data:", profileResponse.data); 
+
         setProfile(profileResponse.data);
+        setIsFollowing(profileResponse.data.is_followed); 
 
-        // Fetch recent posts after profile data is set
         const postsResponse = await axiosReq.get(`/posts/?owner=${id}`); 
-        console.log('Posts Response:', postsResponse.data); // Debugging: Print API response
+        console.log('Posts Response:', postsResponse.data); 
 
-        setRecentPosts(postsResponse.data.results || []); // Assuming posts are in data.results
+        setRecentPosts(postsResponse.data.results || []); 
       } catch (err) {
         console.error('Error fetching data:', err);
-        setError('Error fetching data.');
       } finally {
         setLoading(false);
       }
@@ -31,8 +34,34 @@ const Profile = () => {
     fetchProfileData();
   }, [id]);
 
+  const handleFollow = async () => {
+    try {
+      if (isFollowing) {
+        // Unfollow
+        await axiosReq.delete(`/followers/${profile.id}/`);
+        setIsFollowing(false);
+        setProfile(prevProfile => ({
+          ...prevProfile,
+          followers_count: prevProfile.followers_count - 1,
+        }));
+      } else {
+        // Follow
+        await axiosReq.post(`/followers/`, {
+          owner: currentUser.pk,    
+          followed: id             
+        });
+        setIsFollowing(true);
+        setProfile(prevProfile => ({
+          ...prevProfile,
+          followers_count: prevProfile.followers_count + 1,
+        }));
+      }
+    } catch (err) {
+      console.error('Error following/unfollowing:', err.message);
+    }
+  };
+
   if (loading) return <div className="text-center p-6">Loading...</div>;
-  if (error) return <div className="text-center p-6 text-red-500">{error}</div>;
 
   return (
     <div className="flex flex-col md:flex-row p-6 min-h-screen bg-slate-400 mt-16 md:mt-0">
@@ -44,6 +73,16 @@ const Profile = () => {
         />
         <h1 className="text-4xl font-bold text-gray-900 mb-2">{profile.owner || 'Username'}</h1>
         <p className="text-black-600 text-lg mb-6">{profile.about_me || 'About Me'}</p>
+        
+        {/* Follow Button */}
+        {!profile.is_owner && (
+          <button
+            onClick={handleFollow}
+            className={`py-2 px-4 rounded ${isFollowing ? 'bg-red-500' : 'bg-blue-500'} text-white`}
+          >
+            {isFollowing ? 'Unfollow' : 'Follow'}
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col md:w-2/3">
