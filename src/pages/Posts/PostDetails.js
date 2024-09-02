@@ -3,12 +3,14 @@ import { FaThumbsUp, FaEdit, FaTrash } from "react-icons/fa";
 import axios from 'axios';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import { axiosReq } from '../../api/axiosDefaults';
+import { useCurrentUser } from "../../context/CurrentUserContext";
 
 const PostDetails = () => {
     const { id } = useParams();
-    const history = useHistory(); // Use useHistory for navigation
+    const history = useHistory();
     const [post, setPost] = useState(null);
     const [error, setError] = useState('');
+    const currentUser = useCurrentUser();
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -28,13 +30,19 @@ const PostDetails = () => {
 
     const handleDelete = async () => {
         try {
-          await axiosReq.delete(`/posts/${id}/`);
-          history.goBack();
+            await axiosReq.delete(`/posts/${id}/`);
+            history.goBack();
         } catch (err) {
-          console.log('Error deleting post:', err);
-          setError('Error deleting post.'); 
+            console.log('Error deleting post:', err);
+            setError('Error deleting post.');
         }
-      };
+    };
+
+    const formatSteps = (stepsText) => {
+        return stepsText
+            .split('\n')
+            .map((line, index) => <p key={index} className="mb-2">{line}</p>);
+    };
 
     return (
         <div className="flex flex-col items-center min-h-screen bg-slate-400 p-4">
@@ -67,38 +75,37 @@ const PostDetails = () => {
                                 className="w-12 h-12 rounded-full mr-4"
                             />
                             <div>
-                                <Link 
-                                to={`/profile/${post?.owner_profile_id}`} 
-                                className="text-xl font-semibold text-gray-900">
-                                    {post?.owner} 
+                                <Link
+                                    to={`/profile/${post?.owner_profile_id}`}
+                                    className="text-xl font-semibold text-gray-900">
+                                    {post?.owner}
                                 </Link>
                                 <p className="text-sm text-gray-500">{new Date(post?.created_at).toLocaleDateString()}</p>
                             </div>
                         </div>
                         <div className="mb-6">
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Steps</h3>
-                            <p className="text-gray-700">{post?.steps || 'No steps provided.'}</p>
+                            <p className="text-gray-700">{post?.steps ? formatSteps(post.steps) : 'No steps provided.'}</p>
                         </div>
                         <div className="mb-6">
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Category</h3>
                             <p className="text-gray-700">{post?.category_name || 'No category assigned.'}</p>
-                        </div>
-                        <div className="mb-6">
-                            <p className="text-gray-700">
-                                <span className="font-semibold">Likes:</span> {post?.likes_count || 0}
-                            </p>
                         </div>
                         <div className="p-4">
                             <div className="flex items-center space-x-6">
                                 <button className="flex items-center text-gray-500 hover:text-blue-500">
                                     <FaThumbsUp className="mr-2" /> Like
                                 </button>
-                                <Link to={`/posts/edit/${id}`} className="flex items-center text-gray-500 hover:text-blue-500">
-                                    <FaEdit className="mr-2" /> Edit
-                                </Link>
-                                <button className="flex items-center text-gray-500 hover:text-blue-500" onClick={handleDelete}>
-                                    <FaTrash className="mr-2" /> Delete
-                                </button>
+                                {post && post.is_owner && (
+                                    <>
+                                    <Link to={`/posts/edit/${id}`} className="flex items-center text-gray-500 hover:text-blue-500">
+                                        <FaEdit className="mr-2" /> Edit
+                                    </Link>
+                                    <button className="flex items-center text-gray-500 hover:text-blue-500" onClick={handleDelete}>
+                                        <FaTrash className="mr-2" /> Delete
+                                    </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
