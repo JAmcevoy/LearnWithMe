@@ -11,7 +11,6 @@ const PostContent = () => {
   const [error, setError] = useState(null);
   const history = useHistory();
   
-
   const fetchPosts = async (url) => {
     if (!url) return; 
     try {
@@ -117,7 +116,17 @@ const PostContent = () => {
               className="w-full h-auto object-cover"
             />
             <div className="p-4">
-              <div className="flex justify-between items-center">
+              <a
+                href={`/posts/${post.id}`}
+                className="text-gray-700 font-semibold hover:text-blue-500"
+                onClick={(e) => {
+                  e.preventDefault(); 
+                  handlePostClick(post.id);
+                }}
+              >
+                {post.title}
+              </a>
+              <div className="flex items-center mt-2">
                 <button
                   className="flex items-center text-gray-500 hover:text-blue-500"
                   onClick={() =>
@@ -129,16 +138,6 @@ const PostContent = () => {
                   <FaThumbsUp className="mr-2" />
                   {post.like_id ? "Unlike" : "Like"}
                 </button>
-                <a
-                  href={`/posts/${post.id}`}
-                  className="text-gray-700 font-semibold hover:text-blue-500"
-                  onClick={(e) => {
-                    e.preventDefault(); 
-                    handlePostClick(post.id);
-                  }}
-                >
-                  {post.title}
-                </a>
               </div>
             </div>
           </div>
