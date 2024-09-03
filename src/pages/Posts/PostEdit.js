@@ -34,10 +34,17 @@ const PostEdit = () => {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('/categories/');
-                setCategories(response.data);
+                console.log('Categories response:', response.data);
+
+                // Extract results array
+                if (response.data && Array.isArray(response.data.results)) {
+                    setCategories(response.data.results);
+                } else {
+                    throw new Error('Data is not in expected format');
+                }
             } catch (err) {
                 console.error('Error fetching categories:', err);
-                setError('Error fetching categories.');
+                setError(`Error fetching categories: ${err.message}`);
             }
         };
 
