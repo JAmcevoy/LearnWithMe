@@ -41,6 +41,38 @@ function Sidebar({ isOpen, isMobile }) {
                                 <FaUsers size={24} />
                             </NavLink>
                         )}
+                        {currentUser && (
+                            <NavLink
+                            to="/posts/create"
+                            className="text-white"
+                        >
+                            <FaPlusCircle size={24} />
+                        </NavLink>
+                        )}
+                        {!currentUser && (
+                                    <>
+                                        <li className="flex items-center justify-center">
+                                            <NavLink
+                                                to="/signin"
+                                                className="flex items-center text-white"
+                                                activeClassName="font-bold"
+                                            >
+                                                <FaSignInAlt size={24} />
+                                                {isSidebarOpen && <span className="ml-4">Sign In</span>}
+                                            </NavLink>
+                                        </li>
+                                        <li className="flex items-f justify-center">
+                                            <NavLink
+                                                to="/signup"
+                                                className="flex items-left text-white"
+                                                activeClassName="font-bold"
+                                            >
+                                                <FaUserPlus size={24} />
+                                                {isSidebarOpen && <span className="ml-4">Sign Up</span>}
+                                            </NavLink>
+                                        </li>
+                                    </>
+                                )}
                     </div>
                 )}
             </div>

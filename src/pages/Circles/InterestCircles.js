@@ -118,7 +118,7 @@ const InterestCircles = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="p-6 lg:pr-20 flex-grow">
-        <h1 className="text-4xl font-bold text-center text-gray-700 leading-relaxed mb-8">
+        <h1 className="text-4xl font-bold text-center text-gray-700 leading-relaxed mb-8 mt-10 sm:mt-3">
           Interest Circles
         </h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -154,7 +154,6 @@ const InterestCircles = () => {
   );
 };
 
-
 const CircleCard = ({ circle, onClick, onInfoClick, onEditClick }) => (
   <div
     className="relative flex items-center justify-center cursor-pointer"
@@ -188,7 +187,6 @@ const CircleCard = ({ circle, onClick, onInfoClick, onEditClick }) => (
   </div>
 );
 
-
 const CreateCircleButton = ({ onClick }) => (
   <button
     onClick={onClick}
@@ -198,7 +196,6 @@ const CreateCircleButton = ({ onClick }) => (
     <span className="text-lg font-semibold">Create Circle</span>
   </button>
 );
-
 
 const Modal = ({
   type,
