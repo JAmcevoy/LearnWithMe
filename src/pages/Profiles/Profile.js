@@ -4,12 +4,12 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from "../../context/CurrentUserContext";
 
 const Profile = () => {
-  const { id } = useParams(); // Profile ID from URL params
-  const history = useHistory(); // To navigate to the edit profile page
+  const { id } = useParams();
+  const history = useHistory();
   const [profile, setProfile] = useState(null);
-  const [allPosts, setAllPosts] = useState([]); // Store all posts
+  const [allPosts, setAllPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [allLikedPosts, setAllLikedPosts] = useState([]); // Store all liked posts
+  const [allLikedPosts, setAllLikedPosts] = useState([]);
   const [filteredLikedPosts, setFilteredLikedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -87,6 +87,12 @@ const Profile = () => {
     history.push(`/profiles/${id}/edit`);
   };
 
+  const formatSteps = (stepsText) => {
+    return stepsText
+      .split('\n')
+      .map((line, index) => <p key={index} className="mb-2">{line}</p>);
+  };
+
   if (loading) return <div className="text-center p-6">Loading...</div>;
 
   return (
@@ -98,10 +104,19 @@ const Profile = () => {
           className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-4"
         />
         <h1 className="text-4xl font-bold text-gray-900 mb-2">{profile.owner || 'Username'}</h1>
-        <div
-          className="text-black-600 text-lg mb-6"
-          dangerouslySetInnerHTML={{ __html: profile.about_me || 'About Me' }}
-        />
+        
+        {/* About Me Section */}
+        <div className="text-lg text-gray-700 mt-4 p-4 rounded-md shadow-sm">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">About Me</h2>
+          <div>
+            {profile.about_me ? formatSteps(profile.about_me) : 'No details provided.'}
+          </div>
+        </div>
+
+        {/* Main Interest Section */}
+        <p className="text-lg font-semibold text-gray-700 mt-4 p-2 rounded-md shadow-sm">
+          Main Interest: <span className="text-blue-600">{profile.interest_name || 'Main Interest'}</span>
+        </p>
 
         {/* Follow Button */}
         {!profile.is_owner && (
@@ -147,7 +162,7 @@ const Profile = () => {
         {/* Recent Posts Section */}
         <div className="bg-white p-6 rounded-none shadow-none mr-5 md:mr-20">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Posts</h2>
-          <div className="overflow-y-auto max-h-48"> {/* Scrollable container */}
+          <div className="overflow-y-auto max-h-48">
             {filteredPosts.length > 0 ? (
               <ul className="space-y-4">
                 {filteredPosts.map((post) => (
@@ -170,7 +185,7 @@ const Profile = () => {
         {/* Liked Posts Section */}
         <div className="bg-white p-6 rounded-none shadow-none mr-5 md:mr-20 mt-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Liked Posts</h2>
-          <div className="overflow-y-auto max-h-48"> {/* Scrollable container */}
+          <div className="overflow-y-auto max-h-48">
             {filteredLikedPosts.length > 0 ? (
               <ul className="space-y-4">
                 {filteredLikedPosts.map((like) => (

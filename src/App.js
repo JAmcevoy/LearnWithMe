@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar';
 import PostContent from './pages/Posts/PostList';
 import InterestCircles from "./pages/Circles/InterestCircles";
 import InterestCircleCreation from './pages/Circles/InterestCircleCreation';
-import Profile from "./pages/User/Profile";
+import Profile from "./pages/Profiles/Profile";
 import Chats from "./pages/Circles/Chats";
 import { useSidebar } from './hooks/useSidebar';
 import SignIn from './pages/User/SignIn';
@@ -13,6 +13,7 @@ import SignUp from './pages/User/SignUp';
 import PostDetails from './pages/Posts/PostDetails';
 import PostCreation from './pages/Posts/PostCreation';
 import PostEdit from './pages/Posts/PostEdit';
+import ProfileEdit from './pages/Profiles/ProfileEdit';
 
 function App() {
   const { isSidebarOpen, toggleSidebar, isMobile } = useSidebar();
@@ -42,7 +43,8 @@ function App() {
             <Route path="/interest-circles/:id/chats" component={Chats} />
             <Route path="/interest-circles" component={InterestCircles} />
             
-            <Route path="/Profile/:id" exact component={Profile} />
+            <Route path="/profile/:id" exact component={Profile} />
+            <Route path="/profiles/:id/edit" component={ProfileEdit} />
             <Route path="/signin" exact component={SignIn} />
             <Route path="/signup" exact component={SignUp} />
             <Route component={NotFound} />
