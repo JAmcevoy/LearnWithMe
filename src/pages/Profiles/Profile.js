@@ -159,8 +159,30 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Recent Posts Section */}
+        {/* Liked Posts Section */}
         <div className="bg-white p-6 rounded-none shadow-none mr-5 md:mr-20">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Liked Posts</h2>
+          <div className="overflow-y-auto max-h-48">
+            {filteredLikedPosts.length > 0 ? (
+              <ul className="space-y-4">
+                {filteredLikedPosts.map((like) => (
+                  <li key={like.post.id} className="border-b pb-4">
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      <a href={`/posts/${like.post}`} className="text-blue-500 hover:underline">
+                        {like.post_title}
+                      </a>
+                    </h3>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-600">No recent liked posts available.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Recent Posts Section */}
+        <div className="bg-white p-6 rounded-none shadow-none mr-5 md:mr-20 mt-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Posts</h2>
           <div className="overflow-y-auto max-h-48">
             {filteredPosts.length > 0 ? (
@@ -178,28 +200,6 @@ const Profile = () => {
               </ul>
             ) : (
               <p className="text-gray-600">No recent posts available.</p>
-            )}
-          </div>
-        </div>
-
-        {/* Liked Posts Section */}
-        <div className="bg-white p-6 rounded-none shadow-none mr-5 md:mr-20 mt-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Liked Posts</h2>
-          <div className="overflow-y-auto max-h-48">
-            {filteredLikedPosts.length > 0 ? (
-              <ul className="space-y-4">
-                {filteredLikedPosts.map((like) => (
-                  <li key={like.post.id} className="border-b pb-4">
-                    <h3 className="text-xl font-semibold text-gray-800">
-                      <a href={`/posts/${like.post}`} className="text-blue-500 hover:underline">
-                        {like.post_title}
-                      </a>
-                    </h3>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-600">No recent liked posts available.</p>
             )}
           </div>
         </div>

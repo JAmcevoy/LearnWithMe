@@ -188,7 +188,7 @@ const PostContent = () => {
                     }
                   >
                     <FaThumbsUp className="mr-1" />
-                    {post.like_id ? "Unlike" : "Like"}
+                    {post.like_id ? "Unlike" : "Like"} ({post.likes_count})
                   </button>
                 </div>
               </div>

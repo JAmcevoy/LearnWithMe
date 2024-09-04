@@ -18,7 +18,6 @@ import PostDetails from './pages/Posts/PostDetails';
 function App() {
     
     const currentUser = useCurrentUser();
-    console.log(currentUser);
     const loggedIn = !!currentUser;
 
 
