@@ -7,12 +7,13 @@ import InterestCircles from './pages/Circles/InterestCircles';
 import InterestCircleCreation from './pages/Circles/InterestCircleCreation';
 import Profile from './pages/Profiles/Profile';
 import Chats from './pages/Circles/Chats';
-import SignIn from './pages/User/SignIn';
+import SignIn from './pages/Authentication/SignIn';
 import NotFound from './pages/NotFound';
-import SignUp from './pages/User/SignUp';
+import SignUp from './pages/Authentication/SignUp';
 import PostCreation from './pages/Posts/PostCreation';
 import PostEdit from './pages/Posts/PostEdit';
 import ProfileEdit from './pages/Profiles/ProfileEdit';
+import PostDetails from './pages/Posts/PostDetails';
 
 function App() {
     
@@ -34,6 +35,7 @@ function App() {
                         <Route path="/" exact component={PostContent} />
                         <Route path="/signin" exact component={SignIn} />
                         <Route path="/signup" exact component={SignUp} />
+                        <Route path="/posts/:id" exact component={PostDetails} />
 
                         {/* Private Routes */}
                         <Route path="/posts/create" exact>
