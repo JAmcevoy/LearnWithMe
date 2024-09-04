@@ -1,70 +1,99 @@
-# Getting Started with Create React App
+# Learn with Me
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to **Learn with Me**, the ultimate learning app designed to empower users by sharing and discovering knowledge. Whether you're a student, professional, or lifelong learner, this app is your go-to platform for mastering new skills and expanding your horizons.
 
-## Available Scripts
+## What is *Learn with Me*?
 
-In the project directory, you can run:
+*Learn with Me* is more than just a learning tool—it's a vibrant community where you can:
 
-### `npm start`
+- **Share Your Wisdom:** Post your own tips, tricks, and insights to help others learn more effectively.
+- **Discover New Ideas:** Browse and interact with posts from fellow users to gain fresh perspectives and innovative techniques.
+- **Connect and Collaborate:** Join discussions and chat with people who share your interests, fostering a collaborative learning environment.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Plannig
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Design
 
-### `npm test`
+## Logic
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## User Stories
 
-### `npm run build`
+### Existing Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Sibebar/Navigation Bar**
+  - Describe the navigation bar's functionality and design.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Feed Page**
+  - Explain the content and layout of the landing page.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Profile Page**
+  - Explain the content and layout of the landing page.
 
-### `npm run eject`
+- **Interest Circles Page**
+  - Explain the content and layout of the landing page.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- **Chat Page**
+  - Explain the content and layout of the landing page.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Sign In Page**
+  - Describe the sign-up process and form fields.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- **Sign Up Page**
+  - Explain the content and layout of the landing page.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Features Left to Implement
 
-## Learn More
+- List any planned features that have not yet been implemented.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Testing
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Browser Testing**
+  - List the browsers tested and the results of the testing.
 
-### Code Splitting
+- **Responsiveness**
+  - Explain how responsiveness was tested and the tools used.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Form Validation**
+  - Detail the testing and results of form validation.
 
-### Analyzing the Bundle Size
+### Validator Testing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **HTML**
+  - Provide a link to the HTML validation results.
 
-### Making a Progressive Web App
+- **CSS**
+  - Provide a link to the CSS validation results.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **Js**
+  - Provide a link to the Js validation results.
 
-### Advanced Configuration
+- **Python**
+  - Provide a link to the Python validation results.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Bugs Faced
 
-### Deployment
+- Describe any bugs encountered during development and how they were addressed.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Bugs Yet to Fix
 
-### `npm run build` fails to minify
+- List any unresolved issues and potential plans for addressing them.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Deployment
+
+**API Deployment**
+**Github**
+**Heroku**
+
+## Credits
+
+### Code
+
+- List any resources or references used for code.
+
+### Content
+
+- List sources for content used in the project.
+
+### Media
+
+- Provide credits for any media (images, videos, etc.) used in the project.
