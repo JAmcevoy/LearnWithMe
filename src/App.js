@@ -34,15 +34,16 @@ function App() {
                         <Route path="/" exact component={PostContent} />
                         <Route path="/signin" exact component={SignIn} />
                         <Route path="/signup" exact component={SignUp} />
-                        <Route path="/posts/:id" exact component={PostDetails} />
 
                         {/* Private Routes */}
                         <Route path="/posts/create" exact>
                             {loggedIn ? <PostCreation /> : <Redirect to="/signin" />}
                         </Route>
+                        <Route path="/posts/:id" exact component={PostDetails} />
                         <Route path="/posts/edit/:id" exact>
                             {loggedIn ? <PostEdit /> : <Redirect to="/signin" />}
                         </Route>
+
                         <Route path="/interest-circles/create" exact>
                             {loggedIn ? <InterestCircleCreation /> : <Redirect to="/signin" />}
                         </Route>
@@ -52,6 +53,7 @@ function App() {
                         <Route path="/interest-circles" exact>
                             {loggedIn ? <InterestCircles /> : <Redirect to="/signin" />}
                         </Route>
+                        
                         <Route path="/profile/:id" exact>
                             {loggedIn ? <Profile /> : <Redirect to="/signin" />}
                         </Route>
