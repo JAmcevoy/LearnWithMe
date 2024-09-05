@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import { FaPlusCircle, FaInfoCircle, FaEdit } from "react-icons/fa";
+import { FaPlusCircle, FaInfoCircle, FaEdit, FaTrash } from "react-icons/fa";
+import DeleteConfirmation from '../../components/DeleteModal'; // Import the DeleteConfirmation component
 import { useCurrentUser } from "../../context/CurrentUserContext";
 
 const InterestCircles = () => {
@@ -11,11 +12,13 @@ const InterestCircles = () => {
   const [error, setError] = useState(null);
   const [modal, setModal] = useState({
     visible: false,
-    type: "", // 'info' or 'edit'
+    type: "",
     circle: null,
   });
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [circleToDelete, setCircleToDelete] = useState(null); 
 
   useEffect(() => {
     fetchCircles();
@@ -107,6 +110,39 @@ const InterestCircles = () => {
     }));
   };
 
+  const handleDeleteClick = (circleId) => {
+    setCircleToDelete(circleId);
+    setDeleteModalVisible(true); 
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(`/interest-circles/${circleToDelete}/`);
+      setCircles((prevCircles) => prevCircles.filter((circle) => circle.id !== circleToDelete));
+      setDeleteModalVisible(false); 
+      setCircleToDelete(null); 
+    } catch (err) {
+      handleDeleteError(err);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModalVisible(false);
+    setCircleToDelete(null); 
+  };
+
+  const handleDeleteError = (err) => {
+    let message = "Error deleting the circle.";
+    if (err.response?.status === 401) {
+      message = "Unauthorized. Please log in.";
+    } else if (err.response?.status === 403) {
+      message = "Forbidden. You don't have permission to delete this circle.";
+    } else if (err.response?.status === 404) {
+      message = "Circle not found.";
+    }
+    handleError(message, err);
+  };
+
   if (loading) {
     return <p className="text-center mt-8">Loading interest circles...</p>;
   }
@@ -130,6 +166,7 @@ const InterestCircles = () => {
                 onClick={() => handleCircleClick(circle.id)}
                 onInfoClick={() => handleInfoClick(circle)}
                 onEditClick={() => handleEditClick(circle)}
+                onDeleteClick={handleDeleteClick}
               />
             ))
           ) : (
@@ -138,6 +175,7 @@ const InterestCircles = () => {
         </div>
       </div>
       <CreateCircleButton onClick={handleCreateCircle} />
+
       {modal.visible && (
         <Modal
           type={modal.type}
@@ -150,11 +188,19 @@ const InterestCircles = () => {
           onModalChange={handleModalChange}
         />
       )}
+
+      {deleteModalVisible && (
+        <DeleteConfirmation
+          message="Are you sure you want to delete this interest circle?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
     </div>
   );
 };
 
-const CircleCard = ({ circle, onClick, onInfoClick, onEditClick }) => (
+const CircleCard = ({ circle, onClick, onInfoClick, onEditClick, onDeleteClick }) => (
   <div
     className="relative flex items-center justify-center cursor-pointer"
     onClick={onClick}
@@ -163,6 +209,7 @@ const CircleCard = ({ circle, onClick, onInfoClick, onEditClick }) => (
       <div className="absolute inset-0 bg-black opacity-10 rounded-full"></div>
       <h2 className="relative z-10 text-xl font-bold">{circle.name}</h2>
       <p className="relative z-10 text-sm">{circle.owner}</p>
+      
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -172,16 +219,29 @@ const CircleCard = ({ circle, onClick, onInfoClick, onEditClick }) => (
       >
         <FaInfoCircle className="text-blue-500" />
       </button>
+
       {circle.is_owner && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onEditClick();
-          }}
-          className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-lg hover:bg-gray-100 transition"
-        >
-          <FaEdit className="text-green-500" />
-        </button>
+        <>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEditClick();
+            }}
+            className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-lg hover:bg-gray-100 transition"
+          >
+            <FaEdit className="text-green-500" />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteClick(circle.id);
+            }}
+            className="absolute bottom-2 right-2 bg-white rounded-full p-1 shadow-lg hover:bg-gray-100 transition"
+          >
+            <FaTrash className="text-red-500" />
+          </button>
+        </>
       )}
     </div>
   </div>
@@ -222,49 +282,46 @@ const Modal = ({
         </>
       ) : (
         <>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Edit Circle</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Edit Interest Circle</h2>
           <input
             type="text"
             value={circle.name}
-            onChange={(e) => onModalChange('name', e.target.value)}
-            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300"
+            onChange={(e) => onModalChange("name", e.target.value)}
+            className="w-full border-b-2 mb-4 px-2 py-2 focus:outline-none focus:border-blue-400"
             placeholder="Circle Name"
           />
           <textarea
             value={circle.description}
-            onChange={(e) => onModalChange('description', e.target.value)}
-            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300"
-            placeholder="Circle Description"
+            onChange={(e) => onModalChange("description", e.target.value)}
+            className="w-full border-b-2 mb-4 px-2 py-2 focus:outline-none focus:border-blue-400"
+            placeholder="Description"
           />
-          <select
-            id="category"
-            value={selectedCategory}
-            onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300"
-          >
-            <option value="">Select a category</option>
-            {categories.length > 0 ? (
-              categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.type}</option>
-              ))
-            ) : (
-              <option disabled>No categories available</option>
-            )}
-          </select>
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={onSave}
-              className="bg-green-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-green-600 transition"
+          <div className="mb-4">
+            <select
+              value={selectedCategory}
+              onChange={(e) => onCategoryChange(e.target.value)}
+              className="w-full border-b-2 px-2 py-2 focus:outline-none focus:border-blue-400"
             >
-              Save
-            </button>
-            <button
-              onClick={onClose}
-              className="bg-red-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-red-600 transition"
-            >
-              Cancel
-            </button>
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
+          <button
+            onClick={onSave}
+            className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-600 transition"
+          >
+            Save Changes
+          </button>
+          <button
+            onClick={onClose}
+            className="ml-2 bg-gray-300 text-gray-800 px-6 py-3 rounded-full shadow-md hover:bg-gray-400 transition"
+          >
+            Cancel
+          </button>
         </>
       )}
     </div>
