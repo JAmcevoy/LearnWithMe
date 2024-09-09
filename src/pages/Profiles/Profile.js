@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from "../../context/CurrentUserContext";
 import ErrorModal from '../../components/ErrorModal'; // Import ErrorModal
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const Profile = () => {
   const { id } = useParams();
@@ -100,7 +101,7 @@ const Profile = () => {
       .map((line, index) => <p key={index} className="mb-2">{line}</p>);
   };
 
-  if (loading) return <div className="text-center p-6">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="flex flex-col md:flex-row p-6 min-h-screen bg-slate-400 mt-16 md:mt-0">
