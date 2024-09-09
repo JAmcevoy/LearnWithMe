@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { useSetCurrentUser } from '../../context/CurrentUserContext';
 import ErrorModal from '../../components/ErrorModal';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 
 const SignIn = () => {

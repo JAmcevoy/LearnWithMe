@@ -89,6 +89,12 @@ const PostDetails = () => {
     handleDelete(); 
   };
 
+  const formatSteps = (stepsText) => {
+    return stepsText
+      .split('\n')
+      .map((line, index) => <p key={index} className="mb-2">{line}</p>);
+  };
+
   if (!post) return <LoadingSpinner />;
 
   return (
@@ -130,7 +136,7 @@ const PostDetails = () => {
             </div>
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Steps</h3>
-              <div className="text-gray-700">{post?.steps || 'No steps provided.'}</div>
+              <div className="text-gray-700">{formatSteps(post?.steps) || 'No steps provided.'}</div>
             </div>
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Category</h3>

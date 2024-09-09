@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { axiosReq, axiosRes } from "../api/axiosDefaults";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export const CurrentUserContext = createContext();
 export const SetCurrentUserContext = createContext();
@@ -11,6 +12,7 @@ export const useSetCurrentUser = () => useContext(SetCurrentUserContext);
 
 export const CurrentUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const history = useHistory();
 
     const handleMount = async () => {
@@ -19,6 +21,8 @@ export const CurrentUserProvider = ({ children }) => {
             setCurrentUser(data);
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -26,8 +30,8 @@ export const CurrentUserProvider = ({ children }) => {
         handleMount();
     }, []);
 
-    useMemo(() => {
-        axiosReq.interceptors.request.use(
+    useEffect(() => {
+        const requestInterceptor = axiosReq.interceptors.request.use(
             async (config) => {
                 try {
                     await axios.post('/dj-rest-auth/token/refresh/');
@@ -40,13 +44,11 @@ export const CurrentUserProvider = ({ children }) => {
                     });
                 }
                 return config;
-            }, 
-            (err) => {
-                return Promise.reject(err);
-            }
+            },
+            (err) => Promise.reject(err)
         );
 
-        axiosRes.interceptors.response.use(
+        const responseInterceptor = axiosRes.interceptors.response.use(
             (response) => response,
             async (err) => {
                 if (err.response?.status === 401) {
@@ -65,7 +67,16 @@ export const CurrentUserProvider = ({ children }) => {
                 return Promise.reject(err);
             }
         );
+
+        return () => {
+            axiosReq.interceptors.request.eject(requestInterceptor);
+            axiosRes.interceptors.response.eject(responseInterceptor);
+        };
     }, [history]);
+
+    if (loading) {
+        return <LoadingSpinner />; 
+    }
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
@@ -75,3 +86,4 @@ export const CurrentUserProvider = ({ children }) => {
         </CurrentUserContext.Provider>
     );
 };
+
