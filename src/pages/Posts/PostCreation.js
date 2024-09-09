@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 import ErrorModal from '../../components/ErrorModal';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const PostCreation = () => {
     const [title, setTitle] = useState('');
