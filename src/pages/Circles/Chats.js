@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
-import { FaPaperPlane, FaEdit } from "react-icons/fa";
+import { FaPaperPlane, FaEdit, FaTrash } from "react-icons/fa";
 import styles from "../../styles/Chats.module.css";
 import { useCurrentUser } from "../../context/CurrentUserContext";
+import DeleteConfirmation from "../../components/DeleteModal";
 
 const Chats = () => {
   const { id } = useParams();
@@ -12,16 +13,20 @@ const Chats = () => {
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState(null);
   const currentUser = useCurrentUser();
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await axiosReq.get(`/chats/circle/${id}/`);
-        console.log("Fetched messages:", response.data);
-        setMessages(response.data.results);
+        if (response.data && response.data.results) {
+          setMessages(response.data.results);
+        } else {
+          throw new Error("Unexpected response format for messages");
+        }
       } catch (err) {
-        console.error("Error fetching messages:", err.response ? err.response.data : err.message);
         setError(`Error fetching messages: ${err.response ? err.response.data : err.message}`);
       } finally {
         setLoading(false);
@@ -52,15 +57,17 @@ const Chats = () => {
       });
       if (response.status === 201) {
         setNewMessage("");
-        const updatedMessages = await axiosReq.get(`/chats/${id}/`);
-        setMessages(updatedMessages.data.results);
+        const updatedMessagesResponse = await axiosReq.get(`/chats/circle/${id}/`);
+        if (updatedMessagesResponse.data && updatedMessagesResponse.data.results) {
+          setMessages(updatedMessagesResponse.data.results);
+        } else {
+          throw new Error("Unexpected response format for messages");
+        }
       } else {
         throw new Error(`Unexpected response status: ${response.status}`);
       }
     } catch (err) {
-      const errorMessage = err.response ? err.response.data : err.message;
-      console.error("Error sending message:", errorMessage);
-      setError(`Error sending message: ${errorMessage}`);
+      setError(`Error sending message: ${err.response ? err.response.data : err.message}`);
     }
   };
 
@@ -69,26 +76,50 @@ const Chats = () => {
     setEditingMessageId(message.id);
   };
 
-
   const handleEditSubmit = async () => {
     try {
       const response = await axiosReq.put(`/chats/${editingMessageId}/`, {
         content: newMessage,
-        owner: currentUser.pk, 
+        owner: currentUser.pk,
       });
       if (response.status === 200) {
         setNewMessage("");
         setEditingMessageId(null);
-        const updatedMessages = await axiosReq.get(`/chats/circle/${id}/`);
-        setMessages(updatedMessages.data.results); 
+        const updatedMessagesResponse = await axiosReq.get(`/chats/circle/${id}/`);
+        if (updatedMessagesResponse.data && updatedMessagesResponse.data.results) {
+          setMessages(updatedMessagesResponse.data.results);
+        } else {
+          throw new Error("Unexpected response format for messages");
+        }
       } else {
         throw new Error(`Unexpected response status: ${response.status}`);
       }
     } catch (err) {
-      const errorMessage = err.response ? err.response.data : err.message;
-      console.error("Error editing message:", errorMessage);
-      setError(`Error editing message: ${errorMessage}`);
+      setError(`Error editing message: ${err.response ? err.response.data : err.message}`);
     }
+  };
+
+  const handleDeleteClick = (message) => {
+    setMessageToDelete(message);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const response = await axiosReq.delete(`/chats/${messageToDelete.id}/`);
+      if (response.status === 204) {
+        setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageToDelete.id));
+        setShowDeleteModal(false);
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+    } catch (err) {
+      setError(`Error deleting message: ${err.response ? err.response.data : err.message}`);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
   };
 
   if (loading) {
@@ -106,7 +137,7 @@ const Chats = () => {
       </header>
       <div className="flex-grow p-4 overflow-auto">
         <div className="space-y-4">
-          {messages.length > 0 ? (
+          {Array.isArray(messages) && messages.length > 0 ? (
             messages.map((message) => (
               <div key={message.id} className="bg-white p-4 rounded-lg shadow-md relative">
                 <p className="font-semibold">{message.owner_username || "Unknown User"}</p>
@@ -114,12 +145,20 @@ const Chats = () => {
                 <p className="text-gray-500 text-sm">Sent at: {message.timestamp || "Unknown time"}</p>
 
                 {currentUser && message.owner === currentUser.pk && (
-                  <button
-                    className="absolute top-2 right-2 text-blue-500 hover:text-blue-700"
-                    onClick={() => handleEditClick(message)}
-                  >
-                    <FaEdit />
-                  </button>
+                  <>
+                    <button
+                      className="absolute top-2 right-10 text-blue-500 hover:text-blue-700"
+                      onClick={() => handleEditClick(message)}
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                      onClick={() => handleDeleteClick(message)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </>
                 )}
               </div>
             ))
@@ -145,6 +184,14 @@ const Chats = () => {
           </button>
         </div>
       </footer>
+
+      {showDeleteModal && (
+        <DeleteConfirmation
+          message="Are you sure you want to delete this message?"
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
+      )}
     </div>
   );
 };
