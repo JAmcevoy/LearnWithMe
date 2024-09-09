@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import { useCurrentUser } from './context/CurrentUserContext'; // Adjust path as necessary
+import { useCurrentUser } from './context/CurrentUserContext';
 import Sidebar from './components/Sidebar';
 import PostContent from './pages/Posts/PostList';
 import InterestCircles from './pages/Circles/InterestCircles';

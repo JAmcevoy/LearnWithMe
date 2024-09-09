@@ -38,7 +38,12 @@
   @media (max-width: 760px) {
     .searchBar {
         margin-top: 60px;
+        margin-left: 5px;
         width: 100%;
+    }
+    .clearButton {
+      margin-top: 60px;
+      margin-right: 5px;
     }
 }
   

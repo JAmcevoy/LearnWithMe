@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
-import { FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane, FaEdit } from "react-icons/fa";
 import styles from "../../styles/Chats.module.css";
 import { useCurrentUser } from "../../context/CurrentUserContext";
 
@@ -9,17 +9,17 @@ const Chats = () => {
   const { id } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [editingMessageId, setEditingMessageId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const currentUser = useCurrentUser();
-  
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await axiosReq.get(`/chats/circle/${id}/`);
         console.log("Fetched messages:", response.data);
-        setMessages(response.data.results); 
+        setMessages(response.data.results);
       } catch (err) {
         console.error("Error fetching messages:", err.response ? err.response.data : err.message);
         setError(`Error fetching messages: ${err.response ? err.response.data : err.message}`);
@@ -36,22 +36,58 @@ const Chats = () => {
   };
 
   const handleSend = async () => {
+    if (editingMessageId) {
+      await handleEditSubmit();
+    } else {
+      await handleNewMessageSubmit();
+    }
+  };
+
+  const handleNewMessageSubmit = async () => {
     try {
       const response = await axiosReq.post(`/chats/circle/${id}/`, {
         content: newMessage,
         circle: id,
-        owner: currentUser.pk
+        owner: currentUser.pk,
       });
       if (response.status === 201) {
         setNewMessage("");
-        const updatedMessages = await axiosReq.get(`/chats/circle/${id}/`);
-        setMessages(updatedMessages.data.results); // Refresh messages
+        const updatedMessages = await axiosReq.get(`/chats/${id}/`);
+        setMessages(updatedMessages.data.results);
       } else {
         throw new Error(`Unexpected response status: ${response.status}`);
       }
     } catch (err) {
-      console.error("Error sending message:", err.response ? err.response.data : err.message);
-      setError(`Error sending message: ${err.response ? err.response.data : err.message}`);
+      const errorMessage = err.response ? err.response.data : err.message;
+      console.error("Error sending message:", errorMessage);
+      setError(`Error sending message: ${errorMessage}`);
+    }
+  };
+
+  const handleEditClick = (message) => {
+    setNewMessage(message.content);
+    setEditingMessageId(message.id);
+  };
+
+
+  const handleEditSubmit = async () => {
+    try {
+      const response = await axiosReq.put(`/chats/${editingMessageId}/`, {
+        content: newMessage,
+        owner: currentUser.pk, 
+      });
+      if (response.status === 200) {
+        setNewMessage("");
+        setEditingMessageId(null);
+        const updatedMessages = await axiosReq.get(`/chats/circle/${id}/`);
+        setMessages(updatedMessages.data.results); 
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+    } catch (err) {
+      const errorMessage = err.response ? err.response.data : err.message;
+      console.error("Error editing message:", errorMessage);
+      setError(`Error editing message: ${errorMessage}`);
     }
   };
 
@@ -72,10 +108,19 @@ const Chats = () => {
         <div className="space-y-4">
           {messages.length > 0 ? (
             messages.map((message) => (
-              <div key={message.id} className="bg-white p-4 rounded-lg shadow-md">
+              <div key={message.id} className="bg-white p-4 rounded-lg shadow-md relative">
                 <p className="font-semibold">{message.owner_username || "Unknown User"}</p>
                 <p>{message.content || "No content"}</p>
                 <p className="text-gray-500 text-sm">Sent at: {message.timestamp || "Unknown time"}</p>
+
+                {currentUser && message.owner === currentUser.pk && (
+                  <button
+                    className="absolute top-2 right-2 text-blue-500 hover:text-blue-700"
+                    onClick={() => handleEditClick(message)}
+                  >
+                    <FaEdit />
+                  </button>
+                )}
               </div>
             ))
           ) : (
@@ -90,7 +135,7 @@ const Chats = () => {
             className="flex-grow p-2 border border-gray-300 rounded-lg"
             value={newMessage}
             onChange={handleChange}
-            placeholder="Type your message..."
+            placeholder={editingMessageId ? "Edit your message..." : "Type your message..."}
           />
           <button
             onClick={handleSend}
