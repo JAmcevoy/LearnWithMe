@@ -209,6 +209,11 @@ Welcome to **Learn with Me**, the ultimate learning app designed to empower user
 
   ![Sign Up Page]()
 
+- **Loading Spinner**
+  - I added a loading spinner for cases of the app running slow.
+
+![Spinner](docs/images/loading-spinner.PNG)
+
 
 ## Features Left to Implement
 
