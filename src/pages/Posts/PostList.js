@@ -4,6 +4,7 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, Link } from "react-router-dom";
 import styles from "../../styles/Search.module.css";
+import ErrorModal from "../../components/ErrorModal";
 
 const PostContent = () => {
   const [posts, setPosts] = useState({ results: [], next: null });
@@ -40,7 +41,6 @@ const PostContent = () => {
       }));
 
       applyFilters(searchQuery, isInitialFetch ? newResults : [...posts.results, ...newResults]);
-
     } catch (err) {
       setError("Error fetching posts. Please try again later.");
       console.error("Error fetching posts:", err);
@@ -103,16 +103,20 @@ const PostContent = () => {
     applyFilters("", posts.results);
   };
 
+  // Handle modal close
+  const handleCloseModal = () => {
+    setError(null);
+  };
+
   if (loading && filteredPosts.length === 0) {
     return <p className="text-center mt-8">Loading posts...</p>;
   }
 
-  if (error) {
-    return <p className="text-center mt-8 text-red-500">{error}</p>;
-  }
-
   return (
     <>
+      {/* Render error modal if there is an error */}
+      {error && <ErrorModal message={error} onClose={handleCloseModal} />}
+
       <div className={styles.searchContainer}>
         <input
           type="text"
@@ -187,7 +191,7 @@ const PostContent = () => {
                       toggleLike(post.id, !!post.like_id, post.like_id)
                     }
                   >
-                    <FaThumbsUp className="mr-1" />
+                    <FaThumbsUp className={`mr-1 ${post.like_id ? "text-blue-500" : "text-gray-500"}`} />
                     {post.like_id ? "Unlike" : "Like"} ({post.likes_count})
                   </button>
                 </div>

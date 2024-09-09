@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from "../../context/CurrentUserContext";
+import ErrorModal from '../../components/ErrorModal'; // Import ErrorModal
 
 const Profile = () => {
   const { id } = useParams();
@@ -13,6 +14,8 @@ const Profile = () => {
   const [filteredLikedPosts, setFilteredLikedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const currentUser = useCurrentUser();
 
   useEffect(() => {
@@ -33,7 +36,9 @@ const Profile = () => {
         const likedPostsResponse = await axiosReq.get(`/likes/`);
         setAllLikedPosts(likedPostsResponse.data.results || []);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        const errorMessage = err.response ? err.response.data : err.message;
+        setErrorMessage(`Error fetching profile data: ${errorMessage}`);
+        setShowErrorModal(true);
       } finally {
         setLoading(false);
       }
@@ -79,7 +84,9 @@ const Profile = () => {
         }));
       }
     } catch (err) {
-      console.error('Error following/unfollowing:', err.message);
+      const errorMessage = err.response ? err.response.data : err.message;
+      setErrorMessage(`Error following/unfollowing: ${errorMessage}`);
+      setShowErrorModal(true);
     }
   };
 
@@ -204,6 +211,14 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* Render Error Modal */}
+      {showErrorModal && (
+        <ErrorModal
+          message={errorMessage}
+          onClose={() => setShowErrorModal(false)}
+        />
+      )}
     </div>
   );
 };

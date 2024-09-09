@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { useSetCurrentUser } from '../../context/CurrentUserContext';
+import ErrorModal from '../../components/ErrorModal'; // Import ErrorModal
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // State for loading
+  const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
   const setCurrentUser = useSetCurrentUser();
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); 
+    setError('');
+    setLoading(true); // Set loading state to true
 
     try {
       const response = await axios.post('/dj-rest-auth/login/', {
@@ -32,14 +37,24 @@ const SignIn = () => {
         setError('An unexpected error occurred. Please try again.');
       }
       console.error('Sign-in error:', err);
+      setIsModalVisible(true); // Show the modal on error
+    } finally {
+      setLoading(false); // Set loading state to false after request completes
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle password visibility
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-slate-400">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Sign In</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-gray-700 mb-2">Username</label>
@@ -52,25 +67,41 @@ const SignIn = () => {
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
             <input
               id="password"
-              type="password"
+              type={showPassword ? 'text' : 'password'} // Toggle input type between text and password
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
               required
             />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute right-2 top-2 text-gray-600 hover:text-gray-800"
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            className={`w-full bg-blue-500 text-white p-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+            disabled={loading} // Disable button while loading
           >
-            Sign In
+            {loading ? 'Signing in...' : 'Sign In'} {/* Show loading text when submitting */}
           </button>
         </form>
       </div>
+
+      {/* Render ErrorModal if there's an error */}
+      {isModalVisible && (
+        <ErrorModal
+          message={error}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

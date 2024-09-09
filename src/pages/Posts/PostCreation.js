@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
+import ErrorModal from '../../components/ErrorModal';
 
 const PostCreation = () => {
     const [title, setTitle] = useState('');
@@ -11,6 +12,7 @@ const PostCreation = () => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const history = useHistory();
 
     useEffect(() => {
@@ -19,7 +21,6 @@ const PostCreation = () => {
                 const response = await axios.get('/categories/');
                 console.log('Categories response:', response.data);
 
-                // Extract results array
                 if (response.data && Array.isArray(response.data.results)) {
                     setCategories(response.data.results);
                 } else {
@@ -28,6 +29,7 @@ const PostCreation = () => {
             } catch (err) {
                 console.error('Error fetching categories:', err);
                 setError(`Error fetching categories: ${err.message}`);
+                setShowErrorModal(true);
             }
         };
 
@@ -60,16 +62,15 @@ const PostCreation = () => {
                 },
             });
 
-
             history.push(`/posts/${response.data.id}`);
         } catch (err) {
             console.error('Error creating post:', err);
             setError('Failed to create the post. Please try again.');
+            setShowErrorModal(true);
         } finally {
             setLoading(false);
         }
     };
-
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-slate-400 p-4 md:p-8 mt-16 md:mt-0">
@@ -151,6 +152,14 @@ const PostCreation = () => {
                     />
                 </div>
             </div>
+
+            {/* Render Error Modal */}
+            {showErrorModal && (
+                <ErrorModal
+                    message={error}
+                    onClose={() => setShowErrorModal(false)}
+                />
+            )}
         </div>
     );
 };

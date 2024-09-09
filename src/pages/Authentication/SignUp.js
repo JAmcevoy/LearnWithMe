@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import ErrorModal from '../../components/ErrorModal'; 
 
 const SignUp = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false); 
     const history = useHistory();
 
     const handleSubmit = async (e) => {
@@ -15,6 +17,7 @@ const SignUp = () => {
 
         if (password !== confirmPassword) {
             setError('Passwords do not match.');
+            setIsModalVisible(true); 
             return;
         }
 
@@ -34,14 +37,18 @@ const SignUp = () => {
             } else {
                 setError('An unexpected error occurred. Please try again.');
             }
+            setIsModalVisible(true);
         }
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
     };
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-slate-400">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
-                {error && <p className="text-red-500 mb-4">{error}</p>}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="username" className="block text-gray-700 mb-2">Username</label>
@@ -84,6 +91,14 @@ const SignUp = () => {
                     </button>
                 </form>
             </div>
+
+            {/* Render ErrorModal if there's an error */}
+            {isModalVisible && (
+                <ErrorModal
+                    message={error}
+                    onClose={handleCloseModal}
+                />
+            )}
         </div>
     );
 };

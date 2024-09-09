@@ -5,6 +5,7 @@ import axios from 'axios';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from "../../context/CurrentUserContext";
 import DeleteConfirmation from '../../components/DeleteModal'; 
+import ErrorModal from '../../components/ErrorModal'; 
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -14,6 +15,7 @@ const PostDetails = () => {
   const [liked, setLiked] = useState(false);
   const [likeId, setLikeId] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const currentUser = useCurrentUser();
 
   const fetchPost = useCallback(async () => {
@@ -30,6 +32,7 @@ const PostDetails = () => {
     } catch (err) {
       console.error('Error fetching post details:', err);
       setError('Error fetching post details.');
+      setShowErrorModal(true); 
     }
   }, [id, currentUser]);
 
@@ -48,6 +51,8 @@ const PostDetails = () => {
       }
     } catch (err) {
       console.error("Error toggling like:", err);
+      setError('Error toggling like. Please make sure you are signed in');
+      setShowErrorModal(true);
     }
   };
 
@@ -66,6 +71,7 @@ const PostDetails = () => {
     } catch (err) {
       console.log('Error deleting post:', err);
       setError('Error deleting post.');
+      setShowErrorModal(true);
     }
   };
 
@@ -81,8 +87,6 @@ const PostDetails = () => {
     setShowDeleteConfirmation(false);
     handleDelete(); 
   };
-
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   if (!post) return <p className="text-gray-500 text-center">Loading...</p>;
 
@@ -137,7 +141,7 @@ const PostDetails = () => {
                   className="flex items-center text-gray-500 hover:text-blue-500 text-sm"
                   onClick={() => toggleLike(post.id, !!post.like_id, post.like_id)}
                 >
-                  <FaThumbsUp className="mr-1" />
+                  <FaThumbsUp className={`mr-1 ${post.like_id ? "text-blue-500" : "text-gray-500"}`} />
                   {post.like_id ? "Unlike" : "Like"} ({post.likes_count})
                 </button>
                 {post && post.is_owner && (
@@ -165,6 +169,14 @@ const PostDetails = () => {
           message="Are you sure you want to delete this post?"
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
+        />
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <ErrorModal
+          message={error}
+          onClose={() => setShowErrorModal(false)}
         />
       )}
     </div>

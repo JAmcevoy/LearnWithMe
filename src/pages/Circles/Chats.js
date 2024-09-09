@@ -142,7 +142,7 @@ const Chats = () => {
               <div key={message.id} className="bg-white p-4 rounded-lg shadow-md relative">
                 <p className="font-semibold">{message.owner_username || "Unknown User"}</p>
                 <p>{message.content || "No content"}</p>
-                <p className="text-gray-500 text-sm">Sent at: {message.timestamp || "Unknown time"}</p>
+                <p className="text-gray-500 text-sm text-opacity-50">{message.timestamp || "Unknown time"}</p>
 
                 {currentUser && message.owner === currentUser.pk && (
                   <>

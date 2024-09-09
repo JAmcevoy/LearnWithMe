@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
+import ErrorModal from '../../components/ErrorModal';
 
 const PostEdit = () => {
     const { id } = useParams();
@@ -13,6 +14,7 @@ const PostEdit = () => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
     const history = useHistory();
 
     useEffect(() => {
@@ -28,15 +30,13 @@ const PostEdit = () => {
             } catch (err) {
                 console.error('Error fetching post details:', err);
                 setError('Error fetching post details.');
+                setShowErrorModal(true);
             }
         };
 
         const fetchCategories = async () => {
             try {
                 const response = await axios.get('/categories/');
-                console.log('Categories response:', response.data);
-
-                // Extract results array
                 if (response.data && Array.isArray(response.data.results)) {
                     setCategories(response.data.results);
                 } else {
@@ -45,6 +45,7 @@ const PostEdit = () => {
             } catch (err) {
                 console.error('Error fetching categories:', err);
                 setError(`Error fetching categories: ${err.message}`);
+                setShowErrorModal(true);
             }
         };
 
@@ -82,6 +83,7 @@ const PostEdit = () => {
         } catch (err) {
             console.error('Error updating post:', err);
             setError('Failed to update the post. Please try again.');
+            setShowErrorModal(true);
         } finally {
             setLoading(false);
         }
@@ -171,6 +173,13 @@ const PostEdit = () => {
                     />
                 </div>
             </div>
+
+            {showErrorModal && (
+                <ErrorModal
+                    message={error}
+                    onClose={() => setShowErrorModal(false)}
+                />
+            )}
         </div>
     );
 };

@@ -2,15 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import CircleCard from "./CircleCard";
-import CreateCircleButton from "./CreateCircleButton"; 
-import Modal from "./CircleModal"; 
-import DeleteConfirmation from "../../components/DeleteModal"; 
+import CreateCircleButton from "./CreateCircleButton";
+import Modal from "./CircleModal";
+import DeleteConfirmation from "../../components/DeleteModal";
+import ErrorModal from "../../components/ErrorModal"; 
 
 const InterestCircles = () => {
   const history = useHistory();
   const [circles, setCircles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [categoryLoading, setCategoryLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [error, setError] = useState(null); 
   const [modal, setModal] = useState({
     visible: false,
     type: "",
@@ -19,7 +23,7 @@ const InterestCircles = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [circleToDelete, setCircleToDelete] = useState(null); 
+  const [circleToDelete, setCircleToDelete] = useState(null);
 
   useEffect(() => {
     fetchCircles();
@@ -47,7 +51,7 @@ const InterestCircles = () => {
   };
 
   const handleError = (message, err) => {
-    setError(message);
+    setError(`${message}: ${err.message}`); 
     console.error(message, err);
   };
 
@@ -79,6 +83,7 @@ const InterestCircles = () => {
     if (!modal.circle) return;
 
     try {
+      setSaveLoading(true); 
       await axios.put(`/interest-circles/${modal.circle.id}/`, {
         name: modal.circle.name,
         description: modal.circle.description,
@@ -88,6 +93,8 @@ const InterestCircles = () => {
       handleCloseModal();
     } catch (err) {
       handleSaveError(err);
+    } finally {
+      setSaveLoading(false);
     }
   };
 
@@ -113,23 +120,26 @@ const InterestCircles = () => {
 
   const handleDeleteClick = (circleId) => {
     setCircleToDelete(circleId);
-    setDeleteModalVisible(true); 
+    setDeleteModalVisible(true);
   };
 
   const handleConfirmDelete = async () => {
     try {
+      setDeleteLoading(true); 
       await axios.delete(`/interest-circles/${circleToDelete}/`);
       setCircles((prevCircles) => prevCircles.filter((circle) => circle.id !== circleToDelete));
-      setDeleteModalVisible(false); 
-      setCircleToDelete(null); 
+      setDeleteModalVisible(false);
+      setCircleToDelete(null);
     } catch (err) {
       handleDeleteError(err);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
   const handleCancelDelete = () => {
     setDeleteModalVisible(false);
-    setCircleToDelete(null); 
+    setCircleToDelete(null);
   };
 
   const handleDeleteError = (err) => {
@@ -146,10 +156,6 @@ const InterestCircles = () => {
 
   if (loading) {
     return <p className="text-center mt-8">Loading interest circles...</p>;
-  }
-
-  if (error) {
-    return <p className="text-center mt-8 text-red-500">{error}</p>;
   }
 
   return (
@@ -195,6 +201,13 @@ const InterestCircles = () => {
           message="Are you sure you want to delete this interest circle?"
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
+        />
+      )}
+
+      {error && (
+        <ErrorModal
+          message={error}
+          onClose={() => setError(null)} 
         />
       )}
     </div>
