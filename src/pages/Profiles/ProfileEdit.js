@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
+import LoadingSpinner from '../../components/LoadingSpinner';
+
 
 const ProfileEdit = () => {
     const [username, setUsername] = useState('');
