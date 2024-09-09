@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 import ErrorModal from '../../components/ErrorModal';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const PostEdit = () => {
     const { id } = useParams();
@@ -88,6 +89,10 @@ const PostEdit = () => {
             setLoading(false);
         }
     };
+
+    if (loading) {
+        return <LoadingSpinner />;
+      }
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-slate-400 p-4 md:p-8 mt-16 md:mt-0">

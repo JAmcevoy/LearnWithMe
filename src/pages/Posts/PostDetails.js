@@ -6,6 +6,7 @@ import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from "../../context/CurrentUserContext";
 import DeleteConfirmation from '../../components/DeleteModal'; 
 import ErrorModal from '../../components/ErrorModal'; 
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -88,7 +89,7 @@ const PostDetails = () => {
     handleDelete(); 
   };
 
-  if (!post) return <p className="text-gray-500 text-center">Loading...</p>;
+  if (!post) return <LoadingSpinner />;
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-slate-400 p-4">

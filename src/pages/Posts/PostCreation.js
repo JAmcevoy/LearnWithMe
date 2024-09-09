@@ -72,6 +72,10 @@ const PostCreation = () => {
         }
     };
 
+    if (loading) {
+        return <LoadingSpinner />;
+      }
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-slate-400 p-4 md:p-8 mt-16 md:mt-0">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 flex flex-col md:flex-row gap-6">

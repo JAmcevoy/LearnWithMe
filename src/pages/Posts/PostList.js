@@ -5,6 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useHistory, Link } from "react-router-dom";
 import styles from "../../styles/Search.module.css";
 import ErrorModal from "../../components/ErrorModal";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const PostContent = () => {
   const [posts, setPosts] = useState({ results: [], next: null });
@@ -109,9 +110,9 @@ const PostContent = () => {
   };
 
   if (loading && filteredPosts.length === 0) {
-    return <p className="text-center mt-8">Loading posts...</p>;
+    return <LoadingSpinner />; // Use the new LoadingSpinner component
   }
-
+  
   return (
     <>
       {/* Render error modal if there is an error */}
@@ -143,7 +144,7 @@ const PostContent = () => {
         dataLength={filteredPosts.length}
         next={() => fetchPosts(posts.next)}
         hasMore={!!posts.next}
-        loader={<p className="text-center mt-8">Loading more posts...</p>}
+        loader={<p className="text-center mt-">Loading more posts...</p>}
       >
         <div className="flex flex-row flex-wrap justify-center gap-4 py-4 px-4">
           {filteredPosts.map((post) => (
