@@ -2,22 +2,23 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { useSetCurrentUser } from '../../context/CurrentUserContext';
-import ErrorModal from '../../components/ErrorModal'; // Import ErrorModal
+import ErrorModal from '../../components/ErrorModal';
+
 
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // State for loading
-  const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
+  const [loading, setLoading] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const setCurrentUser = useSetCurrentUser();
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true); // Set loading state to true
+    setLoading(true);
 
     try {
       const response = await axios.post('/dj-rest-auth/login/', {
@@ -37,19 +38,23 @@ const SignIn = () => {
         setError('An unexpected error occurred. Please try again.');
       }
       console.error('Sign-in error:', err);
-      setIsModalVisible(true); // Show the modal on error
+      setIsModalVisible(true); 
     } finally {
-      setLoading(false); // Set loading state to false after request completes
+      setLoading(false); 
     }
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // Toggle password visibility
+    setShowPassword(!showPassword); 
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-slate-400">

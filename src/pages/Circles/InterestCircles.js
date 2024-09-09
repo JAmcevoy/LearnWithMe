@@ -6,6 +6,7 @@ import CreateCircleButton from "./CreateCircleButton";
 import Modal from "./CircleModal";
 import DeleteConfirmation from "../../components/DeleteModal";
 import ErrorModal from "../../components/ErrorModal"; 
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const InterestCircles = () => {
   const history = useHistory();
@@ -155,7 +156,7 @@ const InterestCircles = () => {
   };
 
   if (loading) {
-    return <p className="text-center mt-8">Loading interest circles...</p>;
+    return <LoadingSpinner />;
   }
 
   return (

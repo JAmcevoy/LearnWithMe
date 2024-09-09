@@ -5,6 +5,7 @@ import { FaPaperPlane, FaEdit, FaTrash } from "react-icons/fa";
 import styles from "../../styles/Chats.module.css";
 import { useCurrentUser } from "../../context/CurrentUserContext";
 import DeleteConfirmation from "../../components/DeleteModal";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const Chats = () => {
   const { id } = useParams();
@@ -123,7 +124,7 @@ const Chats = () => {
   };
 
   if (loading) {
-    return <p className="text-center mt-8">Loading messages...</p>;
+    return <LoadingSpinner />;
   }
 
   if (error) {
