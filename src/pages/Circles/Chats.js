@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import { useParams, Link } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import { FaPaperPlane, FaEdit, FaTrash } from "react-icons/fa";
@@ -20,6 +20,7 @@ const Chats = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState(null);
   const [circleName, setCircleName] = useState("");
+  const messagesEndRef = useRef(null);
 
   // Fetch initial messages
   useEffect(() => {
@@ -49,6 +50,11 @@ const Chats = () => {
       setNewMessage("");
     }
   }, [editingMessageId, messages.results]);
+
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.results]);
 
   // Fetch more messages for infinite scroll
   const fetchMoreMessages = async () => {
@@ -209,9 +215,10 @@ const Chats = () => {
                   </button>
                 </>
               )}
-            </div>
+            </div >
           ))}
-        </InfiniteScroll>
+          </InfiniteScroll>
+          <div ref={messagesEndRef} />
       </div>
 
       <footer className="bg-white p-4 border-t border-gray-200">
