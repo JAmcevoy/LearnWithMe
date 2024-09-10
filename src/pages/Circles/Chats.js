@@ -145,7 +145,7 @@ const Chats = () => {
                 <p>{message.content || "No content"}</p>
                 <p className="text-gray-500 text-sm text-opacity-50">{message.timestamp || "Unknown time"}</p>
 
-                {currentUser && message.owner === currentUser.pk && (
+                {message.owner === currentUser.pk && (
                   <>
                     <button
                       className="absolute top-2 right-10 text-blue-500 hover:text-blue-700"

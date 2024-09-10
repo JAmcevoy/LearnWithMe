@@ -235,7 +235,11 @@ These reasons make Tailwind CSS a strong choice if a project values flexibility,
 
 ## Features Left to Implement
 
-- 
+- Orginally, I wanted to make posts to be able to handle video and image. However, I found it difficut to get the multi media field operations for anything other than image. Because of the purpose of the website I definetly think it would be a perfect feature to implement, if I had more time and help.
+- I wanted to add a share button to post that allows users to share posts to an interest circle directly or copy the link to share externally.
+- Introduce a notification system to alert users when someone interacts with their post (likes, comments, shares), follows them, or when a new post is made in an interest circle they follow.
+Private Messaging.
+- Allow users to send direct messages to one another. This would help foster community and allow for more personal interactions between users outside of public posts.
 
 ## Testing
 
