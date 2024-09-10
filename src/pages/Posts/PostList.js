@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { FaThumbsUp } from "react-icons/fa";
-import axios from "axios";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { useHistory, Link } from "react-router-dom";
-import styles from "../../styles/Search.module.css";
-import ErrorModal from "../../components/ErrorModal";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import axios from 'axios';
+import { fetchMoreData } from '../../utils/utils'; 
+import SearchBar from '../../components/SearchBar';
+import PostItem from './PostItem';
+import ErrorModal from '../../components/ErrorModal';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const PostContent = () => {
   const [posts, setPosts] = useState({ results: [], next: null });
@@ -26,35 +27,23 @@ const PostContent = () => {
     setFilteredPosts(filtered);
   }, []);
 
-  // Function to fetch posts from the API
-  const fetchPosts = useCallback(async (url, isInitialFetch = false) => {
-    if (!url) return;
-
-    try {
-      const response = await axios.get(url);
-      const newResults = response.data.results.filter(
-        (newPost) => !posts.results.some((post) => post.id === newPost.id)
-      );
-
-      setPosts((prevPosts) => ({
-        results: isInitialFetch ? newResults : [...prevPosts.results, ...newResults],
-        next: response.data.next,
-      }));
-
-      applyFilters(searchQuery, isInitialFetch ? newResults : [...posts.results, ...newResults]);
-    } catch (err) {
-      setError("Error fetching posts. Please try again later.");
-      console.error("Error fetching posts:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [applyFilters, searchQuery, posts.results]);
-
-  // Fetch posts on initial mount
+  // Fetch initial posts on component mount
   useEffect(() => {
-    setLoading(true);
-    fetchPosts("/posts/", true);
-  }, []);
+    const fetchInitialPosts = async () => {
+      try {
+        const { data } = await axios.get("/posts/"); 
+        setPosts({ results: data.results, next: data.next });
+        applyFilters(searchQuery, data.results);
+      } catch (err) {
+        setError("Error fetching posts. Please try again later.");
+        console.error("Error fetching posts:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialPosts();
+  }, [applyFilters, searchQuery]);
 
   // Reapply filters when searchQuery or posts change
   useEffect(() => {
@@ -110,28 +99,19 @@ const PostContent = () => {
   };
 
   if (loading && filteredPosts.length === 0) {
-    return <LoadingSpinner />; // Use the new LoadingSpinner component
+    return <LoadingSpinner />;
   }
-  
+
   return (
     <>
       {/* Render error modal if there is an error */}
       {error && <ErrorModal message={error} onClose={handleCloseModal} />}
 
-      <div className={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Search by title or owner..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className={styles.searchBar}
-        />
-        {searchQuery && (
-          <button onClick={handleClearFilters} className={styles.clearButton}>
-            Clear Search
-          </button>
-        )}
-      </div>
+      <SearchBar
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        onClearFilters={handleClearFilters}
+      />
 
       {filteredPosts.length === 0 && searchQuery && (
         <div className="text-center mt-8">
@@ -142,62 +122,18 @@ const PostContent = () => {
 
       <InfiniteScroll
         dataLength={filteredPosts.length}
-        next={() => fetchPosts(posts.next)}
+        next={() => fetchMoreData(posts, setPosts)} // Fetch more posts when scrolling
         hasMore={!!posts.next}
-        loader={<p className="text-center mt-">Loading more posts...</p>}
+        loader={<p className="text-center mt-2">Loading more posts...</p>}
       >
         <div className="flex flex-row flex-wrap justify-center gap-4 py-4 px-4">
           {filteredPosts.map((post) => (
-            <div
+            <PostItem
               key={post.id}
-              className="bg-white rounded-xl shadow-lg overflow-hidden w-full max-w-xs"
-            >
-              <div className="flex items-center p-3 border-b border-gray-200 cursor-pointer">
-                <img
-                  src={post.profile_image || "default-profile-pic.jpg"}
-                  alt={`${post.owner}'s profile`}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div className="ml-3">
-                  <Link to={`/profile/${post.owner_profile_id}`} className="font-semibold text-sm">
-                    {post.owner}
-                  </Link>
-                  <p className="text-gray-500 text-xs">
-                    {new Date(post.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-
-              <img
-                src={post.image_or_video || "default-image.jpg"}
-                alt={post.title}
-                className="w-full h-40 object-cover"
-              />
-
-              <div className="p-3">
-                <a
-                  href={`/posts/${post.id}`}
-                  className="text-gray-700 font-semibold text-sm hover:text-blue-500"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePostClick(post.id);
-                  }}
-                >
-                  {post.title}
-                </a>
-                <div className="flex items-center mt-2">
-                  <button
-                    className="flex items-center text-gray-500 hover:text-blue-500 text-sm"
-                    onClick={() =>
-                      toggleLike(post.id, !!post.like_id, post.like_id)
-                    }
-                  >
-                    <FaThumbsUp className={`mr-1 ${post.like_id ? "text-blue-500" : "text-gray-500"}`} />
-                    {post.like_id ? "Unlike" : "Like"} ({post.likes_count})
-                  </button>
-                </div>
-              </div>
-            </div>
+              post={post}
+              onPostClick={handlePostClick}
+              onToggleLike={toggleLike}
+            />
           ))}
         </div>
       </InfiniteScroll>
