@@ -55,7 +55,6 @@ function Sidebar({ isOpen, isMobile }) {
   // Handle navigation link clicks
   const handleNavLinkClick = () => {
     if (isMobileView) {
-      // Prevent sidebar from toggling open on mobile when clicking a link
       if (isSidebarOpen) {
         toggleSidebar();
       }

@@ -240,6 +240,8 @@ These reasons make Tailwind CSS a strong choice if a project values flexibility,
 - Introduce a notification system to alert users when someone interacts with their post (likes, comments, shares), follows them, or when a new post is made in an interest circle they follow.
 Private Messaging.
 - Allow users to send direct messages to one another. This would help foster community and allow for more personal interactions between users outside of public posts.
+- I would like to add a way that circles could be private or public and all private circles have a password to enter or request acceptance from the groups owner.
+- I would like the ability for user to attach documents and other files in chats.
 
 ## Testing
 
