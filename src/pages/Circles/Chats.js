@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { axiosReq } from "../../api/axiosDefaults";
 import { FaPaperPlane, FaEdit, FaTrash } from "react-icons/fa";
 import styles from "../../styles/Chats.module.css";
@@ -7,12 +7,12 @@ import { useCurrentUser } from "../../context/CurrentUserContext";
 import DeleteConfirmation from "../../components/DeleteModal";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ErrorModal from "../../components/ErrorModal";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Chats = () => {
   const { id } = useParams();
   const currentUser = useCurrentUser();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState({ results: [], next: null });
   const [newMessage, setNewMessage] = useState("");
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,17 +21,13 @@ const Chats = () => {
   const [messageToDelete, setMessageToDelete] = useState(null);
   const [circleName, setCircleName] = useState("");
 
-  // Fetch messages on component mount
+  // Fetch initial messages
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchInitialMessages = async () => {
       try {
         const { data } = await axiosReq.get(`/chats/circle/${id}/`);
-        if (data?.results?.length) {
-          setMessages(data.results);
-          setCircleName(data.results[0].chat_circle_name || "No Circle Name");
-        } else {
-          setCircleName("No Circle Name");
-        }
+        setMessages({ results: data.results, next: data.next });
+        setCircleName(data.results[0]?.chat_circle_name || "No Circle Name");
       } catch (err) {
         handleError(`Error fetching messages: ${getErrorMessage(err)}`);
       } finally {
@@ -39,19 +35,49 @@ const Chats = () => {
       }
     };
 
-    fetchMessages();
+    fetchInitialMessages();
   }, [id]);
 
-  // Helper to extract error message
-  const getErrorMessage = (err) => err.response?.data || err.message;
+  // Update new message state when editing
+  useEffect(() => {
+    if (editingMessageId) {
+      const messageToEdit = messages.results.find(msg => msg.id === editingMessageId);
+      if (messageToEdit) {
+        setNewMessage(messageToEdit.content);
+      }
+    } else {
+      setNewMessage("");
+    }
+  }, [editingMessageId, messages.results]);
 
-  // Handle error and show modal
+  // Fetch more messages for infinite scroll
+  const fetchMoreMessages = async () => {
+    if (messages.next) {
+      try {
+        const { data: nextData } = await axiosReq.get(messages.next);
+        setMessages((prevMessages) => ({
+          next: nextData.next,
+          results: [
+            ...prevMessages.results,
+            ...nextData.results.filter(
+              (msg) => !prevMessages.results.some((res) => res.id === msg.id)
+            ),
+          ],
+        }));
+      } catch (err) {
+        handleError(`Error fetching more messages: ${getErrorMessage(err)}`);
+      }
+    }
+  };
+
+  // Handle error messages
+  const getErrorMessage = (err) => err.response?.data || err.message;
   const handleError = (message) => setError(message);
 
-  // Handle new message input
+  // Handle input change
   const handleChange = (e) => setNewMessage(e.target.value);
 
-  // Handle sending a new or edited message
+  // Send a new or edited message
   const handleSend = async () => {
     if (newMessage.trim() === "") {
       handleError("Cannot send blank messages");
@@ -61,7 +87,7 @@ const Chats = () => {
     editingMessageId ? await handleEditSubmit() : await handleNewMessageSubmit();
   };
 
-  // Submit new message
+  // Submit a new message
   const handleNewMessageSubmit = async () => {
     try {
       const response = await axiosReq.post(`/chats/circle/${id}/`, {
@@ -79,7 +105,7 @@ const Chats = () => {
     }
   };
 
-  // Submit edited message
+  // Submit an edited message
   const handleEditSubmit = async () => {
     try {
       const response = await axiosReq.put(`/chats/${editingMessageId}/`, {
@@ -101,7 +127,7 @@ const Chats = () => {
   const refreshMessages = async () => {
     try {
       const { data } = await axiosReq.get(`/chats/circle/${id}/`);
-      setMessages(data.results);
+      setMessages({ results: data.results, next: data.next });
     } catch (err) {
       handleError(`Error refreshing messages: ${getErrorMessage(err)}`);
     }
@@ -112,7 +138,10 @@ const Chats = () => {
     try {
       const response = await axiosReq.delete(`/chats/${messageToDelete.id}/`);
       if (response.status === 204) {
-        setMessages((prev) => prev.filter((msg) => msg.id !== messageToDelete.id));
+        setMessages((prev) => ({
+          ...prev,
+          results: prev.results.filter((msg) => msg.id !== messageToDelete.id),
+        }));
         setShowDeleteModal(false);
       }
     } catch (err) {
@@ -120,7 +149,7 @@ const Chats = () => {
     }
   };
 
-  // Open delete confirmation modal
+  // Open delete modal
   const handleDeleteClick = (message) => {
     setMessageToDelete(message);
     setShowDeleteModal(true);
@@ -129,7 +158,7 @@ const Chats = () => {
   // Cancel deletion
   const handleDeleteCancel = () => setShowDeleteModal(false);
 
-  // Handle key press for 'Enter' to send and 'Shift + Enter' for newline
+  // Handle key press for sending messages
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -138,7 +167,7 @@ const Chats = () => {
   };
 
   // Display loading spinner while fetching data
-  if (loading) return <LoadingSpinner />;
+  if (loading && !messages.results.length) return <LoadingSpinner />;
 
   return (
     <div className={`flex flex-col h-screen bg-gray-100 ${styles.fitting}`}>
@@ -146,37 +175,43 @@ const Chats = () => {
         <h1 className="text-2xl font-bold">{circleName} Chats</h1>
       </header>
 
-      <div className="flex-grow p-4 overflow-auto">
-        <div className="space-y-4">
-          {messages.length ? (
-            messages.map((message) => (
-              <div key={message.id} className="bg-white p-4 rounded-lg shadow-md relative">
-                <Link to={`/profile/${message.owner}`} className="font-semibold">{message.owner_username || "Unknown User"}</Link>
-                <p>{message.content || "No content"}</p>
-                <p className="text-gray-500 text-sm">{message.timestamp || "Unknown time"}</p>
+      <div className="flex-grow p-4 overflow-auto scrollableDiv">
+        <InfiniteScroll
+          dataLength={messages.results.length}
+          next={fetchMoreMessages(messages, setMessages)}
+          hasMore={!!messages.next}
+          loader={<p className="text-center mt-2">Loading more messages...</p>}
+          scrollableTarget="scrollableDiv"
+        >
+          {messages.results.map((message) => (
+            <div key={message.id} className="bg-white p-4 rounded-lg shadow-md relative">
+              <Link to={`/profile/${message.owner}`} className="font-semibold">
+                {message.owner_username || "Unknown User"}
+              </Link>
+              <p>{message.content || "No content"}</p>
+              <p className="text-gray-500 text-sm">{message.timestamp || "Unknown time"}</p>
 
-                {message.owner === currentUser.pk && (
-                  <>
-                    <button
-                      className="absolute top-2 right-10 text-blue-500 hover:text-blue-700"
-                      onClick={() => handleEditClick(message)}
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                      onClick={() => handleDeleteClick(message)}
-                    >
-                      <FaTrash />
-                    </button>
-                  </>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-center">No messages available</p>
-          )}
-        </div>
+              {message.owner === currentUser.pk && (
+                <>
+                  <button
+                    className="absolute top-2 right-10 text-blue-500 hover:text-blue-700"
+                    onClick={() => setEditingMessageId(message.id)}
+                    aria-label="Edit message"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                    onClick={() => handleDeleteClick(message)}
+                    aria-label="Delete message"
+                  >
+                    <FaTrash />
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </InfiniteScroll>
       </div>
 
       <footer className="bg-white p-4 border-t border-gray-200">
