@@ -1,4 +1,3 @@
-// src/hooks/usePostContent.js
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
@@ -102,7 +101,7 @@ const usePostContent = (history) => {
     handleSearchChange,
     handleClearFilters,
     handleCloseModal,
-    setPosts, // Ensure setPosts is returned
+    setPosts,
   };
 };
 

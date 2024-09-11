@@ -1,107 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { axiosReq } from '../../api/axiosDefaults';
-import { useCurrentUser } from "../../context/CurrentUserContext";
-import ErrorModal from '../../components/ErrorModal'; // Import ErrorModal
+import React from 'react';
+import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import useProfile from '../../hooks/useProfile';
 
 const Profile = () => {
-  const { id } = useParams();
-  const history = useHistory();
-  const [profile, setProfile] = useState(null);
-  const [allPosts, setAllPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [allLikedPosts, setAllLikedPosts] = useState([]);
-  const [filteredLikedPosts, setFilteredLikedPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const currentUser = useCurrentUser();
+  const {
+    profile,
+    filteredPosts,
+    filteredLikedPosts,
+    loading,
+    isFollowing,
+    errorMessage,
+    showErrorModal,
+    handleFollow,
+    handleEditProfile,
+    formatSteps,
+    setShowErrorModal,
+  } = useProfile();
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        // Fetch profile data
-        const profileResponse = await axiosReq.get(`/profiles/${id}/`);
-        setProfile(profileResponse.data);
-
-        // Check if the current user is following the profile owner
-        setIsFollowing(profileResponse.data.following_id);
-
-        // Fetch all posts
-        const postsResponse = await axiosReq.get(`/posts/`);
-        setAllPosts(postsResponse.data.results || []);
-
-        // Fetch all liked posts
-        const likedPostsResponse = await axiosReq.get(`/likes/`);
-        setAllLikedPosts(likedPostsResponse.data.results || []);
-      } catch (err) {
-        const errorMessage = err.response ? err.response.data : err.message;
-        setErrorMessage(`Error fetching profile data: ${errorMessage}`);
-        setShowErrorModal(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfileData();
-  }, [id]);
-
-  useEffect(() => {
-    // Filter posts whenever the profile or allPosts changes
-    if (profile) {
-      setFilteredPosts(allPosts.filter(post => post.owner_profile_id === profile.id));
-    }
-  }, [profile, allPosts]);
-
-  useEffect(() => {
-    // Filter liked posts whenever the profile or allLikedPosts changes
-    if (profile) {
-      setFilteredLikedPosts(allLikedPosts.filter(like => like.owner_profile_id === profile.id));
-    }
-  }, [profile, allLikedPosts]);
-
-  const handleFollow = async () => {
-    try {
-      if (isFollowing) {
-        // Unfollow
-        await axiosReq.delete(`/followers/${profile.following_id}/`);
-        setIsFollowing(false);
-        setProfile(prevProfile => ({
-          ...prevProfile,
-          followers_count: prevProfile.followers_count - 1,
-        }));
-      } else {
-        // Follow
-        await axiosReq.post(`/followers/`, {
-          owner: currentUser.pk,
-          followed: id
-        });
-        setIsFollowing(true);
-        setProfile(prevProfile => ({
-          ...prevProfile,
-          followers_count: prevProfile.followers_count + 1,
-        }));
-      }
-    } catch (err) {
-      const errorMessage = err.response ? err.response.data : err.message;
-      setErrorMessage(`Error following/unfollowing: ${errorMessage}`);
-      setShowErrorModal(true);
-    }
-  };
-
-  const handleEditProfile = () => {
-    history.push(`/profiles/${id}/edit`);
-  };
-
-  const formatSteps = (stepsText) => {
-    return stepsText
-      .split('\n')
-      .map((line, index) => <p key={index} className="mb-2">{line}</p>);
-  };
-
-  if (loading) return <LoadingSpinner />;
+  if (loading || !profile) return <LoadingSpinner />;
 
   return (
     <div className="flex flex-col md:flex-row p-6 min-h-screen bg-slate-400 mt-16 md:mt-0">
@@ -112,7 +29,7 @@ const Profile = () => {
           className="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-4"
         />
         <h1 className="text-4xl font-bold text-gray-900 mb-2">{profile.owner || 'Username'}</h1>
-        
+
         {/* About Me Section */}
         <div className="text-lg text-gray-700 mt-4 p-4 rounded-md shadow-sm">
           <h2 className="text-2xl font-semibold text-gray-900 mb-2">About Me</h2>
@@ -176,7 +93,7 @@ const Profile = () => {
                 {filteredLikedPosts.map((like) => (
                   <li key={like.post.id} className="border-b pb-4">
                     <h3 className="text-xl font-semibold text-gray-800">
-                      <a href={`/posts/${like.post}`} className="text-blue-500 hover:underline">
+                      <a href={`/posts/${like.post.id}`} className="text-blue-500 hover:underline">
                         {like.post_title}
                       </a>
                     </h3>

@@ -1,4 +1,3 @@
-// src/pages/Posts/PostList.js
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -22,7 +21,7 @@ const PostList = () => {
     handleSearchChange,
     handleClearFilters,
     handleCloseModal,
-    setPosts, // Ensure setPosts is destructured from usePostContent
+    setPosts, 
   } = usePostContent(history);
 
   if (loading && filteredPosts.length === 0) {
@@ -48,7 +47,7 @@ const PostList = () => {
 
       <InfiniteScroll
         dataLength={filteredPosts.length}
-        next={() => fetchMoreData(posts, setPosts)} // Pass setPosts here
+        next={() => fetchMoreData(posts, setPosts)} 
         hasMore={!!posts.next}
         loader={<p className="text-center mt-2">Loading more posts...</p>}
       >
