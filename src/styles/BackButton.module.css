@@ -1,0 +1,12 @@
+.backbtn {
+    padding: 10px;
+    boxShadow: 0 2px 4px rgba(0,0,0,0.2)
+}
+
+@media (max-width: 765px) {
+
+    .backbtn {
+        display: none;
+    }
+    
+}

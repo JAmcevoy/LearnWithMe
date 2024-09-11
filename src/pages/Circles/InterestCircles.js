@@ -38,8 +38,8 @@ const InterestCircles = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="p-6 lg:pr-20 flex-grow">
-        <h1 className="text-4xl font-bold text-center text-gray-700 leading-relaxed mb-8 mt-10 sm:mt-3">
+       <div className="p-6 lg:pr-20 flex-grow">
+       <h1 className="text-4xl font-bold text-center text-gray-700 leading-relaxed mb-8 mt-16 sm:mt-10">
           Interest Circles
         </h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-8">

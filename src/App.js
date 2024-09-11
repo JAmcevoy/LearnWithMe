@@ -14,12 +14,14 @@ import PostEdit from './pages/Posts/PostEdit';
 import ProfileEdit from './pages/Profiles/ProfileEdit';
 import PostDetails from './pages/Posts/PostDetails';
 import ProtectedRoute from './components/ProtectedRoute'; 
+import BackButton from './components/BackButton';
 
 function App() {
     return (
         <Router>
             <div className="bg-slate-400 min-h-screen flex">
                 <Sidebar />
+                <BackButton />
 
                 <main className="transition-all duration-300 flex-grow">
                     <Switch>
