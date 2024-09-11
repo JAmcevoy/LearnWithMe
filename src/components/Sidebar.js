@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import {
   FaUserCircle,
@@ -16,10 +16,9 @@ import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext
 import LogoutModal from './LogoutModal';
 
 function Sidebar({ isOpen, isMobile }) {
-  const { isSidebarOpen, toggleSidebar, isMobileView } = useSidebar(isOpen, isMobile);
+  const { isSidebarOpen, toggleSidebar, isMobileView, sidebarRef } = useSidebar(isOpen, isMobile);
   const currentUser = useCurrentUser();
   const setCurrentUser = useSetCurrentUser();
-  const sidebarRef = useRef(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   // Handle user logout
@@ -28,7 +27,7 @@ function Sidebar({ isOpen, isMobile }) {
       await axios.post('dj-rest-auth/logout/');
       setCurrentUser(null);
     } catch (err) {
-      console.error(err);
+      console.error('Logout error:', err);
     }
   };
 
@@ -40,31 +39,23 @@ function Sidebar({ isOpen, isMobile }) {
   const openLogoutModal = () => setIsLogoutModalOpen(true);
   const handleModalClose = () => setIsLogoutModalOpen(false);
 
-  // Close sidebar when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target) && isSidebarOpen) {
-        toggleSidebar();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isSidebarOpen, toggleSidebar]);
-
   // Handle navigation link clicks
   const handleNavLinkClick = () => {
-    if (isMobileView) {
-      if (isSidebarOpen) {
-        toggleSidebar();
-      }
+    if (isMobileView && isSidebarOpen) {
+      toggleSidebar();
     }
   };
 
+  // Render navigation link
   const renderNavLink = (to, icon, label, extraClasses = '', condition = true) =>
     condition && (
       <li className={`flex items-center justify-center ${extraClasses}`}>
-        <NavLink to={to} onClick={handleNavLinkClick} className="flex items-center text-white">
+        <NavLink
+          to={to}
+          onClick={handleNavLinkClick}
+          className="flex items-center text-white"
+          aria-label={label}
+        >
           {icon}
           {isSidebarOpen && <span className="ml-4">{label}</span>}
         </NavLink>
@@ -75,7 +66,11 @@ function Sidebar({ isOpen, isMobile }) {
     <>
       {/* Mobile view overlay */}
       {isSidebarOpen && isMobileView && (
-        <div onClick={toggleSidebar} className="fixed inset-0 bg-black opacity-50 z-10" />
+        <div
+          onClick={toggleSidebar}
+          className="fixed inset-0 bg-black opacity-50 z-10"
+          aria-label="Close sidebar overlay"
+        />
       )}
 
       <div
@@ -87,7 +82,11 @@ function Sidebar({ isOpen, isMobile }) {
         }`}
       >
         <div className="flex items-center">
-          <button onClick={toggleSidebar} className="text-white">
+          <button
+            onClick={toggleSidebar}
+            className="text-white"
+            aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+          >
             <FaBars size={24} />
           </button>
           {isMobileView && isSidebarOpen && (
@@ -109,7 +108,11 @@ function Sidebar({ isOpen, isMobile }) {
               <div className="text-white flex flex-col items-center mb-8">
                 {currentUser ? (
                   <>
-                    <NavLink to={`/profile/${currentUser.pk}`} className="text-white">
+                    <NavLink
+                      to={`/profile/${currentUser.pk}`}
+                      className="text-white"
+                      aria-label={`Profile of ${currentUser.username}`}
+                    >
                       <FaUserCircle size={isSidebarOpen ? 80 : 40} className="mb-4" />
                     </NavLink>
                     {isSidebarOpen && <p className="text-center">{currentUser.username}</p>}
@@ -136,7 +139,11 @@ function Sidebar({ isOpen, isMobile }) {
         {/* Logout Button */}
         {currentUser && (
           <div className={`text-white ${isMobileView ? '' : 'absolute bottom-4 left-0 right-0'} flex justify-center items-center`}>
-            <button onClick={openLogoutModal} className="flex items-center">
+            <button
+              onClick={openLogoutModal}
+              className="flex items-center"
+              aria-label="Logout"
+            >
               <FaSignOutAlt size={24} />
               {!isMobileView && isSidebarOpen && <span className="ml-4">Logout</span>}
             </button>
