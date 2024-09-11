@@ -91,7 +91,7 @@ const Profile = () => {
             {filteredLikedPosts.length > 0 ? (
               <ul className="space-y-4">
                 {filteredLikedPosts.map((like) => (
-                  <li key={like.post.id} className="border-b pb-4">
+                  <li key={like.post} className="border-b pb-4">
                     <h3 className="text-xl font-semibold text-gray-800">
                       <a href={`/posts/${like.post.id}`} className="text-blue-500 hover:underline">
                         {like.post_title}
