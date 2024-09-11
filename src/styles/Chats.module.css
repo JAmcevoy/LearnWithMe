@@ -2,6 +2,10 @@
     margin-right: 4em;
 }
 
+.chatbox {
+    margin: 15px 0;
+}
+
 @media (max-width: 760px) {
     .fitting {
         margin-right: 0;

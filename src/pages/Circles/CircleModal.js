@@ -35,9 +35,11 @@ const Modal = ({
             <>
               <h3 className="text-2xl font-bold mb-4 text-gray-800">Description:</h3>
               <p className="mb-4 text-gray-600">{circle.description || "No Description available"}</p>
+              <h3 className="text-2xl font-bold mb-4 text-gray-800">Category:</h3>
+              <p className="mb-4 text-gray-600">{circle.category_name || "No Description available"}</p>
               <button
                 onClick={onClose}
-                className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-600 transition"
+                className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-600 transition center"
               >
                 Close
               </button>
