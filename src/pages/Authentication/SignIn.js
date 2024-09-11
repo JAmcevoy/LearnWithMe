@@ -5,7 +5,6 @@ import { useSetCurrentUser } from '../../context/CurrentUserContext';
 import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
-
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +28,11 @@ const SignIn = () => {
 
       const { data } = response;
       setCurrentUser(data);
-      history.push('/');
+
+      // Redirect to homepage and force refresh
+      history.replace('/');
+      window.location.reload(); 
+
     } catch (err) {
       if (err.response) {
         setError(`Error: ${err.response.data.detail || 'Invalid credentials. Please try again.'}`);
