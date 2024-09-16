@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import CircleCard from './CircleCard';
 import CreateCircleButton from './CreateCircleButton';
@@ -11,7 +11,7 @@ import useInterestCircles from '../../hooks/useInterestCircles';
 const InterestCircles = () => {
   const history = useHistory();
   const {
-    circles,
+    circles = [],
     loading,
     modal,
     categories,
@@ -32,9 +32,33 @@ const InterestCircles = () => {
     setError,
   } = useInterestCircles(history);
 
+  const [page, setPage] = useState(1);
+  const [visibleCircles, setVisibleCircles] = useState([]);
+
+  const itemsPerPage = 8;
+  const totalPages = Math.ceil(circles.length / itemsPerPage);
+
+  useEffect(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setVisibleCircles(circles.slice(startIndex, endIndex));
+  }, [circles, page]);
+
   if (loading) {
     return <LoadingSpinner />;
   }
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -43,8 +67,8 @@ const InterestCircles = () => {
           Interest Circles
         </h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {circles.length > 0 ? (
-            circles.map((circle) => (
+          {visibleCircles.length > 0 ? (
+            visibleCircles.map((circle) => (
               <CircleCard
                 key={circle.id}
                 circle={circle}
@@ -59,7 +83,15 @@ const InterestCircles = () => {
           )}
         </div>
       </div>
-      <CreateCircleButton onClick={handleCreateCircle} />
+
+      {/* Pagination and Create Circle Button */}
+      <CreateCircleButton
+        onClick={handleCreateCircle}
+        onPrevClick={handlePrevPage}
+        onNextClick={handleNextPage}
+        page={page}
+        totalPages={totalPages}
+      />
 
       {modal.visible && (
         <Modal

@@ -16,13 +16,25 @@ const CreateCircle = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       setLoadingCategories(true);
+      let allCategories = [];
+      let page = 1;
+      let hasMore = true;
+
       try {
-        const response = await axios.get('/categories/');
-        if (response.data && Array.isArray(response.data.results)) {
-          setCategories(response.data.results);
-        } else {
-          throw new Error('Unexpected data format');
+        while (hasMore) {
+          const response = await axios.get(`/categories/?page=${page}`);
+          if (response.data && Array.isArray(response.data.results)) {
+            allCategories = [...allCategories, ...response.data.results];
+            if (response.data.next) {
+              page += 1; 
+            } else {
+              hasMore = false; 
+            }
+          } else {
+            throw new Error('Unexpected data format');
+          }
         }
+        setCategories(allCategories);
       } catch (err) {
         setError(`Error fetching categories: ${err.message}`);
       } finally {
@@ -32,6 +44,7 @@ const CreateCircle = () => {
 
     fetchCategories();
   }, []);
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -98,25 +111,26 @@ const CreateCircle = () => {
             Category
           </label>
           <select
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          >
-            <option value="">Select a category</option>
-            {loadingCategories ? (
-              <option disabled>Loading categories...</option>
-            ) : categories.length > 0 ? (
-              categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.type}
-                </option>
-              ))
-            ) : (
-              <option disabled>No categories available</option>
-            )}
-          </select>
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline max-h-40 overflow-y-auto"
+              size="5" 
+              required
+            >
+              <option value="">Select a category</option>
+              {loadingCategories ? (
+                <option disabled>Loading categories...</option>
+              ) : categories.length > 0 ? (
+                categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.type}
+                  </option>
+                ))
+              ) : (
+                <option disabled>No categories available</option>
+              )}
+            </select>
         </div>
         <div className="flex items-center justify-center">
           <button

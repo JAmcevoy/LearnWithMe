@@ -261,15 +261,23 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 1. **Slow Loading Times for Large Feeds**: Implemented lazy loading and infinite scroll to handle large amounts of posts and improve performance.
 2. **Chat Page Layout on Mobile**: Addressed layout issues on mobile devices with responsive CSS to ensure a consistent chat interface.
 3. **Go Back Button Visibility on Small Screens**: Adjusted the button size and position to improve accessibility on mobile.
+4. **React Logout Bug**: Encountered a known bug in React where users can sometimes experience issues logging out due to client-side caching or session persistence. This issue occurs when React fails to fully clear the user’s session or authentication state. A workaround was implemented by manually clearing the local storage and session data on logout, but the issue can still occasionally persist under certain conditions.
+5. **Circle and Message Handling in DRF**: Initially, when accessing a specific circle, the API would only pull a single message by its ID rather than all the messages associated with that circle. To fix this, I had to create a new endpoint in Django REST Framework (DRF) to handle the proper flow: from the main page > Interest Circles > specific circle > retrieving all chats related to that circle. This change ensures that when a user navigates to a circle, they can see the entire chat history instead of just a single message, improving the overall user experience.
+6. **Pulling User’s Recent Posts and Likes**: I encountered difficulties retrieving a specific user's recent posts and recent likes for their profile page. Initially, the query was not pulling the correct data, but by creating custom fields in the serializer, I was able to resolve this issue. This approach allowed me to accurately display both recent posts and likes on the profile page, ensuring that the sections worked as intended.
+7. **Pagination on Categories**: Initially, the categories were paginated, and I was limited to displaying only 10 categories. I fixed this by fetching all the categories before rendering the dropdown, ensuring that users could see the full list of categories at once.
 
 ---
 
 ### Bugs Yet to Fix
 
-1. **Error Handling for Network Issues**: Currently, the app lacks sufficient notifications for lost network connections or server downtime. Better error handling is needed to alert users when connectivity issues occur.
-2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties in managing file sizes and formats. This feature requires additional development to handle larger media files properly.
-3. **Go Back Button**: Although functional, the "Go Back" button needs further adjustments to improve its usability on smaller screens, where it can be difficult to access.
-4. **The Sort Order of Chats**: The chat functionality was challenging to implement, especially in terms of loading messages in the correct order. Ideally, the chat should load with the most recent messages at the bottom, allowing users to scroll up to view older messages. However, the current solution first loads at the top of the chat and then scrolls to the bottom. While this works, it could lead to a poor user experience in more active chats with many users, as the initial jump from top to bottom may be disorienting.
+1. **Error Handling for Network Issues**: Need to implement better notifications for lost network connections or server downtime.
+2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties with file size management.
+3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens.
+4. **The Sort Order of Chats**: The chat function was difficult to implement correctly, particularly with loading messages in the right order (starting from the bottom with older messages above). Currently, the chat loads at the top and scrolls to the bottom, which may cause a poor user experience in chats with many users.
+5. **Circle Name Visibility in Chats**: When entering a chat with no messages, the circle name does not show until a message is sent. This can confuse users as they may not immediately recognize which circle they are in.
+6. **401 Unauthorized Error for manifest.json**: The manifest.json file should be publicly accessible, but it is currently returning a 401 error, indicating that authentication is required to access it. This needs to be fixed by ensuring the file is served publicly.
+7. **WebSocket Connection Failed**: WebSocket connection issues (`ERR_CONNECTION_TIMED_OUT`) have occurred due to an unreachable or incorrectly configured WebSocket server. This issue remains unresolved and needs further debugging to ensure proper WebSocket communication.
+
 
 ---
 
