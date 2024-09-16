@@ -3,7 +3,8 @@ import axios from 'axios';
 
 const useInterestCircles = (history) => {
   // State Hooks
-  const [circles, setCircles] = useState([]);
+  const [circles, setCircles] = useState({ results: [], next: null }); // Correct initialization
+  const [filteredCircles, setFilteredCircles] = useState([]); // Add filteredCircles state
   const [loading, setLoading] = useState(true);
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -17,12 +18,14 @@ const useInterestCircles = (history) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [circleToDelete, setCircleToDelete] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // Search query state
 
   // Fetch Functions
   const fetchCircles = useCallback(async () => {
     try {
       const { data } = await axios.get('/interest-circles/');
-      setCircles(data.results || data);
+      setCircles(data);
+      setFilteredCircles(data.results); // Initially set filteredCircles as all circles
     } catch (err) {
       handleError('Error fetching interest circles', err);
     } finally {
@@ -43,6 +46,23 @@ const useInterestCircles = (history) => {
     fetchCircles();
     fetchCategories();
   }, [fetchCircles, fetchCategories]);
+
+  // Handle Search and Filters
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    // Filter circles based on the search query
+    const filtered = circles.results.filter((circle) =>
+      circle.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredCircles(filtered);
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setFilteredCircles(circles.results); // Reset the filtered list
+  };
 
   // Error Handling
   const handleError = (message, err) => {
@@ -85,7 +105,7 @@ const useInterestCircles = (history) => {
   };
 
   const handleModalChange = (field, value) => {
-    setModal(prevModal => ({
+    setModal((prevModal) => ({
       ...prevModal,
       circle: {
         ...prevModal.circle,
@@ -104,7 +124,13 @@ const useInterestCircles = (history) => {
     try {
       setDeleteLoading(true);
       await axios.delete(`/interest-circles/${circleToDelete}/`);
-      setCircles(prevCircles => prevCircles.filter(circle => circle.id !== circleToDelete));
+      setCircles((prevCircles) => ({
+        ...prevCircles,
+        results: prevCircles.results.filter((circle) => circle.id !== circleToDelete),
+      }));
+      setFilteredCircles((prevFilteredCircles) =>
+        prevFilteredCircles.filter((circle) => circle.id !== circleToDelete)
+      );
       setDeleteModalVisible(false);
       setCircleToDelete(null);
     } catch (err) {
@@ -137,6 +163,7 @@ const useInterestCircles = (history) => {
 
   return {
     circles,
+    filteredCircles,
     loading,
     saveLoading,
     deleteLoading,
@@ -146,6 +173,7 @@ const useInterestCircles = (history) => {
     selectedCategory,
     deleteModalVisible,
     circleToDelete,
+    searchQuery,
     handleCircleClick,
     handleCreateCircle,
     handleInfoClick: (circle) => openModal('info', circle),
@@ -159,8 +187,11 @@ const useInterestCircles = (history) => {
     handleDeleteClick,
     handleConfirmDelete,
     handleCancelDelete,
+    handleSearchChange,
+    handleClearFilters,
     setSelectedCategory,
     setError,
+    setCircles,
   };
 };
 
