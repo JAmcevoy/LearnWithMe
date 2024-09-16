@@ -12,7 +12,10 @@ const SearchBar = ({ searchQuery, onSearchChange, onClearFilters }) => {
         className={styles.searchBar}
       />
       {searchQuery && (
-        <button onClick={onClearFilters} className={styles.clearButton}>
+        <button 
+          onClick={onClearFilters} 
+          className={styles.clearButton}
+        >
           Clear Search
         </button>
       )}

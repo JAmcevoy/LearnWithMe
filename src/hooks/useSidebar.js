@@ -1,17 +1,21 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
+// Debounce utility function
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
+
 // Custom hook for managing sidebar state and behavior
-export const useSidebar = (initialIsOpen, initialIsMobile) => {
-  // State management for sidebar open/close
+export const useSidebar = (initialIsOpen = false, initialIsMobile = false) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(initialIsOpen);
-  
-  // State management for mobile view
   const [isMobileView, setIsMobileView] = useState(initialIsMobile);
-  
-  // Reference to sidebar element for click outside detection
   const sidebarRef = useRef(null);
 
-  // Memoized toggleSidebar function
+  // Toggle the sidebar open/close state
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen(prevState => !prevState);
   }, []);
@@ -29,7 +33,9 @@ export const useSidebar = (initialIsOpen, initialIsMobile) => {
 
   // Close sidebar when switching to mobile view
   useEffect(() => {
-    if (isMobileView) setIsSidebarOpen(false);
+    if (isMobileView) {
+      setIsSidebarOpen(false);
+    }
   }, [isMobileView]);
 
   // Sync sidebar state with initial open state
@@ -56,12 +62,3 @@ export const useSidebar = (initialIsOpen, initialIsMobile) => {
     sidebarRef,
   };
 };
-
-// Debounce function
-function debounce(func, wait) {
-  let timeout;
-  return function(...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, args), wait);
-  };
-}

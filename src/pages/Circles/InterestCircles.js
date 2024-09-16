@@ -1,12 +1,12 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
-import CircleCard from "./CircleCard";
-import CreateCircleButton from "./CreateCircleButton";
-import Modal from "./CircleModal";
-import DeleteConfirmation from "../../components/DeleteModal";
-import ErrorModal from "../../components/ErrorModal";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import useInterestCircles from "../../hooks/useInterestCircles";
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import CircleCard from './CircleCard';
+import CreateCircleButton from './CreateCircleButton';
+import Modal from './CircleModal';
+import DeleteConfirmation from '../../components/DeleteModal';
+import ErrorModal from '../../components/ErrorModal';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import useInterestCircles from '../../hooks/useInterestCircles';
 
 const InterestCircles = () => {
   const history = useHistory();
@@ -28,8 +28,8 @@ const InterestCircles = () => {
     handleDeleteClick,
     handleConfirmDelete,
     handleCancelDelete,
-    setSelectedCategory, 
-    setError 
+    setSelectedCategory,
+    setError,
   } = useInterestCircles(history);
 
   if (loading) {
@@ -38,8 +38,8 @@ const InterestCircles = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-       <div className="p-6 lg:pr-20 flex-grow">
-       <h1 className="text-4xl font-bold text-center text-gray-700 leading-relaxed mb-8 mt-16 sm:mt-10">
+      <div className="p-6 lg:pr-20 flex-grow">
+        <h1 className="text-4xl font-bold text-center text-gray-700 leading-relaxed mb-8 mt-16 sm:mt-10">
           Interest Circles
         </h1>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -51,7 +51,7 @@ const InterestCircles = () => {
                 onClick={() => handleCircleClick(circle.id)}
                 onInfoClick={() => handleInfoClick(circle)}
                 onEditClick={() => handleEditClick(circle)}
-                onDeleteClick={handleDeleteClick}
+                onDeleteClick={() => handleDeleteClick(circle.id)}
               />
             ))
           ) : (
@@ -69,7 +69,7 @@ const InterestCircles = () => {
           selectedCategory={selectedCategory}
           onClose={handleCloseModal}
           onSave={handleSaveChanges}
-          onCategoryChange={setSelectedCategory} 
+          onCategoryChange={setSelectedCategory}
           onModalChange={handleModalChange}
         />
       )}
@@ -85,7 +85,7 @@ const InterestCircles = () => {
       {error && (
         <ErrorModal
           message={error}
-          onClose={() => setError(null)} 
+          onClose={() => setError(null)}
         />
       )}
     </div>

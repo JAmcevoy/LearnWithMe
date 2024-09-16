@@ -1,18 +1,18 @@
-import { useState, useEffect, useRef } from "react";
-import { axiosReq } from "../api/axiosDefaults";
-import { fetchMoreData } from "../utils/utils";
-import { useCurrentUser } from "../context/CurrentUserContext";
+import { useState, useEffect, useRef } from 'react';
+import { axiosReq } from '../api/axiosDefaults';
+import { fetchMoreData } from '../utils/utils';
+import { useCurrentUser } from '../context/CurrentUserContext';
 
 const useMessages = (id) => {
-  const currentUser = useCurrentUser(); 
+  const currentUser = useCurrentUser();
   const [messages, setMessages] = useState({ results: [], next: null });
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState(''); // Ensure this is set
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState(null);
-  const [circleName, setCircleName] = useState("");
+  const [circleName, setCircleName] = useState('');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const useMessages = (id) => {
       try {
         const { data } = await axiosReq.get(`/chats/circle/${id}/`);
         setMessages({ results: data.results, next: data.next });
-        setCircleName(data.results[0]?.chat_circle_name || "No Circle Name");
+        setCircleName(data.results[0]?.chat_circle_name || 'No Circle Name');
       } catch (err) {
         handleError(`Error fetching messages: ${getErrorMessage(err)}`);
       } finally {
@@ -33,19 +33,17 @@ const useMessages = (id) => {
 
   useEffect(() => {
     if (editingMessageId) {
-      const messageToEdit = messages.results.find(
-        (msg) => msg.id === editingMessageId
-      );
+      const messageToEdit = messages.results.find((msg) => msg.id === editingMessageId);
       if (messageToEdit) {
         setNewMessage(messageToEdit.content);
       }
     } else {
-      setNewMessage("");
+      setNewMessage('');
     }
   }, [editingMessageId, messages.results]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.results]);
 
   const fetchMoreMessages = async () => {
@@ -55,19 +53,25 @@ const useMessages = (id) => {
   };
 
   const getErrorMessage = (err) => err.response?.data || err.message;
-  const handleError = (message) => setError(message);
+
+  const handleError = (message) => {
+    setError(message);
+    console.error(message);
+  };
 
   const handleChange = (e) => setNewMessage(e.target.value);
 
   const handleSend = async () => {
-    if (newMessage.trim() === "") {
-      handleError("Cannot send blank messages");
+    if (newMessage.trim() === '') {
+      handleError('Cannot send blank messages');
       return;
     }
 
-    editingMessageId
-      ? await handleEditSubmit()
-      : await handleNewMessageSubmit();
+    if (editingMessageId) {
+      await handleEditSubmit();
+    } else {
+      await handleNewMessageSubmit();
+    }
   };
 
   const handleNewMessageSubmit = async () => {
@@ -79,7 +83,7 @@ const useMessages = (id) => {
       });
 
       if (response.status === 201) {
-        setNewMessage("");
+        setNewMessage('');
         refreshMessages();
       }
     } catch (err) {
@@ -95,7 +99,7 @@ const useMessages = (id) => {
       });
 
       if (response.status === 200) {
-        setNewMessage("");
+        setNewMessage('');
         setEditingMessageId(null);
         refreshMessages();
       }
@@ -119,9 +123,7 @@ const useMessages = (id) => {
       if (response.status === 204) {
         setMessages((prev) => ({
           ...prev,
-          results: prev.results.filter(
-            (msg) => msg.id !== messageToDelete.id
-          ),
+          results: prev.results.filter((msg) => msg.id !== messageToDelete.id),
         }));
         setShowDeleteModal(false);
       }
@@ -138,7 +140,7 @@ const useMessages = (id) => {
   const handleDeleteCancel = () => setShowDeleteModal(false);
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -163,6 +165,7 @@ const useMessages = (id) => {
     handleDeleteConfirm,
     setEditingMessageId,
     setError,
+    setNewMessage,
   };
 };
 

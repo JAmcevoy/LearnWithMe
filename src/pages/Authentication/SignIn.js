@@ -12,46 +12,49 @@ const SignIn = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false); 
   const [isModalVisible, setIsModalVisible] = useState(false);
+
   const setCurrentUser = useSetCurrentUser();
   const history = useHistory();
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const response = await axios.post('/dj-rest-auth/login/', {
-        username,
-        password,
-      });
-
-      const { data } = response;
+      const { data } = await axios.post('/dj-rest-auth/login/', { username, password });
       setCurrentUser(data);
 
       // Redirect to homepage and force refresh
       history.replace('/');
       window.location.reload(); 
-
     } catch (err) {
-      if (err.response) {
-        setError(`Error: ${err.response.data.detail || 'Invalid credentials. Please try again.'}`);
-      } else if (err.request) {
-        setError('Network error. Please try again.');
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
-      console.error('Sign-in error:', err);
-      setIsModalVisible(true); 
+      handleError(err);
     } finally {
       setLoading(false); 
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); 
+  // Handle error based on response or request failure
+  const handleError = (err) => {
+    if (err.response) {
+      setError(`Error: ${err.response.data.detail || 'Invalid credentials. Please try again.'}`);
+    } else if (err.request) {
+      setError('Network error. Please try again.');
+    } else {
+      setError('An unexpected error occurred. Please try again.');
+    }
+    console.error('Sign-in error:', err);
+    setIsModalVisible(true); 
   };
 
+  // Toggle visibility of password
+  const togglePasswordVisibility = () => {
+    setShowPassword(prev => !prev);
+  };
+
+  // Handle closing the error modal
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
@@ -80,7 +83,7 @@ const SignIn = () => {
             <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
             <input
               id="password"
-              type={showPassword ? 'text' : 'password'} // Toggle input type between text and password
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
@@ -97,9 +100,9 @@ const SignIn = () => {
           <button
             type="submit"
             className={`w-full bg-blue-500 text-white p-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}`}
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign In'} {/* Show loading text when submitting */}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
       </div>

@@ -75,7 +75,7 @@ const PostCreation = () => {
 
     if (loading) {
         return <LoadingSpinner />;
-      }
+    }
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-slate-400 p-4 md:p-8 mt-16 md:mt-0">
@@ -104,7 +104,7 @@ const PostCreation = () => {
                                 onChange={(e) => setSteps(e.target.value)}
                                 className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
                                 rows="6"
-                                placeholder="Share your Approach..."
+                                placeholder="Share your approach..."
                                 required
                             />
                         </div>
@@ -153,7 +153,7 @@ const PostCreation = () => {
                         type="file"
                         onChange={handleImageChange}
                         className="absolute inset-0 opacity-0 cursor-pointer"
-                        accept="posts/media/*"
+                        accept="image/*"
                     />
                 </div>
             </div>

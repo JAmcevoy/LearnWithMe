@@ -21,7 +21,7 @@ const PostList = () => {
     handleSearchChange,
     handleClearFilters,
     handleCloseModal,
-    setPosts, 
+    setPosts,
   } = usePostContent(history);
 
   if (loading && filteredPosts.length === 0) {
@@ -30,14 +30,17 @@ const PostList = () => {
 
   return (
     <>
+      {/* Error Modal */}
       {error && <ErrorModal message={error} onClose={handleCloseModal} />}
 
+      {/* Search Bar */}
       <SearchBar
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         onClearFilters={handleClearFilters}
       />
 
+      {/* No Posts Found Message */}
       {filteredPosts.length === 0 && searchQuery && (
         <div className="text-center mt-8">
           <h1>No Posts Found for "{searchQuery}"</h1>
@@ -45,14 +48,15 @@ const PostList = () => {
         </div>
       )}
 
+      {/* Infinite Scroll */}
       <InfiniteScroll
         dataLength={filteredPosts.length}
-        next={() => fetchMoreData(posts, setPosts)} 
+        next={() => fetchMoreData(posts, setPosts)}
         hasMore={!!posts.next}
         loader={<p className="text-center mt-2">Loading more posts...</p>}
       >
         <div className="flex flex-row flex-wrap justify-center gap-4 py-4 px-4">
-          {filteredPosts.map((post) => (
+          {filteredPosts.map(post => (
             <PostItem
               key={post.id}
               post={post}

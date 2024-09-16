@@ -1,12 +1,12 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
-import { FaPaperPlane, FaEdit, FaTrash } from "react-icons/fa";
-import styles from "../../styles/Chats.module.css";
-import DeleteConfirmation from "../../components/DeleteModal";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import ErrorModal from "../../components/ErrorModal";
-import InfiniteScroll from "react-infinite-scroll-component";
-import useMessages from "../../hooks/useMessages";
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { FaPaperPlane, FaEdit, FaTrash } from 'react-icons/fa';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import styles from '../../styles/Chats.module.css';
+import DeleteConfirmation from '../../components/DeleteModal';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorModal from '../../components/ErrorModal';
+import useMessages from '../../hooks/useMessages';
 
 const Chats = () => {
   const { id } = useParams();
@@ -28,10 +28,44 @@ const Chats = () => {
     fetchMoreMessages,
     handleDeleteConfirm,
     setEditingMessageId,
-    setError, 
+    setError,
   } = useMessages(id);
 
   if (loading && !messages.results.length) return <LoadingSpinner />;
+
+  const renderMessages = () =>
+    [...messages.results]
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      .map((message) => (
+        <div
+          key={message.id}
+          className={`bg-blue-300 p-4 rounded-lg shadow-md relative ${styles.chatbox}`}
+        >
+          <Link to={`/profile/${message.owner}`} className="font-semibold font-serif">
+            {message.owner_username || 'Unknown User'}
+          </Link>
+          <p>{message.content}</p>
+          <small>{message.created_at}</small>
+          {message.owner === currentUser.pk && (
+            <>
+              <button
+                className="absolute top-2 right-10 text-blue-500 hover:text-blue-700"
+                onClick={() => setEditingMessageId(message.id)}
+                aria-label="Edit message"
+              >
+                <FaEdit />
+              </button>
+              <button
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                onClick={() => handleDeleteClick(message)}
+                aria-label="Delete message"
+              >
+                <FaTrash />
+              </button>
+            </>
+          )}
+        </div>
+      ));
 
   return (
     <div className={`flex flex-col h-screen bg-slate-400 ${styles.fitting}`}>
@@ -42,44 +76,12 @@ const Chats = () => {
       <div className="flex-grow p-4 overflow-auto scrollableDiv">
         <InfiniteScroll
           dataLength={messages.results.length}
-          next={fetchMoreMessages}
+          next={fetchMoreMessages(messages.useMessages)}
           hasMore={!!messages.next}
           loader={<p className="text-center mt-2">Loading more messages...</p>}
           scrollableTarget="scrollableDiv"
         >
-          {messages.results.map((message) => (
-            <div
-              key={message.id}
-              className={`bg-blue-300 p-4 rounded-lg shadow-md relative ${styles.chatbox}`}
-            >
-              <Link to={`/profile/${message.owner}`} className="font-semibold font-serif">
-                {message.owner_username || "Unknown User"}
-              </Link>
-              <p className="font-mono">{message.content || "No content"}</p>
-              <p className="text-gray-500 text-sm">
-                {message.timestamp || "Unknown time"}
-              </p>
-
-              {message.owner === currentUser.pk && (
-                <>
-                  <button
-                    className="absolute top-2 right-10 text-blue-500 hover:text-blue-700"
-                    onClick={() => setEditingMessageId(message.id)}
-                    aria-label="Edit message"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                    onClick={() => handleDeleteClick(message)}
-                    aria-label="Delete message"
-                  >
-                    <FaTrash />
-                  </button>
-                </>
-              )}
-            </div>
-          ))}
+          {renderMessages()}
         </InfiniteScroll>
         <div ref={messagesEndRef} />
       </div>
@@ -91,21 +93,18 @@ const Chats = () => {
             value={newMessage}
             onChange={handleChange}
             onKeyPress={handleKeyPress}
-            aria-label={editingMessageId ? "Edit message" : "New message"}
-            placeholder={
-              editingMessageId ? "Edit your message..." : "Type your message..."
-            }
+            aria-label={editingMessageId ? 'Edit message' : 'New message'}
+            placeholder={editingMessageId ? 'Edit your message...' : 'Type your message...'}
             rows={2}
           />
           <button
             onClick={handleSend}
-            className={`ml-2 p-2 rounded-lg transition ${
-              newMessage.trim() === ""
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-            disabled={newMessage.trim() === ""}
-            aria-disabled={newMessage.trim() === ""}
+            className={`ml-2 p-2 rounded-lg transition ${newMessage.trim() === ''
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            disabled={newMessage.trim() === ''}
+            aria-disabled={newMessage.trim() === ''}
             aria-label="Send message"
           >
             <FaPaperPlane />

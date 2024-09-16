@@ -1,156 +1,92 @@
 # Learn with Me
 
+![Responsive](docs/images/amiresponsive.PNG)
+
+[Learn With Me](https://learn-with-me-593ba116ca81.herokuapp.com)
+
 Welcome to **Learn with Me**, the ultimate learning app designed to empower users by sharing and discovering knowledge. Whether you're a student, professional, or lifelong learner, this app is your go-to platform for mastering new skills and expanding your horizons.
 
 ## What is *Learn with Me*?
 
 *Learn with Me* is more than just a learning tool—it's a vibrant community where you can:
 
-- **Share Your Wisdom:** Post your own tips, tricks, and insights to help others learn more effectively.
-- **Discover New Ideas:** Browse and interact with posts from fellow users to gain fresh perspectives and innovative techniques.
-- **Connect and Collaborate:** Join discussions and chat with people who share your interests, fostering a collaborative learning environment.
+- **Share Your Wisdom:** Post your tips, tricks, and insights to help others learn more effectively.
+- **Discover New Ideas:** Browse posts from fellow users to gain fresh perspectives and innovative techniques.
+- **Connect and Collaborate:** Join discussions and chat with like-minded individuals, fostering a collaborative learning environment.
 
 ## Planning
 
+### Pages Overview
+
 - **Home/Feed**: 
-  - This page will display a list of different users' posts.
-  - It will serve as the main/home page. Starting here helps set a standard design for the rest of the app.
-  - Consider a unique approach for the navbar: use a side component for navigation on larger screens, while maintaining a standard mobile navbar for smaller screens.
+  - Displays a list of user posts and serves as the main landing page.
+  - A sidebar navigation component is used for larger screens, while a standard mobile navbar is available for smaller screens.
 
 - **Profile**:
-  - This page will show the current user's profile information.
-  - It will include recent posts, recent likes, and counts for followers and following.
-  - Aim to consolidate all necessary user information and relevant actions in one place.
+  - Displays user profile information, recent posts, likes, and follower/following counts.
+  - Allows users to easily manage profile-related actions.
 
 - **Interest Circles**:
-  - This page will act as a groups component, bringing users with similar interests together.
-  - The design should be straightforward and aligned with the 'Circles' concept to ensure clarity and usability.
+  - Acts as a groups component to bring users with similar interests together.
+  - Design focuses on clarity, making it easy to join and navigate various circles.
 
 - **Chats**:
-  - This will be a sub-page of Interest Circles, where users can read messages posted by others in the circle.
-  - Keep the design simple and user-friendly, consistent with common social media chat interfaces.
+  - Embedded within Interest Circles, this sub-page allows users to communicate with others in the circle.
+  - A simple and user-friendly design keeps the chat intuitive.
 
-#### Design
+### Design
 
-##### Home/Feed
+#### Home/Feed
 
-- Start with this page to set the standard for the app's design.
-- Consider incorporating a side navigation component for larger screens, while ensuring compatibility with standard mobile navigation.
-  
-  ![Wireframe - Feed](docs/images/home-page-wirframe.JPG)
+- Set as the design standard for the app. 
+- Responsive side navigation is incorporated for larger screens.
 
-##### Profile
+![Wireframe - Feed](docs/images/home-page-wirframe.JPG)
 
-- Design to include essential user information and recent activities, such as posts and likes.
-- Ensure easy access to profile management, privacy settings, and activity logs.
-  
-  ![Wireframe - Profile](docs/images/profile-wirframe.PNG)
+#### Profile
 
-##### Interest Circles
+- Displays essential user information such as recent activity and posts.
+- Includes easy access to profile management options.
 
-- Focus on clarity and ease of use for navigating and interacting with interest circles.
-- Design should emphasize community and make it simple to join or view different circles.
-  
-  ![Wireframe - Interest Circles](docs/images/interest-circle-wirframe.PNG)
+![Wireframe - Profile](docs/images/profile-wirframe.PNG)
 
-##### Chats
+#### Interest Circles
 
-- Keep the chat page straightforward, focusing on user conversations.
-- Consider features like message search, reactions, or pinned messages if applicable.
-  
-  ![Wireframe - Chats](docs/images/chats-wirframe.PNG)
+- Clear and easy-to-use design for navigating interest circles.
 
+![Wireframe - Interest Circles](docs/images/interest-circle-wirframe.PNG)
 
-#### Logic
+#### Chats
 
-- Using an online tool I was able to map out my database and get a better idea of what relationships were present between tables
+- Focused on user conversations, the chat page is simple, with potential additions like message search and reactions in the future.
 
-![Database Schema](docs/images/database-schema.PNG)
+![Wireframe - Chats](docs/images/chats-wirframe.PNG)
 
-#### User Stories
+---
 
-##### Backend
+## Tailwind CSS 
 
-1. **Profile Model**
-   - **Issue #2**
-2. **Post Model**
-   - **Issue #3**
-3. **Messages Model**
-   - **Issue #4**  
-4. **Circles Model**
-   - **Issue #5**
-5. **Like Model**
-   - **Issue #6**
-6. **CRUD Operations for Posts API**
-   - **Issue #7**
-7. **CRUD Operations for Messages API**
-   - **Issue #8**
-8. **CRUD Operations for Circles API**
-   - **Issue #9**
-9. **CRUD Operations for User Profiles API**
-   - **Issue #10**
-10. **User Registration**
-    - **Issue #11**
-11. **User Login API**
-    - **Issue #12**
-12. **Filter Posts by Categories API**
-    - **Issue #14**
-13. **Pagination for Feeds API**
-    - **Issue #15**
-14. **Pagination for Groups API**
-    - **Issue #16**
-15. **Followers Model**
-    - **Issue #17**
+### Why Tailwind CSS?
 
+#### **Design Flexibility**
+Tailwind CSS provides utility-first styling, which gives granular control directly in the HTML. This is great for creating custom designs easily without being restricted by predefined components.
 
+#### **Customizability**
+Tailwind’s configuration file allows for defining your own design system, including colors, spacing, and breakpoints. This flexibility is a significant advantage when compared to frameworks like Bootstrap.
 
-##### Frontend
+#### **File Size and Performance**
+Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulting in smaller CSS files and faster load times. This helps keep the performance optimal, unlike Bootstrap's larger default builds.
 
-1. **Reusable Components**
-   - **Issue #1**  
-2. **State Management**
-   - **Issue #2**  
-3. **Routing**
-   - **Issue #3**
-4. **Forms and Validation**
-   - **Issue #4**  
-5. **Media Handling**
-   - **Issue #5**  
-6. **Infinite Scroll**
-   - **Issue #6**  
-7. **View Profile Page**
-   - **Issue #7**  
-8. **View Interest Circles**
-   - **Issue #8**  
-9. **View Chats**
-   - **Issue #9**  
-10. **Create a Post**
-    - **Issue #11**  
-11. **Follow Profile**
-    - **Issue #12**  
-12. **Pagination for Feeds API**
-    - **Issue #13**
+#### **Summary**
+- **Design Flexibility**: Allows for unique and customized designs.
+- **Customizability**: Extensively tailors the design system to your project needs.
+- **Performance**: Smaller, faster CSS builds due to Tailwind’s purging mechanism.
 
+---
 
-#### Tailwind CSS 
+## Features
 
-##### **Design Flexibility**
-Tailwind CSS provides a utility-first approach that offers granular control over styling directly in your HTML. This means you can create custom designs easily and adjust styles without being limited by predefined components. If your project requires a unique design or complex layouts, Tailwind’s flexibility is a significant advantage.
-
-##### **Customizability**
-Tailwind CSS excels in customizability. Its configuration file (tailwind.config.js) allows you to define your own design system, including colors, spacing, and breakpoints. This level of customization can help you create a unique brand identity and tailor the framework to meet specific design requirements, without needing to override a lot of existing styles as you might with Bootstrap.
-
-##### **File Size and Performance**
-Tailwind CSS's build process includes tools like PurgeCSS to remove unused styles from the final build. This results in smaller CSS file sizes and potentially faster load times for your application. In contrast, Bootstrap’s default build includes many components and styles, which can lead to larger CSS files if not carefully managed.
-
-##### **Summary**
-Design Flexibility: Tailwind allows for highly customized and unique designs.
-Customizability: Tailwind’s configuration file provides extensive options for tailoring the design system.
-File Size and Performance: Tailwind’s purging mechanism helps keep the CSS file size minimal, improving performance.
-These reasons make Tailwind CSS a strong choice if a project values flexibility, customizability, and performance.
-
-
-## Existing Features
+### Existing Features
 
 - **Sidebar/Navigation Bar**
   - The Sidebar replaces the previous Navigation Bar.
@@ -159,8 +95,8 @@ These reasons make Tailwind CSS a strong choice if a project values flexibility,
     - **Logged Out**: Home, Sign In, Sign Up.
   - The Sidebar is collapsible; even when closed, the icons remain functional as links, so users don't need to expand the Sidebar to change pages.
 
-  ![Logged In]()
-  ![Logged Out]()
+  ![Logged In](docs/images/)
+  ![Logged Out](docs/images/)
 
 - **Feed Page**
   - The Feed Page is the landing page for users accessing the app.
@@ -168,9 +104,9 @@ These reasons make Tailwind CSS a strong choice if a project values flexibility,
   - Logged-in users can view the post owner's profile page by clicking on the top of the card.
   - Logged-in users can also like posts directly from the Feed Page. Liked posts will display as "Unliked" with a blue color to indicate their status.
 
-  ![Feed Page]()
-  ![Post Card]()
-  ![Like Button]()
+  ![Feed Page](docs/images/)
+  ![Post Card](docs/images/)
+  ![Like Button](docs/images/)
 
 - **Profile Page**
   - The Profile Page displays the user's personal information:
@@ -185,173 +121,183 @@ These reasons make Tailwind CSS a strong choice if a project values flexibility,
     - Users can search through their previous posts, sorted by most recent first.
     - The Recent Likes section shows the user's last 10 likes.
 
-  ![Profile Page]()
+  ![Profile Page](docs/images/)
 
 - **Interest Circles Page**
   - The Interest Circles Page is designed for clarity.
   - Each circle displays the interest name, owner, and an info button that shows the circle's description when clicked.
   - If the logged-in user owns the circle, they have the option to delete or edit the circle via a modal.
 
-  ![Interest Circles]()
-  ![Circle Edit Modal]()
+  ![Interest Circles](docs/images/)
+  ![Circle Edit Modal](docs/images/)
 
 - **Chat Page**
   - The Chat Page features a simple message interface with a white background for readability.
   - Messages are displayed in a list, starting with the most recent messages at the top. Users can scroll back through older messages.
   - Message owners have edit and delete icons on their messages. Selecting "Edit" allows them to modify their message directly in the input field below, removing the need for a modal and making the process more seamless.
 
-  ![Chats]()
-  ![Edit/Delete]()
-  ![Edit Message]()
+  ![Chats](docs/images/)
+  ![Edit/Delete](docs/images/)
+  ![Edit Message](docs/images/)
 
 - **Error Modal**
   - The Error Modal handles various errors across different pages.
 
-  ![Error Modal]()
+  ![Error Modal](docs/images/)
 
 - **Delete Modal**
   - The Delete Modal is used for handling deletions across multiple pages.
 
-  ![Delete Modal]()
+  ![Delete Modal](docs/images/)
 
 - **Sign In Page**
   - I wanted the Sign In process to be quick and easy so I just went with a standard login card but to make it easier for people I added a Show/Hide button for password so User can check for any password errors before subbmitting the login.
 
   ![Sign In]()
-  ![Show Passoword]()
 
 - **SignUp Page**
   - Allows new users to create an account by entering a username and password.
   - Simple and clean form layout for ease of use and clear focus on registration.
   - Ensures passwords match before submission, providing immediate feedback.
 
-  ![Sign Up Page]()
+  ![Sign Up Page](docs/images/)
 
 - **Loading Spinner**
   - I added a loading spinner for cases of the app running slow.
 
 ![Spinner](docs/images/loading-spinner.PNG)
 
+- **Search Bar**
+  - The SearchBar component is a customizable search input that allows users to search based on titles or owner names. It features a clear button that appears when a query is entered, enabling users to quickly reset their search filters.
 
-## Features Left to Implement
+![Search Bar](docs/images/)
 
-- Orginally, I wanted to make posts to be able to handle video and image. However, I found it difficut to get the multi media field operations for anything other than image. Because of the purpose of the website I definetly think it would be a perfect feature to implement, if I had more time and help.
-- I wanted to add a share button to post that allows users to share posts to an interest circle directly or copy the link to share externally.
-- Introduce a notification system to alert users when someone interacts with their post (likes, comments, shares), follows them, or when a new post is made in an interest circle they follow.
-Private Messaging.
-- Allow users to send direct messages to one another. This would help foster community and allow for more personal interactions between users outside of public posts.
-- I would like to add a way that circles could be private or public and all private circles have a password to enter or request acceptance from the groups owner.
-- I would like the ability for user to attach documents and other files in chats.
+- **Go Back Button**
+  - The BackButton component is a fixed-position button that allows users to navigate to the previous page in their browser history. It features an arrow icon and is designed to be both accessible and intuitive.
+  - The button was a bit awkward to fit on small screens, so I removed it for small screen sizes.
+
+![BackButton](docs/images/)
+
+---
+
+### Features Left to Implement
+
+- Originally, I wanted to enable posts to handle both video and image uploads. However, I found it difficult to implement multimedia operations for anything other than images. This is a feature I would prioritize for future development, given the nature of the platform.
+- I planned to implement a share button to allow users to share posts directly to an interest circle or externally by copying the link.
+- A notification system is needed to alert users when their posts are liked, commented on, or shared, when they are followed, or when new posts are made in circles they follow.
+- **Private Messaging**: I would like to allow users to send direct messages to one another, fostering more personal interactions outside of public posts.
+- **Private/Public Circles**: Introducing private circles that require either a password or approval from the group's owner would enhance community management.
+- **File Attachments in Chats**: Allowing users to attach documents or other files in chat messages would add another layer of collaboration.
+
+---
 
 ## Testing
 
-- **Browser Testing**
-  - List the browsers tested and the results of the testing.
+### Manual Testing
 
-- **Responsiveness**
-  - Explain how responsiveness was tested and the tools used.
+#### Frontend Testing (React)
 
-- **Form Validation**
-  - Detail the testing and results of form validation.
+1. **Navigation**: Tested navigation between Home, Profile, Interest Circles, and Chats.  
+   **Result**: All links directed to the correct pages.
+   
+2. **User Registration and Login**: Tested user registration, login, logout, and restricted page access.  
+   **Result**: All functionalities worked as expected, with appropriate redirects for restricted pages.
+
+3. **Profile Page**: Tested editing and viewing profile information.  
+   **Result**: Profile updates saved successfully and reflected immediately.
+
+4. **Post Creation**: Tested post creation and image uploads.  
+   **Result**: Posts were created and displayed correctly.
+
+5. **Interest Circles**: Tested joining, viewing, and leaving interest circles, as well as sending messages.  
+   **Result**: All circle functionalities worked as expected.
+
+6. **Feed Page**: Tested infinite scroll, liking posts, and viewing post details.  
+   **Result**: Infinite scroll and interactions with posts worked correctly.
+
+7. **Search Bar**: Tested searching by title or owner name and clearing the search.  
+   **Result**: The search bar returned accurate results, and the clear button functioned properly.
+
+8. **Responsive Design**: Tested responsiveness across mobile, tablet, and desktop.  
+   **Result**: The app scaled correctly for all screen sizes without layout issues.
+
+#### Backend Testing (Python)
+
+1. **User Authentication API**: Tested user registration, login, and JWT token generation.  
+   **Result**: All authentication processes worked correctly.
+
+2. **Post API**: Tested CRUD operations on posts, pagination, and filtering.  
+   **Result**: All post-related operations worked without issues.
+
+3. **Interest Circles API**: Tested circle creation, membership management, and CRUD operations.  
+   **Result**: Circle functionalities worked as expected.
+
+4. **Messaging API**: Tested message sending and receiving in interest circles.  
+   **Result**: Messages were sent and received in real-time.
+
+5. **Error Handling**: Tested API responses for unauthorized access and invalid data.  
+   **Result**: Appropriate error messages were returned.
+
+---
 
 ### Validator Testing
 
-- **HTML**
-  - Provide a link to the HTML validation results.
+#### JavaScript (React Frontend)
+- **Tool Used**: [ESLint](https://eslint.org/)  
+  ESLint was used to validate JavaScript and JSX files, ensuring best practices and compliance with React-specific rules.  
+  **Result**: Passed ESLint checks without significant issues.
 
-- **CSS**
-  - Provide a link to the CSS validation results.
+#### Python (Backend)
+- **Tool Used**: [Pylint](https://www.pylint.org/)  
+  Pylint was used to ensure code adheres to PEP 8 standards and identify potential issues.  
+  **Result**: Passed Pylint checks without significant issues.
 
-- **Js**
-  - Provide a link to the Js validation results.
+---
 
-- **Python**
-  - Provide a link to the Python validation results.
+## Bugs
 
-### Bugs Faced
+### Bugs I Faced Along the Way
 
-- Describe any bugs encountered during development and how they were addressed.
+1. **Slow Loading Times for Large Feeds**: Implemented lazy loading and infinite scroll to handle large amounts of posts and improve performance.
+2. **Chat Page Layout on Mobile**: Addressed layout issues on mobile devices with responsive CSS to ensure a consistent chat interface.
+3. **Go Back Button Visibility on Small Screens**: Adjusted the button size and position to improve accessibility on mobile.
+
+---
 
 ### Bugs Yet to Fix
 
-- List any unresolved issues and potential plans for addressing them.
+1. **Error Handling for Network Issues**: Currently, the app lacks sufficient notifications for lost network connections or server downtime. Better error handling is needed to alert users when connectivity issues occur.
+2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties in managing file sizes and formats. This feature requires additional development to handle larger media files properly.
+3. **Go Back Button**: Although functional, the "Go Back" button needs further adjustments to improve its usability on smaller screens, where it can be difficult to access.
+4. **The Sort Order of Chats**: The chat functionality was challenging to implement, especially in terms of loading messages in the correct order. Ideally, the chat should load with the most recent messages at the bottom, allowing users to scroll up to view older messages. However, the current solution first loads at the top of the chat and then scrolls to the bottom. While this works, it could lead to a poor user experience in more active chats with many users, as the initial jump from top to bottom may be disorienting.
+
+---
 
 ## Deployment
 
 ### API Deployment
 
-Deploying an API involves setting up a server to host your backend application. The API can be deployed to various cloud platforms or hosting services. Here’s a general outline for deploying an API:
-
-1. **Prepare Your API:**
-   - Ensure that your API is production-ready. This includes handling errors gracefully, configuring environment variables, and securing your endpoints.
-   - Test your API locally to confirm that it behaves as expected.
-
-2. **Choose a Hosting Platform:**
-   - Select a cloud provider or hosting service for deploying your API. Common choices include AWS, Azure, Google Cloud, DigitalOcean, or Heroku.
-
-3. **Deploy the API:**
-   - **Upload Your Code:** Transfer your API code to the chosen hosting platform. This can be done through a CI/CD pipeline, FTP, or directly from your local machine.
-   - **Configure the Environment:** Set up environment variables, database connections, and other necessary configurations.
-   - **Run Migrations:** If your API relies on a database, run any necessary migrations to set up the schema.
-
-4. **Monitor and Maintain:**
-   - **Monitoring:** Use monitoring tools to track performance and errors.
-   - **Scaling:** Adjust resources based on demand to ensure your API handles traffic efficiently.
-   - **Updates:** Regularly deploy updates to improve functionality and fix bugs.
+1. **Prepare the API for Production**: Handled errors gracefully, secured endpoints, and configured environment variables for sensitive data.
+2. **Hosting**: Hosted the API on [Heroku](https://heroku.com), integrated with GitHub for continuous deployment.
+3. **Deployment Process**: 
+   - Created the app on Heroku and linked it to the GitHub repository.  
+   - Configured environment variables and ran necessary database migrations.  
+   - Monitored performance through Heroku’s dashboard and metrics.
 
 ### GitHub
 
-GitHub is a platform for version control and collaboration, using Git. It’s essential for managing your codebase and collaborating with other developers. Here’s how to set up and use GitHub for your project:
+1. **Repository Setup**: The code was managed on GitHub, with branches used for feature development and bug fixes.
+2. **Continuous Deployment**: The GitHub repository was linked to Heroku for automatic deployments on push to the main branch.
 
-1. **Create a Repository:**
-   - **Create a New Repository:** Go to GitHub, create a new repository for your project, and initialize it with a README, .gitignore, and license if needed.
-   - **Clone the Repository:** Clone the repository to your local machine to start working on your project.
-
-2. **Push Your Code:**
-   - **Add Your Code:** Add your project files to the local repository.
-   - **Commit Changes:** Commit your changes with descriptive messages.
-   - **Push to GitHub:** Push your commits to the remote repository on GitHub.
-
-3. **Collaborate:**
-   - **Branches:** Use branches to work on new features or fixes separately from the main codebase.
-   - **Pull Requests:** Submit pull requests to review and merge changes into the main branch.
-   - **Issues and Discussions:** Use GitHub Issues and Discussions to track bugs, feature requests, and collaborate with your team.
-
-4. **Integrate with CI/CD:**
-   - Set up Continuous Integration (CI) and Continuous Deployment (CD) workflows using GitHub Actions or other CI/CD tools to automate testing and deployment.
-
-### Heroku
-
-Heroku is a cloud platform that simplifies deployment and scaling of applications. Here’s how to deploy a project to Heroku:
-
-1. **Set Up Heroku:**
-   - **Create a Heroku Account:** Sign up for an account at [Heroku](https://www.heroku.com/).
-   - **Install the Heroku CLI:** Download and install the Heroku Command Line Interface (CLI) for interacting with Heroku from your terminal.
-
-2. **Prepare Your Application:**
-   - **Procfile:** Create a `Procfile` in the root directory of your project to define the commands that Heroku should run to start your application.
-   - **Dependencies:** Ensure all dependencies are listed in `requirements.txt` (for Python) or `package.json` (for Node.js).
-
-3. **Deploy to Heroku:**
-   - **Login:** Use the Heroku CLI to log in with `heroku login`.
-   - **Create an App:** Run `heroku create` to create a new Heroku app.
-   - **Push Code:** Push your code to Heroku using `git push heroku main` (or `git push heroku master` if your branch is named `master`).
-   - **Set Up Environment Variables:** Configure environment variables using `heroku config:set` for your application settings.
-
+---
 
 ## Credits
 
 ### Code
-
-- The Idea for protected routes came from [Medium](https://medium.com/@yogeshmulecraft/implementing-protected-routes-in-react-js-b39583be0740)
-- All the inline styles have come from [Tailwind](https://tailwindcss.com/docs/)
-- How to set the [verbose_name](https://docs.djangoproject.com/en/1.10/ref/models/options/#verbose-name) for Categories
+- Protected routes implementation inspired by [Medium](https://medium.com/@yogeshmulecraft/implementing-protected-routes-in-react-js-b39583be0740).
+- Tailwind CSS styles and documentation from [Tailwind CSS](https://tailwindcss.com/docs/).
+- [Django verbose_name documentation](https://docs.djangoproject.com/en/1.10/ref/models/options/#verbose-name).
 
 ### Content
-
-- The wirframes for this project were created with [Wirframe](https://wireframe.cc/)
-- Database Schema was created using [Database Schema](https://dbdiagram.io/)
-
-### Media
-
-- Provide credits for any media (images, videos, etc.) used in the project.
+- Wireframes created with [Wireframe.cc](https://wireframe.cc/).
+- Database schema diagram created with [dbdiagram.io](https://dbdiagram.io/).

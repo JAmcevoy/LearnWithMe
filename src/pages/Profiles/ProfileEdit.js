@@ -4,7 +4,6 @@ import { useParams, useHistory } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
-
 const ProfileEdit = () => {
     const [username, setUsername] = useState('');
     const [aboutMe, setAboutMe] = useState('');
@@ -15,18 +14,16 @@ const ProfileEdit = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const history = useHistory();
-    const { id } = useParams(); 
+    const { id } = useParams();
 
     useEffect(() => {
         const fetchProfileDetails = async () => {
             try {
-                const response = await axios.get(`/profiles/${id}/`);
-                const profile = response.data;
-
-                setUsername(profile.username);
-                setAboutMe(profile.about_me);
-                setSelectedCategory(profile.main_interest);
-                setExistingImage(profile.image);
+                const { data } = await axios.get(`/profiles/${id}/`);
+                setUsername(data.username);
+                setAboutMe(data.about_me);
+                setSelectedCategory(data.main_interest);
+                setExistingImage(data.image);
             } catch (err) {
                 console.error('Error fetching profile details:', err);
                 setError('Error fetching profile details.');
@@ -35,8 +32,8 @@ const ProfileEdit = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('/categories/');
-                setCategories(response.data.results || []);
+                const { data } = await axios.get('/categories/');
+                setCategories(data.results || []);
             } catch (err) {
                 console.error('Error fetching categories:', err);
                 setError(`Error fetching categories: ${err.message}`);
@@ -68,11 +65,8 @@ const ProfileEdit = () => {
 
         try {
             await axios.put(`/profiles/${id}/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
-
             history.push(`/profile/${id}`);
         } catch (err) {
             console.error('Error updating profile:', err);
@@ -124,7 +118,7 @@ const ProfileEdit = () => {
                                 className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
                             >
                                 <option value="">Select a category</option>
-                                {categories.map((cat) => (
+                                {categories.map(cat => (
                                     <option key={cat.id} value={cat.id}>{cat.type}</option>
                                 ))}
                             </select>

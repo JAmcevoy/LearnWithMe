@@ -5,9 +5,12 @@
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^11.2.7",
+    "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.4",
+    "axios-mock-adapter": "^2.0.0",
     "bootstrap": "^4.6.2",
+    "jest-mock": "^29.7.0",
     "jwt-decode": "^3.1.2",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.8",
@@ -45,6 +48,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "jest": "^27.5.1",
     "msw": "^0.35.0",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10"

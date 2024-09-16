@@ -41,28 +41,30 @@ const PostDetails = () => {
     fetchPost();
   }, [fetchPost]);
 
-  const toggleLike = async (id, isLiked, likeId) => {
+  const toggleLike = async () => {
     try {
-      if (isLiked) {
+      if (liked) {
         await axios.delete(`/likes/${likeId}/`);
-        updatePostLikes(id, -1, null);
+        updatePostLikes(-1, null);
       } else {
         const { data } = await axios.post("/likes/", { post: id });
-        updatePostLikes(id, +1, data.id);
+        updatePostLikes(1, data.id);
       }
     } catch (err) {
       console.error("Error toggling like:", err);
-      setError('Error toggling like. Please make sure you are signed in');
+      setError('Error toggling like. Please make sure you are signed in.');
       setShowErrorModal(true);
     }
   };
 
-  const updatePostLikes = (postId, likeChange, newLikeId) => {
-    setPost((prevPost) => ({
+  const updatePostLikes = (likeChange, newLikeId) => {
+    setPost(prevPost => ({
       ...prevPost,
       likes_count: prevPost.likes_count + likeChange,
       like_id: newLikeId,
     }));
+    setLiked(!liked);
+    setLikeId(newLikeId);
   };
 
   const handleDelete = async () => {
@@ -76,24 +78,18 @@ const PostDetails = () => {
     }
   };
 
-  const handleDeleteClick = () => {
-    setShowDeleteConfirmation(true); 
-  };
+  const handleDeleteClick = () => setShowDeleteConfirmation(true);
 
-  const handleCancelDelete = () => {
-    setShowDeleteConfirmation(false); 
-  };
+  const handleCancelDelete = () => setShowDeleteConfirmation(false);
 
   const handleConfirmDelete = () => {
     setShowDeleteConfirmation(false);
     handleDelete(); 
   };
 
-  const formatSteps = (stepsText) => {
-    return stepsText
-      .split('\n')
-      .map((line, index) => <p key={index} className="mb-2">{line}</p>);
-  };
+  const formatSteps = (stepsText) => stepsText
+    .split('\n')
+    .map((line, index) => <p key={index} className="mb-2">{line}</p>);
 
   if (!post) return <LoadingSpinner />;
 
@@ -128,7 +124,8 @@ const PostDetails = () => {
               <div>
                 <Link
                   to={`/profile/${post?.owner_profile_id}`}
-                  className="text-xl font-semibold text-gray-900">
+                  className="text-xl font-semibold text-gray-900"
+                >
                   {post?.owner}
                 </Link>
                 <p className="text-sm text-gray-500">{new Date(post?.created_at).toLocaleDateString()}</p>
@@ -146,12 +143,12 @@ const PostDetails = () => {
               <div className="flex items-center space-x-6">
                 <button
                   className="flex items-center text-gray-500 hover:text-blue-500 text-sm"
-                  onClick={() => toggleLike(post.id, !!post.like_id, post.like_id)}
+                  onClick={toggleLike}
                 >
-                  <FaThumbsUp className={`mr-1 ${post.like_id ? "text-blue-500" : "text-gray-500"}`} />
-                  {post.like_id ? "Unlike" : "Like"} ({post.likes_count})
+                  <FaThumbsUp className={`mr-1 ${liked ? "text-blue-500" : "text-gray-500"}`} />
+                  {liked ? "Unlike" : "Like"} ({post.likes_count})
                 </button>
-                {post && post.is_owner && (
+                {post?.is_owner && (
                   <>
                     <Link to={`/posts/edit/${id}`} className="flex items-center text-gray-500 hover:text-blue-500">
                       <FaEdit className="mr-2" /> Edit

@@ -9,7 +9,7 @@ const NotFound = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-slate-400">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-slate-400 relative">
       <div className="text-center">
         <h1 className="text-6xl font-bold text-gray-800">404</h1>
         <p className="text-xl font-semibold text-gray-600 mb-4">Oops! Page Not Found</p>
@@ -23,9 +23,9 @@ const NotFound = () => {
           Go Back
         </button>
       </div>
-      <div className="absolute bottom-4 text-gray-400 text-sm">
+      <footer className="absolute bottom-4 text-gray-400 text-sm">
         <p>© {new Date().getFullYear()} Your Company</p>
-      </div>
+      </footer>
     </div>
   );
 };

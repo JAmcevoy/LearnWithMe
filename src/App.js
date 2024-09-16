@@ -24,12 +24,11 @@ function App() {
                 <BackButton />
 
                 <main className="transition-all duration-300 flex-grow">
+                    <h1 className='hidden'>Learn with me</h1> 
                     <Switch>
                         <Route path="/" exact component={PostContent} />
                         <Route path="/signin" exact component={SignIn} />
                         <Route path="/signup" exact component={SignUp} />
-
-                        {/* Protected Routes */}
                         <ProtectedRoute path="/posts/create" exact component={PostCreation} />
                         <ProtectedRoute path="/posts/edit/:id" exact component={PostEdit} />
                         <ProtectedRoute path="/interest-circles/create" exact component={InterestCircleCreation} />
@@ -37,10 +36,7 @@ function App() {
                         <ProtectedRoute path="/interest-circles" exact component={InterestCircles} />
                         <ProtectedRoute path="/profile/:id" exact component={Profile} />
                         <ProtectedRoute path="/profiles/:id/edit" exact component={ProfileEdit} />
-
                         <Route path="/posts/:id" exact component={PostDetails} />
-
-                        {/* Catch-all for 404 Not Found */}
                         <Route component={NotFound} />
                     </Switch>
                 </main>

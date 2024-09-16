@@ -6,7 +6,7 @@ const usePostContent = (history) => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Function to apply search filters to posts
   const applyFilters = useCallback((query, postsToFilter) => {
@@ -19,16 +19,16 @@ const usePostContent = (history) => {
     setFilteredPosts(filtered);
   }, []);
 
-  // Fetch initial posts on component mount
+  // Fetch initial posts and apply filters on component mount
   useEffect(() => {
     const fetchInitialPosts = async () => {
       try {
-        const { data } = await axios.get("/posts/");
+        const { data } = await axios.get('/posts/');
         setPosts({ results: data.results, next: data.next });
         applyFilters(searchQuery, data.results);
       } catch (err) {
-        setError("Error fetching posts. Please try again later.");
-        console.error("Error fetching posts:", err);
+        setError('Error fetching posts. Please try again later.');
+        console.error('Error fetching posts:', err);
       } finally {
         setLoading(false);
       }
@@ -43,9 +43,7 @@ const usePostContent = (history) => {
   }, [searchQuery, posts.results, applyFilters]);
 
   // Handle post click to navigate to post details
-  const handlePostClick = (id) => {
-    history.push(`/posts/${id}`);
-  };
+  const handlePostClick = (id) => history.push(`/posts/${id}`);
 
   // Handle like and unlike post actions
   const toggleLike = async (id, isLiked, likeId) => {
@@ -54,11 +52,11 @@ const usePostContent = (history) => {
         await axios.delete(`/likes/${likeId}/`);
         updatePostLikes(id, -1, null);
       } else {
-        const { data } = await axios.post("/likes/", { post: id });
-        updatePostLikes(id, +1, data.id);
+        const { data } = await axios.post('/likes/', { post: id });
+        updatePostLikes(id, 1, data.id);
       }
     } catch (err) {
-      console.error("Error toggling like:", err);
+      console.error('Error toggling like:', err);
     }
   };
 
@@ -75,20 +73,16 @@ const usePostContent = (history) => {
   };
 
   // Handle search input change
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+  const handleSearchChange = (event) => setSearchQuery(event.target.value);
 
   // Clear search filters
   const handleClearFilters = () => {
-    setSearchQuery("");
-    applyFilters("", posts.results);
+    setSearchQuery('');
+    applyFilters('', posts.results);
   };
 
   // Handle modal close
-  const handleCloseModal = () => {
-    setError(null);
-  };
+  const handleCloseModal = () => setError(null);
 
   return {
     posts,
