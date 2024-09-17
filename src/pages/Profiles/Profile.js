@@ -17,8 +17,10 @@ const Profile = () => {
     setShowErrorModal,
   } = useProfile();
 
+  // Display a loading spinner while fetching profile data or if profile is not available
   if (loading || !profile) return <LoadingSpinner />;
 
+  // Render profile image, fallback to placeholder image if not available
   const renderProfileImage = () => (
     <img
       src={profile.image || "https://via.placeholder.com/150"}
@@ -27,6 +29,7 @@ const Profile = () => {
     />
   );
 
+  // Render the "About Me" section
   const renderAboutMe = () => (
     <div className="text-lg text-gray-700 mt-4 p-4 rounded-md shadow-sm">
       <h2 className="text-2xl font-semibold text-gray-900 mb-2">About Me</h2>
@@ -36,12 +39,14 @@ const Profile = () => {
     </div>
   );
 
+  // Render the "Main Interest" section
   const renderInterest = () => (
     <p className="text-lg font-semibold text-gray-700 mt-4 p-2 rounded-md shadow-sm">
       Main Interest: <span className="text-blue-600">{profile.interest_name || 'Main Interest'}</span>
     </p>
   );
 
+  // Conditionally render the follow/unfollow button if the profile does not belong to the current user
   const renderFollowButton = () => (
     !profile.is_owner && (
       <button
@@ -53,6 +58,7 @@ const Profile = () => {
     )
   );
 
+  // Render the "Edit Profile" button if the current user is viewing their own profile
   const renderEditProfileButton = () => (
     profile.is_owner && (
       <button
@@ -64,9 +70,10 @@ const Profile = () => {
     )
   );
 
+  // Render profile statistics (posts, followers, following)
   const renderStats = () => (
     <div className="flex flex-col md:flex-row w-full mb-6">
-      {['posts_count', 'followers_count', 'following_count'].map((key, index) => (
+      {['posts_count', 'followers_count', 'following_count'].map((key) => (
         <div key={key} className="flex flex-col items-center md:w-1/3 mb-4 md:mb-0">
           <h2 className="text-2xl font-bold text-gray-900">{profile[key] || 0}</h2>
           <p className="text-gray-600">{key.replace('_count', '')}</p>
@@ -75,6 +82,7 @@ const Profile = () => {
     </div>
   );
 
+  // Render lists of recent liked posts and user posts
   const renderList = (items = [], title) => (
     <div className="bg-white p-6 rounded-none shadow-none mr-5 md:mr-20 mt-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-4">{title}</h2>
@@ -116,6 +124,7 @@ const Profile = () => {
         {renderList(filteredLikedPosts, 'Recent Liked Posts')}
         {renderList(filteredPosts, 'Recent Posts')}
       </div>
+      {/* Display error modal if there is an error */}
       {showErrorModal && (
         <ErrorModal
           message={errorMessage}
