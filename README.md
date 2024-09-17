@@ -184,7 +184,8 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
   - The BackButton component is a fixed-position button that allows users to navigate to the previous page in their browser history. It features an arrow icon and is designed to be both accessible and intuitive.
   - The button was a bit awkward to fit on small screens, so I removed it for small screen sizes.
 
-![BackButton](docs/images/)
+![BackButton](docs/images/back-btn-feat.PNG)
+![BackButton Mobile](docs/images/back-btn-mobile-feat.PNG)
 
 ---
 
