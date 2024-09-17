@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   FaUserCircle,
   FaHome,
@@ -8,8 +8,9 @@ import {
   FaSignInAlt,
   FaUserPlus,
   FaPlusCircle,
+  FaArrowLeft, // Back arrow icon for mobile view
 } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom'; 
 import axios from 'axios';
 import useSidebar from '../hooks/useSidebar';
 import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext';
@@ -17,38 +18,57 @@ import LogoutModal from './LogoutModal';
 import styles from '../styles/Sidebar.module.css';
 
 const Sidebar = ({ isOpen = false, isMobile = false }) => {
-  // Manage sidebar open/close and mobile view states using the custom hook
+  // Use custom hook for sidebar state management
   const { isSidebarOpen, toggleSidebar, isMobileView, sidebarRef } = useSidebar(isOpen, isMobile);
 
-  const currentUser = useCurrentUser(); // Get the current user
-  const setCurrentUser = useSetCurrentUser(); // Setter to update the current user state
+  const currentUser = useCurrentUser(); // Get the current user from context
+  const setCurrentUser = useSetCurrentUser(); // Setter to update the current user
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // Modal state for logout confirmation
+  const history = useHistory();
 
-  // Handle user sign out
+  /**
+   * Navigate back to the previous page (used on mobile view).
+   */
+  const handleBack = () => {
+    history.goBack();
+  };
+
+  /**
+   * Log the user out of the application and clear the current user context.
+   */
   const handleSignOut = async () => {
     try {
-      await axios.post('dj-rest-auth/logout/'); // API call to log out the user
-      setCurrentUser(null); // Reset current user state
+      await axios.post('dj-rest-auth/logout/');
+      setCurrentUser(null); // Clear current user on successful logout
     } catch (err) {
-      console.error('Logout error:', err); // Log any errors during sign out
+      console.error('Logout error:', err); // Log any errors
     }
   };
 
-  // Confirm logout action
+  /**
+   * Confirm the logout and trigger the logout flow.
+   */
   const handleLogoutConfirm = () => {
     handleSignOut();
-    setIsLogoutModalOpen(false); // Close the modal after logout
+    setIsLogoutModalOpen(false); // Close the logout modal
   };
 
-  const openLogoutModal = () => setIsLogoutModalOpen(true); // Open the logout modal
-  const handleModalClose = () => setIsLogoutModalOpen(false); // Close the logout modal
+  /**
+   * Toggle the logout modal open state.
+   */
+  const openLogoutModal = () => setIsLogoutModalOpen(true);
+  const handleModalClose = () => setIsLogoutModalOpen(false);
 
-  // Close the sidebar when a navigation link is clicked (only in mobile view)
+  /**
+   * Handle closing the sidebar on mobile view when a link is clicked.
+   */
   const handleNavLinkClick = () => {
     if (isMobileView && isSidebarOpen) toggleSidebar();
   };
 
-  // Utility function to render navigation links conditionally
+  /**
+   * Renders a navigation link if the condition is met (e.g., user is authenticated).
+   */
   const renderNavLink = (to, icon, label, condition = true) =>
     condition && (
       <li className="navItem flex items-center justify-center">
@@ -66,7 +86,7 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
 
   return (
     <>
-      {/* Overlay for mobile view when sidebar is open */}
+      {/* Sidebar overlay for mobile view */}
       {isSidebarOpen && isMobileView && (
         <div
           onClick={toggleSidebar}
@@ -82,13 +102,20 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
           ? 'fixed top-0 left-0 right-0 h-16 flex items-center justify-between'
           : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64 sidebarOpen' : 'w-16 sidebarClosed'}`}`}
       >
-        {/* Sidebar toggle button */}
         <div className="flex items-center">
+          {/* Back button for mobile view */}
+          {isMobileView && (
+            <button onClick={handleBack} className="text-white mr-4" aria-label="Go back">
+              <FaArrowLeft size={24} />
+            </button>
+          )}
+
+          {/* Toggle sidebar button */}
           <button onClick={toggleSidebar} className="text-white" aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
             <FaBars size={24} />
           </button>
 
-          {/* Mobile view links when sidebar is open */}
+          {/* Navigation links for mobile view when sidebar is open */}
           {isMobileView && isSidebarOpen && (
             <div className="flex space-x-4 ml-4">
               {renderNavLink('/', <FaHome size={24} />, 'Home')}
@@ -100,18 +127,14 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
           )}
         </div>
 
-        {/* Desktop view sidebar content */}
+        {/* Sidebar content for desktop view */}
         {!isMobileView && (
           <div className="flex flex-col items-center mt-8 flex-grow">
             <div className="text-white flex flex-col items-center mb-8">
-              {/* User profile image or icon */}
+              {/* Display user profile information */}
               {currentUser ? (
                 <>
-                  <NavLink
-                    to={`/profile/${currentUser.pk}`}
-                    className="text-white"
-                    aria-label={`Profile of ${currentUser.username}`}
-                  >
+                  <NavLink to={`/profile/${currentUser.pk}`} className="text-white" aria-label={`Profile of ${currentUser.username}`}>
                     {currentUser.profile_image ? (
                       <img
                         src={currentUser.profile_image}
@@ -145,7 +168,6 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
         {/* Logout button */}
         {currentUser && (
           <div className={`text-white ${isMobileView ? 'flex items-center space-x-4 ml-auto' : 'absolute bottom-4 left-0 right-0 flex justify-center items-center'}`}>
-            {/* Mobile profile link */}
             {isMobileView && (
               <NavLink to={`/profile/${currentUser.pk}`} aria-label="User Profile">
                 {currentUser.profile_image ? (
@@ -160,7 +182,6 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
               </NavLink>
             )}
 
-            {/* Logout button */}
             <button onClick={openLogoutModal} className="flex items-center" aria-label="Logout">
               <FaSignOutAlt size={24} />
               {!isMobileView && isSidebarOpen && <span className="ml-4">Logout</span>}

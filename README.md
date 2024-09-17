@@ -109,9 +109,8 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
   - Logged-in users can view the post owner's profile page by clicking on the top of the card.
   - Logged-in users can also like posts directly from the Feed Page. Liked posts will display as "Unliked" with a blue color to indicate their status.
 
-  ![Feed Page](docs/images/)
-  ![Post Card](docs/images/)
-  ![Like Button](docs/images/)
+  ![Feed Page](docs/images/post-list-feat.PNG)
+  ![Post Card](docs/images/post-card-feat.PNG)
 
 - **Profile Page**
   - The Profile Page displays the user's personal information:
@@ -179,7 +178,7 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 - **Search Bar**
   - The SearchBar component is a customizable search input that allows users to search based on titles or owner names. It features a clear button that appears when a query is entered, enabling users to quickly reset their search filters.
 
-![Search Bar](docs/images/)
+![Search Bar](docs/images/search-bar-feat.PNG)
 
 - **Go Back Button**
   - The BackButton component is a fixed-position button that allows users to navigate to the previous page in their browser history. It features an arrow icon and is designed to be both accessible and intuitive.
@@ -275,6 +274,7 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 6. **Pulling User’s Recent Posts and Likes**: I encountered difficulties retrieving a specific user's recent posts and recent likes for their profile page. Initially, the query was not pulling the correct data, but by creating custom fields in the serializer, I was able to resolve this issue. This approach allowed me to accurately display both recent posts and likes on the profile page, ensuring that the sections worked as intended.
 7. **Pagination on Categories**: Initially, the categories were paginated, and I was limited to displaying only 10 categories. I fixed this by fetching all the categories before rendering the dropdown, ensuring that users could see the full list of categories at once.
 8. **Not Enough Space on Navbar**: On smaller screens, not all icons and text fit in the navbar. To resolve this, I created a media query that hides the text on screens under 530px, ensuring the navbar remains clean and functional on small devices.
+9. **The Default Image For New Profile**: When a user created a new profile the deafult image wouldnt show, Turns out the pathway in the backend was incorrect.
 
 
 ---
@@ -283,7 +283,7 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 
 1. **Error Handling for Network Issues**: Need to implement better notifications for lost network connections or server downtime.
 2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties with file size management.
-3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens. Additionally, the back button pushes back through all previous pages, including forms, instead of stopping at the home page. This can cause the user to continue navigating back farther than expected.
+3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens, for now on smaller screen I put it in the navbar. Additionally, the back button pushes back through all previous pages, including forms, instead of stopping at the home page. This can cause the user to continue navigating back farther than expected.
 4. **The Sort Order of Chats**: The chat function was difficult to implement correctly, particularly with loading messages in the right order (starting from the bottom with older messages above). Currently, the chat loads at the top and scrolls to the bottom, which may cause a poor user experience in chats with many users.
 5. **Circle Name Visibility in Chats**: When entering a chat with no messages, the circle name does not show until a message is sent. This can confuse users as they may not immediately recognize which circle they are in.
 6. **401 Unauthorized Error for manifest.json**: The manifest.json file should be publicly accessible, but it is currently returning a 401 error, indicating that authentication is required to access it. This needs to be fixed by ensuring the file is served publicly.
