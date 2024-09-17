@@ -16,7 +16,6 @@ const SignIn = () => {
   const setCurrentUser = useSetCurrentUser();
   const history = useHistory();
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -26,35 +25,41 @@ const SignIn = () => {
       const { data } = await axios.post('/dj-rest-auth/login/', { username, password });
       setCurrentUser(data);
 
-      // Redirect to homepage and force refresh
       history.replace('/');
       window.location.reload(); 
     } catch (err) {
       handleError(err);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
-  // Handle error based on response or request failure
   const handleError = (err) => {
+    let errorMsg = 'An unexpected error occurred. Please try again.';
+    
     if (err.response) {
-      setError(`Error: ${err.response.data.detail || 'Invalid credentials. Please try again.'}`);
+      const { status, data } = err.response;
+      if (status === 400 && data.non_field_errors) {
+        errorMsg = data.non_field_errors[0];
+      } else if (status === 400 && data.detail) {
+        errorMsg = data.detail;
+      } else {
+        errorMsg = `Error: ${data.detail || 'Invalid credentials. Please try again.'}`;
+      }
     } else if (err.request) {
-      setError('Network error. Please try again.');
-    } else {
-      setError('An unexpected error occurred. Please try again.');
+      errorMsg = 'Network error. Please check your connection and try again.';
     }
-    console.error('Sign-in error:', err);
+
+    setPassword('');
+    setError(errorMsg);
     setIsModalVisible(true); 
+    console.error('Sign-in error:', err);
   };
 
-  // Toggle visibility of password
   const togglePasswordVisibility = () => {
     setShowPassword(prev => !prev);
   };
 
-  // Handle closing the error modal
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
@@ -107,7 +112,6 @@ const SignIn = () => {
         </form>
       </div>
 
-      {/* Render ErrorModal if there's an error */}
       {isModalVisible && (
         <ErrorModal
           message={error}
