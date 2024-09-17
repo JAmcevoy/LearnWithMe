@@ -9,7 +9,7 @@ import ErrorModal from '../../components/ErrorModal';
 import useMessages from '../../hooks/useMessages';
 
 const Chats = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Circle ID from URL
   const {
     currentUser,
     messages,
@@ -31,21 +31,29 @@ const Chats = () => {
     setError,
   } = useMessages(id);
 
-  if (loading && !messages.results.length) return <LoadingSpinner />;
-
+  // Render each message in the chat
   const renderMessages = () =>
-    [...messages.results]
-      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+    messages.results
+      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)) // Sort by timestamp
       .map((message) => (
-        <div
-          key={message.id}
-          className={`bg-blue-300 p-4 rounded-lg shadow-md relative ${styles.chatbox}`}
-        >
+        <div key={message.id} className={`bg-blue-300 p-4 rounded-lg shadow-md relative ${styles.chatbox}`}>
           <Link to={`/profile/${message.owner}`} className="font-semibold font-serif">
             {message.owner_username || 'Unknown User'}
           </Link>
           <p>{message.content}</p>
-          <small>{message.created_at}</small>
+          <small>
+            {new Date(message.timestamp).toLocaleString(undefined, {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true,
+              year: 'numeric',
+              month: 'short',
+              day: '2-digit',
+            })}
+          </small>
+
+          {/* Show edit and delete buttons only for the message owner */}
           {message.owner === currentUser.pk && (
             <>
               <button
@@ -69,23 +77,30 @@ const Chats = () => {
 
   return (
     <div className={`flex flex-col h-screen bg-slate-400 ${styles.fitting} mt-16 md:mt-0`}>
+      {/* Chat Header */}
       <header className="bg-slate-600 text-white p-4 shadow-md text-center">
-        <h1 className="text-2xl font-sans capitalize">{circleName} chat</h1>
+        <h1 className="text-2xl font-sans capitalize">{circleName} Chat</h1>
       </header>
 
+      {/* Messages Container with Infinite Scroll */}
       <div className="flex-grow p-4 overflow-auto scrollableDiv">
-        <InfiniteScroll
-          dataLength={messages.results.length}
-          next={fetchMoreMessages(messages.useMessages)}
-          hasMore={!!messages.next}
-          loader={<p className="text-center mt-2">Loading more messages...</p>}
-          scrollableTarget="scrollableDiv"
-        >
-          {renderMessages()}
-        </InfiniteScroll>
+        {loading && !messages.results.length ? (
+          <LoadingSpinner />
+        ) : (
+          <InfiniteScroll
+            dataLength={messages.results.length}
+            next={fetchMoreMessages}
+            hasMore={!!messages.next}
+            loader={<p className="text-center mt-2">Loading more messages...</p>}
+            scrollableTarget="scrollableDiv"
+          >
+            {renderMessages()}
+          </InfiniteScroll>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Message Input Field */}
       <footer className="bg-slate-600 p-4 border-t border-black-200">
         <div className="flex items-center relative">
           <textarea
@@ -99,12 +114,8 @@ const Chats = () => {
           />
           <button
             onClick={handleSend}
-            className={`ml-2 p-2 rounded-lg transition ${newMessage.trim() === ''
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
+            className={`ml-2 p-2 rounded-lg transition ${newMessage.trim() === '' ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
             disabled={newMessage.trim() === ''}
-            aria-disabled={newMessage.trim() === ''}
             aria-label="Send message"
           >
             <FaPaperPlane />
@@ -112,6 +123,7 @@ const Chats = () => {
         </div>
       </footer>
 
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <DeleteConfirmation
           message="Are you sure you want to delete this message?"
@@ -120,6 +132,7 @@ const Chats = () => {
         />
       )}
 
+      {/* Error Modal */}
       {error && (
         <ErrorModal
           message={error}
