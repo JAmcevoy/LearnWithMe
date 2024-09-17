@@ -6,8 +6,8 @@ import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 const PostEdit = () => {
-    const { id } = useParams();
-    const history = useHistory();
+    const { id } = useParams(); // Extract post ID from URL params
+    const history = useHistory(); // For navigation after form submission
 
     const [title, setTitle] = useState('');
     const [steps, setSteps] = useState('');
@@ -17,9 +17,12 @@ const PostEdit = () => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [loadingCategories, setLoadingCategories] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
 
+    // Fetch post details and available categories on component mount
     useEffect(() => {
+        // Fetch post details
         const fetchPostDetails = async () => {
             try {
                 const response = await axios.get(`/posts/${id}/`);
@@ -35,18 +38,22 @@ const PostEdit = () => {
             }
         };
 
+        // Fetch available categories for the dropdown
         const fetchCategories = async () => {
+            setLoadingCategories(true);
             try {
                 const response = await axios.get('/categories/');
                 if (response.data?.results && Array.isArray(response.data.results)) {
                     setCategories(response.data.results);
                 } else {
-                    throw new Error('Data is not in expected format');
+                    throw new Error('Unexpected data format.');
                 }
             } catch (err) {
                 console.error('Error fetching categories:', err);
                 setError(`Error fetching categories: ${err.message}`);
                 setShowErrorModal(true);
+            } finally {
+                setLoadingCategories(false);
             }
         };
 
@@ -54,15 +61,17 @@ const PostEdit = () => {
         fetchCategories();
     }, [id]);
 
+    // Handle image selection
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (file) setImage(file);
+        if (file) setImage(file); // Store the selected image
     };
 
+    // Handle form submission for updating the post
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setLoading(true);
+        setError(''); // Clear any previous errors
+        setLoading(true); // Set loading state during submission
 
         const formData = new FormData();
         formData.append('title', title.trim());
@@ -74,16 +83,17 @@ const PostEdit = () => {
             await axios.put(`/posts/${id}/`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            history.push(`/posts/${id}`);
+            history.push(`/posts/${id}`); // Navigate to the updated post page
         } catch (err) {
             console.error('Error updating post:', err);
             setError('Failed to update the post. Please try again.');
             setShowErrorModal(true);
         } finally {
-            setLoading(false);
+            setLoading(false); // Stop loading state
         }
     };
 
+    // Show a loading spinner when the form is being submitted
     if (loading) return <LoadingSpinner />;
 
     return (
@@ -91,8 +101,9 @@ const PostEdit = () => {
             <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
                     <h2 className="text-2xl md:text-3xl font-extrabold mb-6 text-gray-900">Edit Post</h2>
-                    {error && <p className="text-red-500 mb-6">{error}</p>}
+                    {error && <p className="text-red-500 mb-6">{error}</p>} {/* Show error message if any */}
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Title Input */}
                         <FormInput
                             id="title"
                             label="Title"
@@ -100,6 +111,7 @@ const PostEdit = () => {
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Enter a catchy title for your post"
                         />
+                        {/* Steps Input */}
                         <FormTextarea
                             id="steps"
                             label="Steps"
@@ -107,22 +119,45 @@ const PostEdit = () => {
                             onChange={(e) => setSteps(e.target.value)}
                             placeholder="Share your thoughts or ideas..."
                         />
-                        <FormSelect
-                            id="category"
-                            label="Category"
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                            options={categories}
-                        />
+                        {/* Category Dropdown */}
+                        <div className="mb-4">
+                            <label htmlFor="category" className="block text-gray-700 text-sm font-bold mb-2">
+                                Category
+                            </label>
+                            <select
+                                id="category"
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline max-h-40 overflow-y-auto"
+                                size="5"
+                                required
+                            >
+                                <option value="">Select a category</option>
+                                {loadingCategories ? (
+                                    <option disabled>Loading categories...</option>
+                                ) : categories.length > 0 ? (
+                                    categories.map((cat) => (
+                                        <option key={cat.id} value={cat.id}>
+                                            {cat.type}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>No categories available</option>
+                                )}
+                            </select>
+                        </div>
+                        {/* Submit Button */}
                         <SubmitButton loading={loading} />
                     </form>
                 </div>
+                {/* Image Upload */}
                 <ImageUpload
                     image={image}
                     existingImage={existingImage}
                     onImageChange={handleImageChange}
                 />
             </div>
+            {/* Error Modal */}
             {showErrorModal && (
                 <ErrorModal message={error} onClose={() => setShowErrorModal(false)} />
             )}
@@ -130,8 +165,7 @@ const PostEdit = () => {
     );
 };
 
-// Reusable Form Components
-
+// Reusable Form Input Component
 const FormInput = ({ id, label, value, onChange, placeholder }) => (
     <div>
         <label htmlFor={id} className="block text-lg font-semibold text-gray-700">{label}</label>
@@ -147,6 +181,7 @@ const FormInput = ({ id, label, value, onChange, placeholder }) => (
     </div>
 );
 
+// Reusable Textarea Component
 const FormTextarea = ({ id, label, value, onChange, placeholder }) => (
     <div>
         <label htmlFor={id} className="block text-lg font-semibold text-gray-700">{label}</label>
@@ -162,24 +197,7 @@ const FormTextarea = ({ id, label, value, onChange, placeholder }) => (
     </div>
 );
 
-const FormSelect = ({ id, label, value, onChange, options }) => (
-    <div>
-        <label htmlFor={id} className="block text-lg font-semibold text-gray-700">{label}</label>
-        <select
-            id={id}
-            value={value}
-            onChange={onChange}
-            className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-            required
-        >
-            <option value="">Select a category</option>
-            {options.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.type}</option>
-            ))}
-        </select>
-    </div>
-);
-
+// Reusable Submit Button Component
 const SubmitButton = ({ loading }) => (
     <button
         type="submit"
@@ -190,6 +208,7 @@ const SubmitButton = ({ loading }) => (
     </button>
 );
 
+// Reusable Image Upload Component
 const ImageUpload = ({ image, existingImage, onImageChange }) => (
     <div className="flex-none w-full md:w-80 h-80 bg-gray-200 rounded-lg flex items-center justify-center relative">
         {image ? (
