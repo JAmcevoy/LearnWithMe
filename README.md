@@ -272,7 +272,7 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 
 1. **Error Handling for Network Issues**: Need to implement better notifications for lost network connections or server downtime.
 2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties with file size management.
-3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens.
+3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens. Additionally, the back button pushes back through all previous pages, including forms, instead of stopping at the home page. This can cause the user to continue navigating back farther than expected.
 4. **The Sort Order of Chats**: The chat function was difficult to implement correctly, particularly with loading messages in the right order (starting from the bottom with older messages above). Currently, the chat loads at the top and scrolls to the bottom, which may cause a poor user experience in chats with many users.
 5. **Circle Name Visibility in Chats**: When entering a chat with no messages, the circle name does not show until a message is sent. This can confuse users as they may not immediately recognize which circle they are in.
 6. **401 Unauthorized Error for manifest.json**: The manifest.json file should be publicly accessible, but it is currently returning a 401 error, indicating that authentication is required to access it. This needs to be fixed by ensuring the file is served publicly.

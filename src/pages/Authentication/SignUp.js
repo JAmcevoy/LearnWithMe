@@ -18,17 +18,44 @@ const SignUp = () => {
     setFormData((prevState) => ({ ...prevState, [id]: value }));
   };
 
+  const validateForm = () => {
+    const { username, password, confirmPassword } = formData;
+
+    if (!username.trim()) {
+      return 'Username is required.';
+    }
+
+    if (username.length < 3) {
+      return 'Username must be at least 3 characters long.';
+    }
+
+    if (!password) {
+      return 'Password is required.';
+    }
+
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long.';
+    }
+
+    if (password !== confirmPassword) {
+      return 'Passwords do not match.';
+    }
+
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    const { username, password, confirmPassword } = formData;
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       setIsModalVisible(true);
       return;
     }
+
+    const { username, password, confirmPassword } = formData;
 
     try {
       await axios.post('/dj-rest-auth/registration/', {
@@ -39,12 +66,28 @@ const SignUp = () => {
 
       history.push('/signin');
     } catch (err) {
-      const errorMsg = err.response
-        ? `Error: ${err.response.data.detail || 'An error occurred.'}`
-        : err.request
-        ? 'Network error. Please try again.'
-        : 'An unexpected error occurred. Please try again.';
-        
+      let errorMsg = 'An unexpected error occurred. Please try again.';
+
+      if (err.response) {
+        const { status, data } = err.response;
+
+        if (status === 400) {
+          if (data.username) {
+            errorMsg = `Username: ${data.username[0]}`;
+          } else if (data.password1) {
+            errorMsg = `Password: ${data.password1[0]}`;
+          } else {
+            errorMsg = data.detail || 'Registration failed. Please check your details.';
+          }
+        } else if (status === 500) {
+          errorMsg = 'Server error. Please try again later.';
+        } else {
+          errorMsg = `Error: ${data.detail || 'An error occurred.'}`;
+        }
+      } else if (err.request) {
+        errorMsg = 'Network error. Please check your connection and try again.';
+      }
+
       setError(errorMsg);
       setIsModalVisible(true);
     }
