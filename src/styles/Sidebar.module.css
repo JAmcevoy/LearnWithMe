@@ -1,0 +1,14 @@
+/* For screens under 530px */
+@media (max-width: 530px) {
+    .navText {
+      display: none; /* Hide the text under 530px */
+    }
+  }
+  
+  /* For screens above 530px */
+  @media (min-width: 531px) {
+    .navText {
+      display: inline-block; /* Show the text above 530px */
+    }
+  }
+  

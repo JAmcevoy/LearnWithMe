@@ -269,6 +269,8 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 5. **Circle and Message Handling in DRF**: Initially, when accessing a specific circle, the API would only pull a single message by its ID rather than all the messages associated with that circle. To fix this, I had to create a new endpoint in Django REST Framework (DRF) to handle the proper flow: from the main page > Interest Circles > specific circle > retrieving all chats related to that circle. This change ensures that when a user navigates to a circle, they can see the entire chat history instead of just a single message, improving the overall user experience.
 6. **Pulling User’s Recent Posts and Likes**: I encountered difficulties retrieving a specific user's recent posts and recent likes for their profile page. Initially, the query was not pulling the correct data, but by creating custom fields in the serializer, I was able to resolve this issue. This approach allowed me to accurately display both recent posts and likes on the profile page, ensuring that the sections worked as intended.
 7. **Pagination on Categories**: Initially, the categories were paginated, and I was limited to displaying only 10 categories. I fixed this by fetching all the categories before rendering the dropdown, ensuring that users could see the full list of categories at once.
+8. **Not Enough Space on Navbar**: On smaller screens, not all icons and text fit in the navbar. To resolve this, I created a media query that hides the text on screens under 530px, ensuring the navbar remains clean and functional on small devices.
+
 
 ---
 

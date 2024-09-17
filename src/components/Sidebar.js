@@ -14,6 +14,7 @@ import { NavLink } from 'react-router-dom';
 import { useSidebar } from '../hooks/useSidebar';
 import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext';
 import LogoutModal from './LogoutModal';
+import styles from '../styles/Sidebar.module.css'; // Importing the custom CSS
 
 const Sidebar = ({ isOpen, isMobile }) => {
   const { isSidebarOpen, toggleSidebar, isMobileView, sidebarRef } = useSidebar(isOpen, isMobile);
@@ -51,7 +52,7 @@ const Sidebar = ({ isOpen, isMobile }) => {
       <li className={`flex items-center justify-center ${extraClasses}`}>
         <NavLink to={to} onClick={handleNavLinkClick} className="flex items-center text-white" aria-label={label}>
           {icon}
-          {isSidebarOpen && <span className="ml-4">{label}</span>}
+          <span className={`ml-4 ${styles.navText}`}>{label}</span> {/* Add class to control text visibility */}
         </NavLink>
       </li>
     );
@@ -70,13 +71,13 @@ const Sidebar = ({ isOpen, isMobile }) => {
         ref={sidebarRef}
         className={`bg-gray-800 p-4 transition-all duration-300 z-20 ${isMobileView
             ? 'fixed top-0 left-0 right-0 h-16 flex items-center justify-between'
-            : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64' : 'w-16'}`
-          }`}
+            : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64' : 'w-16'}`}`}
       >
         <div className="flex items-center">
           <button onClick={toggleSidebar} className="text-white" aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
             <FaBars size={24} />
           </button>
+
           {isMobileView && isSidebarOpen && (
             <div className="flex space-x-4 ml-4">
               {renderNavLink('/', <FaHome size={24} />, 'Home')}
@@ -98,15 +99,15 @@ const Sidebar = ({ isOpen, isMobile }) => {
                     className="text-white"
                     aria-label={`Profile of ${currentUser.username}`}
                   >
-                    {currentUser.profile_image? (
-                        <img
-                          src={currentUser.profile_image}
-                          alt={`${currentUser.username}'s profile`}
-                          className={`rounded-full ${isSidebarOpen ? 'w-20 h-20' : 'w-8 h-8'}`}
-                        />
-                      ) : (
-                        <FaUserCircle size={isSidebarOpen ? 80 : 80} className="mb-4" />
-                      )}
+                    {currentUser.profile_image ? (
+                      <img
+                        src={currentUser.profile_image}
+                        alt={`${currentUser.username}'s profile`}
+                        className={`rounded-full ${isSidebarOpen ? 'w-20 h-20' : 'w-8 h-8'}`}
+                      />
+                    ) : (
+                      <FaUserCircle size={isSidebarOpen ? 80 : 80} className="mb-4" />
+                    )}
                   </NavLink>
                   {isSidebarOpen && <p className="text-center">{currentUser.username}</p>}
                 </>
@@ -128,7 +129,23 @@ const Sidebar = ({ isOpen, isMobile }) => {
         )}
 
         {currentUser && (
-          <div className={`text-white ${isMobileView ? '' : 'absolute bottom-4 left-0 right-0'} flex justify-center items-center`}>
+          <div className={`text-white ${isMobileView ? 'flex items-center space-x-4 ml-auto' : 'absolute bottom-4 left-0 right-0 flex justify-center items-center'}`}>
+            {/* Render Profile Icon ONLY in Mobile View */}
+            {isMobileView && (
+              <NavLink to={`/profile/${currentUser.pk}`} aria-label="User Profile">
+                {currentUser.profile_image ? (
+                  <img
+                    src={currentUser.profile_image}
+                    alt={`${currentUser.username}'s profile`}
+                    className="rounded-full w-8 h-8"
+                  />
+                ) : (
+                  <FaUserCircle size={24} />
+                )}
+              </NavLink>
+            )}
+
+            {/* Logout Button */}
             <button onClick={openLogoutModal} className="flex items-center" aria-label="Logout">
               <FaSignOutAlt size={24} />
               {!isMobileView && isSidebarOpen && <span className="ml-4">Logout</span>}
