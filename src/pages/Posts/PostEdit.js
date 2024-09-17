@@ -130,7 +130,8 @@ const PostEdit = () => {
     );
 };
 
-// Extracted reusable components
+// Reusable Form Components
+
 const FormInput = ({ id, label, value, onChange, placeholder }) => (
     <div>
         <label htmlFor={id} className="block text-lg font-semibold text-gray-700">{label}</label>
