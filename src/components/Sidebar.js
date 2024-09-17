@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   FaUserCircle,
@@ -20,6 +20,10 @@ const Sidebar = ({ isOpen, isMobile }) => {
   const currentUser = useCurrentUser();
   const setCurrentUser = useSetCurrentUser();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  useEffect(() => {
+    console.log(currentUser); // Debug: check the currentUser object
+  }, [currentUser]);
 
   const handleSignOut = async () => {
     try {
@@ -64,11 +68,10 @@ const Sidebar = ({ isOpen, isMobile }) => {
 
       <div
         ref={sidebarRef}
-        className={`bg-gray-800 p-4 transition-all duration-300 z-20 ${
-          isMobileView
+        className={`bg-gray-800 p-4 transition-all duration-300 z-20 ${isMobileView
             ? 'fixed top-0 left-0 right-0 h-16 flex items-center justify-between'
             : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64' : 'w-16'}`
-        }`}
+          }`}
       >
         <div className="flex items-center">
           <button onClick={toggleSidebar} className="text-white" aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
@@ -95,7 +98,15 @@ const Sidebar = ({ isOpen, isMobile }) => {
                     className="text-white"
                     aria-label={`Profile of ${currentUser.username}`}
                   >
-                    <FaUserCircle size={isSidebarOpen ? 80 : 40} className="mb-4" />
+                    {currentUser.profile_image? (
+                        <img
+                          src={currentUser.profile_image}
+                          alt={`${currentUser.username}'s profile`}
+                          className={`rounded-full ${isSidebarOpen ? 'w-20 h-20' : 'w-8 h-8'}`}
+                        />
+                      ) : (
+                        <FaUserCircle size={isSidebarOpen ? 80 : 80} className="mb-4" />
+                      )}
                   </NavLink>
                   {isSidebarOpen && <p className="text-center">{currentUser.username}</p>}
                 </>

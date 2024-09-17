@@ -121,46 +121,50 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
     - Users can search through their previous posts, sorted by most recent first.
     - The Recent Likes section shows the user's last 10 likes.
 
-  ![Profile Page](docs/images/)
+  ![Profile Page](docs/images/profile-page-feat.PNG)
+  ![Profile Edit Page](docs/images/profile-edit-feat.PNG)
+
 
 - **Interest Circles Page**
   - The Interest Circles Page is designed for clarity.
   - Each circle displays the interest name, owner, and an info button that shows the circle's description when clicked.
   - If the logged-in user owns the circle, they have the option to delete or edit the circle via a modal.
 
-  ![Interest Circles](docs/images/)
-  ![Circle Edit Modal](docs/images/)
+  ![Interest Circles](docs/images/interest-circle-feat.PNG)
+  ![Circle Edit Modal](docs/images/circle-edit-modal.PNG)
+  ![Circle info Modal](docs/images/circle-info-modal.PNG)
+
 
 - **Chat Page**
   - The Chat Page features a simple message interface with a white background for readability.
   - Messages are displayed in a list, starting with the most recent messages at the top. Users can scroll back through older messages.
   - Message owners have edit and delete icons on their messages. Selecting "Edit" allows them to modify their message directly in the input field below, removing the need for a modal and making the process more seamless.
 
-  ![Chats](docs/images/)
-  ![Edit/Delete](docs/images/)
-  ![Edit Message](docs/images/)
+  ![Chats](docs/images/chats-feat.PNG)
+  ![Edit/Delete](docs/images/chat-card-feat.PNG)
+  ![Edit Message](docs/images/chat-edit-feat.PNG)
 
 - **Error Modal**
   - The Error Modal handles various errors across different pages.
 
-  ![Error Modal](docs/images/)
+  ![Error Modal](docs/images/error-modal-feat.PNG)
 
 - **Delete Modal**
   - The Delete Modal is used for handling deletions across multiple pages.
 
-  ![Delete Modal](docs/images/)
+  ![Delete Modal](docs/images/delete-modal-feat.PNG)
 
 - **Sign In Page**
   - I wanted the Sign In process to be quick and easy so I just went with a standard login card but to make it easier for people I added a Show/Hide button for password so User can check for any password errors before subbmitting the login.
 
-  ![Sign In]()
+  ![Sign In](docs/images/sigin-feat.PNG)
 
 - **SignUp Page**
   - Allows new users to create an account by entering a username and password.
   - Simple and clean form layout for ease of use and clear focus on registration.
   - Ensures passwords match before submission, providing immediate feedback.
 
-  ![Sign Up Page](docs/images/)
+  ![Sign Up Page](docs/images/signup-feat.PNG)
 
 - **Loading Spinner**
   - I added a loading spinner for cases of the app running slow.
