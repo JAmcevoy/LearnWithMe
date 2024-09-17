@@ -16,6 +16,7 @@ const ProfileEdit = () => {
     const history = useHistory();
     const { id } = useParams();
 
+    // Fetch profile details and categories when component is mounted
     useEffect(() => {
         const fetchProfileDetails = async () => {
             try {
@@ -26,17 +27,17 @@ const ProfileEdit = () => {
                 setExistingImage(data.image);
             } catch (err) {
                 console.error('Error fetching profile details:', err);
-                setError('Error fetching profile details.');
+                setError('Unable to load profile details.');
             }
         };
 
         const fetchCategories = async () => {
             try {
                 const { data } = await axios.get('/categories/');
-                setCategories(data.results || []);
+                setCategories(data.results || []); // Set categories, fallback to empty array
             } catch (err) {
                 console.error('Error fetching categories:', err);
-                setError(`Error fetching categories: ${err.message}`);
+                setError('Failed to load categories. Please try again.');
             }
         };
 
@@ -44,12 +45,14 @@ const ProfileEdit = () => {
         fetchCategories();
     }, [id]);
 
+    // Handle image file selection
     const handleImageChange = (e) => {
         if (e.target.files[0]) {
             setImage(e.target.files[0]);
         }
     };
 
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -60,22 +63,23 @@ const ProfileEdit = () => {
         formData.append('about_me', aboutMe.trim());
         formData.append('main_interest', selectedCategory);
         if (image) {
-            formData.append('image', image);
+            formData.append('image', image); // Add image only if it's selected
         }
 
         try {
             await axios.put(`/profiles/${id}/`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            history.push(`/profile/${id}`);
+            history.push(`/profile/${id}`); // Redirect to profile page after successful update
         } catch (err) {
             console.error('Error updating profile:', err);
-            setError('Failed to update the profile. Please try again.');
+            setError('Failed to update the profile. Please check your details and try again.');
         } finally {
             setLoading(false);
         }
     };
 
+    // Show loading spinner when data is being fetched or updated
     if (loading) return <LoadingSpinner />;
 
     return (
@@ -83,7 +87,7 @@ const ProfileEdit = () => {
             <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
                     <h2 className="text-2xl md:text-3xl font-extrabold mb-6 text-gray-900">Edit Profile</h2>
-                    {error && <p className="text-red-500 mb-6">{error}</p>}
+                    {error && <p className="text-red-500 mb-6">{error}</p>} {/* Show error message if any */}
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
                             <label htmlFor="username" className="block text-lg font-semibold text-gray-700">Username</label>
