@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CircleCard from './CircleCard';
@@ -12,8 +12,7 @@ import { fetchMoreData } from '../../utils/utils';
 
 const InterestCircles = () => {
   const history = useHistory();
-  const [infiniteError, setInfiniteError] = useState(null); // Handle errors from infinite scroll
-
+  
   // State and handlers from custom hook
   const {
     circles,
@@ -44,18 +43,39 @@ const InterestCircles = () => {
   const loadMoreCircles = async () => {
     try {
       if (!circles.next) {
-        setInfiniteError('No more circles to load.');
+        setError('No more circles to load.');
         return;
       }
       await fetchMoreData(circles, setCircles); // Fetch more data using the utility function
     } catch (err) {
       console.error('Error fetching more circles:', err);
-      setInfiniteError('Error loading more circles. Please try again.');
+      setError('Error loading more circles. Please try again.');
     }
   };
 
+  // Handle save changes with error handling
+  const handleSaveChangesWithErrorHandling = async () => {
+    try {
+      await handleSaveChanges(); // Assume this function saves data
+    } catch (err) {
+      console.error('Error saving changes:', err);
+      setError('An error occurred while saving changes. Please try again.');
+    }
+  };
+
+  // Handle delete confirmation with error handling
+  const handleConfirmDeleteWithErrorHandling = async () => {
+    try {
+      await handleConfirmDelete(); // Assume this function confirms deletion
+    } catch (err) {
+      console.error('Error confirming delete:', err);
+      setError('An error occurred while deleting the circle. Please try again.');
+    }
+  };
+
+  // Display a loading spinner while loading data and no circles are yet loaded
   if (loading && circleList.length === 0) {
-    return <LoadingSpinner />; // Display spinner while loading if there are no circles yet
+    return <LoadingSpinner />;
   }
 
   return (
@@ -67,7 +87,6 @@ const InterestCircles = () => {
 
       {/* Error Modals */}
       {error && <ErrorModal message={error} onClose={handleCloseModal} />}
-      {infiniteError && <ErrorModal message={infiniteError} onClose={() => setInfiniteError(null)} />}
 
       {/* No Circles Found Message */}
       {!loading && circleList.length === 0 && (
@@ -80,7 +99,7 @@ const InterestCircles = () => {
       <InfiniteScroll
         dataLength={circleList.length}
         next={loadMoreCircles}
-        hasMore={!!circles.next && !infiniteError} // Load more only if there's more data and no error
+        hasMore={!!circles.next && !error} // Load more only if there's more data and no error
         loader={<p className="text-center mt-2">Loading more circles...</p>}
         endMessage={<p className="text-center mt-2">No more circles to load.</p>}
       >
@@ -109,7 +128,7 @@ const InterestCircles = () => {
           categories={categories}
           selectedCategory={selectedCategory}
           onClose={handleCloseModal}
-          onSave={handleSaveChanges}
+          onSave={handleSaveChangesWithErrorHandling}
           onCategoryChange={setSelectedCategory}
           onModalChange={handleModalChange}
         />
@@ -119,7 +138,7 @@ const InterestCircles = () => {
       {deleteModalVisible && (
         <DeleteConfirmation
           message="Are you sure you want to delete this interest circle?"
-          onConfirm={handleConfirmDelete}
+          onConfirm={handleConfirmDeleteWithErrorHandling}
           onCancel={handleCancelDelete}
         />
       )}
