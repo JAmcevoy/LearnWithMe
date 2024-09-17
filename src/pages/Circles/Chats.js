@@ -68,7 +68,7 @@ const Chats = () => {
       ));
 
   return (
-    <div className={`flex flex-col h-screen bg-slate-400 ${styles.fitting}`}>
+    <div className={`flex flex-col h-screen bg-slate-400 ${styles.fitting} mt-16 md:mt-0`}>
       <header className="bg-slate-600 text-white p-4 shadow-md text-center">
         <h1 className="text-2xl font-sans capitalize">{circleName} chat</h1>
       </header>

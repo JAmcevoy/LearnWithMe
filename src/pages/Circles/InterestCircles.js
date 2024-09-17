@@ -59,7 +59,7 @@ const InterestCircles = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col mt-16 md:mt-0">
       {/* Page Heading */}
       <div className="text-center mt-10">
         <h1 className="text-4xl font-bold text-gray-800">Interest Circles</h1>
