@@ -12,8 +12,9 @@ import { fetchMoreData } from '../../utils/utils';
 
 const InterestCircles = () => {
   const history = useHistory();
-  const [infiniteError, setInfiniteError] = useState(null); // For handling infinite scroll errors
+  const [infiniteError, setInfiniteError] = useState(null); // Handle errors from infinite scroll
 
+  // State and handlers from custom hook
   const {
     circles,
     loading,
@@ -37,16 +38,16 @@ const InterestCircles = () => {
     setCircles,
   } = useInterestCircles(history);
 
-  const circleList = circles.results || []; // Ensure we use circles.results directly
+  const circleList = circles.results || []; // Safely access circle results
 
-  // Enhanced function to fetch more circles with error handling
+  // Function to load more circles with error handling
   const loadMoreCircles = async () => {
     try {
       if (!circles.next) {
         setInfiniteError('No more circles to load.');
         return;
       }
-      await fetchMoreData(circles, setCircles);
+      await fetchMoreData(circles, setCircles); // Fetch more data using the utility function
     } catch (err) {
       console.error('Error fetching more circles:', err);
       setInfiniteError('Error loading more circles. Please try again.');
@@ -54,7 +55,7 @@ const InterestCircles = () => {
   };
 
   if (loading && circleList.length === 0) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner />; // Display spinner while loading if there are no circles yet
   }
 
   return (
@@ -69,7 +70,7 @@ const InterestCircles = () => {
       {infiniteError && <ErrorModal message={infiniteError} onClose={() => setInfiniteError(null)} />}
 
       {/* No Circles Found Message */}
-      {circleList.length === 0 && !loading && (
+      {!loading && circleList.length === 0 && (
         <div className="text-center mt-8">
           <h1>No Circles Found</h1>
         </div>
@@ -79,7 +80,7 @@ const InterestCircles = () => {
       <InfiniteScroll
         dataLength={circleList.length}
         next={loadMoreCircles}
-        hasMore={!!circles.next && !infiniteError} // Only load more if there's more data and no error
+        hasMore={!!circles.next && !infiniteError} // Load more only if there's more data and no error
         loader={<p className="text-center mt-2">Loading more circles...</p>}
         endMessage={<p className="text-center mt-2">No more circles to load.</p>}
       >
@@ -100,7 +101,7 @@ const InterestCircles = () => {
       {/* Create Circle Button */}
       <CreateCircleButton onClick={handleCreateCircle} />
 
-      {/* Modal */}
+      {/* Circle Modal */}
       {modal.visible && (
         <Modal
           type={modal.type}
@@ -108,13 +109,13 @@ const InterestCircles = () => {
           categories={categories}
           selectedCategory={selectedCategory}
           onClose={handleCloseModal}
-          onSave={handleSaveChanges} // Save handled in hook
+          onSave={handleSaveChanges}
           onCategoryChange={setSelectedCategory}
           onModalChange={handleModalChange}
         />
       )}
 
-      {/* Delete Confirmation */}
+      {/* Delete Confirmation Modal */}
       {deleteModalVisible && (
         <DeleteConfirmation
           message="Are you sure you want to delete this interest circle?"
