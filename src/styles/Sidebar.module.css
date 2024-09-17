@@ -1,14 +1,40 @@
+/* Hide the text by default in the closed sidebar */
+.sidebarClosed .navText {
+  display: none;
+}
+
+/* Show the text when the sidebar is open */
+.sidebarOpen .navText {
+  display: inline-block;
+  white-space: nowrap; 
+}
+
+/* Ensure the icons are centered when sidebar is closed */
+.navItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.sidebarOpen .navItem {
+  justify-content: flex-start; 
+}
+
+.sidebarClosed .navItem {
+  justify-content: center; 
+}
+
 /* For screens under 530px */
 @media (max-width: 530px) {
-    .navText {
-      display: none; /* Hide the text under 530px */
-    }
+  .navText {
+    display: none; 
   }
-  
-  /* For screens above 530px */
-  @media (min-width: 531px) {
-    .navText {
-      display: inline-block; /* Show the text above 530px */
-    }
+}
+
+/* For screens above 530px */
+@media (min-width: 531px) {
+  .navText {
+    display: inline-block; 
   }
-  
+}

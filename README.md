@@ -95,8 +95,13 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
     - **Logged Out**: Home, Sign In, Sign Up.
   - The Sidebar is collapsible; even when closed, the icons remain functional as links, so users don't need to expand the Sidebar to change pages.
 
-  ![Logged In](docs/images/)
-  ![Logged Out](docs/images/)
+  ![Logged In](docs/images/sidebar-logged-in-feat.PNG)
+  ![Logged In Mobile](docs/images/sidebar-mobile-logged-in.PNG)
+  ![Logged In Mobile With Hidden Text](docs/images/sidebar-mobile-logged-in-hiddenText.PNG)
+
+  ![Logged Out](docs/images/sidebar-logged-out-feat.PNG)
+  ![Logged Out Mobile](docs/images/sidebar-mobile-logged-out.PNG)
+  
 
 - **Feed Page**
   - The Feed Page is the landing page for users accessing the app.

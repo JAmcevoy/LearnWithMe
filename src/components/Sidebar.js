@@ -49,10 +49,10 @@ const Sidebar = ({ isOpen, isMobile }) => {
 
   const renderNavLink = (to, icon, label, extraClasses = '', condition = true) =>
     condition && (
-      <li className={`flex items-center justify-center ${extraClasses}`}>
+      <li className={`navItem flex items-center justify-center ${extraClasses}`}>
         <NavLink to={to} onClick={handleNavLinkClick} className="flex items-center text-white" aria-label={label}>
           {icon}
-          <span className={`ml-4 ${styles.navText}`}>{label}</span> {/* Add class to control text visibility */}
+          {isSidebarOpen && <span className={`ml-4 ${styles.navText}`}>{label}</span>} {/* Show text only when sidebar is open */}
         </NavLink>
       </li>
     );
@@ -71,7 +71,7 @@ const Sidebar = ({ isOpen, isMobile }) => {
         ref={sidebarRef}
         className={`bg-gray-800 p-4 transition-all duration-300 z-20 ${isMobileView
             ? 'fixed top-0 left-0 right-0 h-16 flex items-center justify-between'
-            : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64' : 'w-16'}`}`}
+            : `fixed top-0 right-0 h-screen ${isSidebarOpen ? 'w-64 sidebarOpen' : 'w-16 sidebarClosed'}`}`}
       >
         <div className="flex items-center">
           <button onClick={toggleSidebar} className="text-white" aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
@@ -130,7 +130,6 @@ const Sidebar = ({ isOpen, isMobile }) => {
 
         {currentUser && (
           <div className={`text-white ${isMobileView ? 'flex items-center space-x-4 ml-auto' : 'absolute bottom-4 left-0 right-0 flex justify-center items-center'}`}>
-            {/* Render Profile Icon ONLY in Mobile View */}
             {isMobileView && (
               <NavLink to={`/profile/${currentUser.pk}`} aria-label="User Profile">
                 {currentUser.profile_image ? (
@@ -145,7 +144,6 @@ const Sidebar = ({ isOpen, isMobile }) => {
               </NavLink>
             )}
 
-            {/* Logout Button */}
             <button onClick={openLogoutModal} className="flex items-center" aria-label="Logout">
               <FaSignOutAlt size={24} />
               {!isMobileView && isSidebarOpen && <span className="ml-4">Logout</span>}
