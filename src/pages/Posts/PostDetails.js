@@ -4,8 +4,8 @@ import { useParams, Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { axiosReq } from '../../api/axiosDefaults';
 import { useCurrentUser } from "../../context/CurrentUserContext";
-import DeleteConfirmation from '../../components/DeleteModal'; 
-import ErrorModal from '../../components/ErrorModal'; 
+import DeleteConfirmation from '../../components/DeleteModal';
+import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 const PostDetails = () => {
@@ -19,12 +19,14 @@ const PostDetails = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const currentUser = useCurrentUser();
 
+  // Fetch post details and like status when component mounts or when ID changes
   const fetchPost = useCallback(async () => {
     try {
       const response = await axios.get(`/posts/${id}/`);
       const fetchedPost = response.data;
       setPost(fetchedPost);
 
+      // Check if the current user has liked the post
       if (currentUser) {
         const likedBy = fetchedPost.liked_by || [];
         setLiked(likedBy.includes(currentUser.id));
@@ -33,7 +35,7 @@ const PostDetails = () => {
     } catch (err) {
       console.error('Error fetching post details:', err);
       setError('Error fetching post details.');
-      setShowErrorModal(true); 
+      setShowErrorModal(true);
     }
   }, [id, currentUser]);
 
@@ -41,6 +43,7 @@ const PostDetails = () => {
     fetchPost();
   }, [fetchPost]);
 
+  // Handle toggling like/unlike functionality
   const toggleLike = async () => {
     try {
       if (liked) {
@@ -57,6 +60,7 @@ const PostDetails = () => {
     }
   };
 
+  // Update the post likes count and like state
   const updatePostLikes = (likeChange, newLikeId) => {
     setPost(prevPost => ({
       ...prevPost,
@@ -67,6 +71,7 @@ const PostDetails = () => {
     setLikeId(newLikeId);
   };
 
+  // Handle post deletion
   const handleDelete = async () => {
     try {
       await axiosReq.delete(`/posts/${id}/`);
@@ -84,13 +89,15 @@ const PostDetails = () => {
 
   const handleConfirmDelete = () => {
     setShowDeleteConfirmation(false);
-    handleDelete(); 
+    handleDelete();
   };
 
+  // Format steps into paragraphs
   const formatSteps = (stepsText) => stepsText
     .split('\n')
     .map((line, index) => <p key={index} className="mb-2">{line}</p>);
 
+  // Render loading spinner if post is not yet loaded
   if (!post) return <LoadingSpinner />;
 
   return (
@@ -99,6 +106,7 @@ const PostDetails = () => {
         <h1 className="text-4xl font-extrabold text-gray-900 text-center mb-8">Post Details</h1>
 
         <div className="flex flex-col md:flex-row gap-8">
+          {/* Post Image or Placeholder */}
           <div className="flex-none w-full md:w-1/2">
             {post?.image_or_video ? (
               <img
@@ -113,8 +121,11 @@ const PostDetails = () => {
             )}
           </div>
 
+          {/* Post Details */}
           <div className="flex-1 p-6 bg-white rounded-lg shadow-lg">
             <h2 className="text-3xl font-extrabold mb-4 text-gray-900">{post?.title}</h2>
+
+            {/* Owner Info */}
             <div className="flex items-center mb-4">
               <img
                 src={post?.profile_image || "https://via.placeholder.com/48"}
@@ -131,14 +142,20 @@ const PostDetails = () => {
                 <p className="text-sm text-gray-500">{new Date(post?.created_at).toLocaleDateString()}</p>
               </div>
             </div>
+
+            {/* Post Steps */}
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Steps</h3>
               <div className="text-gray-700">{formatSteps(post?.steps) || 'No steps provided.'}</div>
             </div>
+
+            {/* Post Category */}
             <div className="mb-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Category</h3>
               <p className="text-gray-700">{post?.category_name || 'No category assigned.'}</p>
             </div>
+
+            {/* Like and Action Buttons */}
             <div className="p-4">
               <div className="flex items-center space-x-6">
                 <button
