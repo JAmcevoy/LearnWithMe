@@ -17,7 +17,7 @@ const BackButton = () => {
   return (
     <button
       onClick={handleBack}
-      className={`${styles.backbtn} fixed top-3 left-4 p-2 bg-blue-600 text-white 
+      className={`${styles.backbtn} fixed top-3 left-4 p-2 bg-gray-800 text-white 
         rounded-full shadow-lg z-50 flex items-center justify-center`}
       aria-label="Go back"
     >

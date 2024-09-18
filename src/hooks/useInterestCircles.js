@@ -3,12 +3,11 @@ import axios from 'axios';
 
 /**
  * Custom hook to manage interest circles.
- * Handles fetching, filtering, creating, editing, and deleting circles.
+ * Handles fetching, creating, editing, and deleting circles.
  */
 const useInterestCircles = (history) => {
   // State management for circles, categories, loading states, and errors
   const [circles, setCircles] = useState({ results: [], next: null });
-  const [filteredCircles, setFilteredCircles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -18,7 +17,6 @@ const useInterestCircles = (history) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [circleToDelete, setCircleToDelete] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
 
   /**
    * Fetches the list of interest circles from the API.
@@ -28,7 +26,6 @@ const useInterestCircles = (history) => {
     try {
       const { data } = await axios.get('/interest-circles/');
       setCircles(data);
-      setFilteredCircles(data.results); // Initialize filtered circles with all results
     } catch (err) {
       handleError('Error fetching interest circles', err);
     } finally {
@@ -53,26 +50,6 @@ const useInterestCircles = (history) => {
     fetchCircles();
     fetchCategories();
   }, [fetchCircles, fetchCategories]);
-
-  /**
-   * Filters the circles based on the search query.
-   */
-  const handleSearchChange = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    const filtered = circles.results.filter((circle) =>
-      circle.name.toLowerCase().includes(query)
-    );
-    setFilteredCircles(filtered);
-  };
-
-  /**
-   * Clears the search filters and resets the filtered circles.
-   */
-  const handleClearFilters = () => {
-    setSearchQuery('');
-    setFilteredCircles(circles.results);
-  };
 
   /**
    * Handles error reporting and logging.
@@ -157,9 +134,6 @@ const useInterestCircles = (history) => {
         ...prev,
         results: prev.results.filter((circle) => circle.id !== circleToDelete),
       }));
-      setFilteredCircles((prev) =>
-        prev.filter((circle) => circle.id !== circleToDelete)
-      );
       setDeleteModalVisible(false);
       setCircleToDelete(null);
     } catch (err) {
@@ -204,7 +178,6 @@ const useInterestCircles = (history) => {
 
   return {
     circles,
-    filteredCircles,
     loading,
     saveLoading,
     deleteLoading,
@@ -214,7 +187,6 @@ const useInterestCircles = (history) => {
     selectedCategory,
     deleteModalVisible,
     circleToDelete,
-    searchQuery,
     handleCircleClick,
     handleCreateCircle,
     handleInfoClick: (circle) => openModal('info', circle),
@@ -228,8 +200,6 @@ const useInterestCircles = (history) => {
     handleDeleteClick,
     handleConfirmDelete,
     handleCancelDelete,
-    handleSearchChange,
-    handleClearFilters,
     setSelectedCategory,
     setError,
     setCircles,

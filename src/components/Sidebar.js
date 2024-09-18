@@ -142,7 +142,7 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
                         className={`rounded-full ${isSidebarOpen ? 'w-20 h-20' : 'w-8 h-8'}`}
                       />
                     ) : (
-                      <FaUserCircle size={isSidebarOpen ? 40 : 40} className="mb-4" />
+                      <FaUserCircle size={isSidebarOpen ? 80 : 80} className="mb-4" />
                     )}
                   </NavLink>
                   {isSidebarOpen && <p className="text-center">{currentUser.username}</p>}

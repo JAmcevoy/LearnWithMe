@@ -199,6 +199,7 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 - **Private Messaging**: I would like to allow users to send direct messages to one another, fostering more personal interactions outside of public posts.
 - **Private/Public Circles**: Introducing private circles that require either a password or approval from the group's owner would enhance community management.
 - **File Attachments in Chats**: Allowing users to attach documents or other files in chat messages would add another layer of collaboration.
+- **Search bar In Circles** I wanted to add a search bar to circle but I couldnt find a place to put it, If I had more timeto design I might find a spot to fit it in.
 
 ---
 
@@ -228,6 +229,8 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 6. **401 Unauthorized Error for manifest.json**: The manifest.json file should be publicly accessible, but it is currently returning a 401 error, indicating that authentication is required to access it. This needs to be fixed by ensuring the file is served publicly.
 7. **WebSocket Connection Failed**: WebSocket connection issues (`ERR_CONNECTION_TIMED_OUT`) have occurred due to an unreachable or incorrectly configured WebSocket server. This issue remains unresolved and needs further debugging to ensure proper WebSocket communication.
 8. **Sorting of Circles After Editing**: When a user edits a circle, the page refreshes and pushes the most recently edited circle to the bottom of the page. This creates a poor user experience, but I currently lack the knowledge to fix it. The desired behavior is to maintain the circle's original position after editing or to allow for customizable sorting.
+9. **The Circles List View** The circles list is kind of messy and unless you know what to look for it might be hard to locate and when you go into a circle and back out it bring you back to the top making it difficult for user to pop in and out of chats easily.
+10. **Chats Refresh** When multiple users are in a chats it doesnt auto refresh for other users the user has to phyically refresh the page to see updated messages. I just dont have the knowledge right now to complete this!
 
 ---
 
@@ -367,12 +370,19 @@ The goal of this user test is to evaluate the usability, design, and overall use
 
 ---
 
+### Jest Testing
+
+#### Jest Testing (Frontend)
+  **Result**: Passed Jest checks without significant issues.
+![jest](docs/images/val-url-check.PNG)
+
+---
+
 ### Validator Testing
 
 #### W3 (Webpage)
 - **Tool Used**: [W3](https://validator.w3.org/nu/?doc=https%3A%2F%2Flearn-with-me-593ba116ca81.herokuapp.com%2F)  
-  **Result**: Passed Pylint checks without significant issues.
-
+  **Result**: Passed w3 checks without significant issues.
 ![W3 Results](docs/images/val-url-check.PNG)
 
 ---
