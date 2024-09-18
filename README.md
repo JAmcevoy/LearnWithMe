@@ -86,6 +86,75 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 
 ---
 
+#### User Stories
+
+Using the issues tab in Github I created user stories for both the frontend and the backend devlopement. Using the tags fucntion I was able to assign them specfic tags based on their fucntionality, in an agile development this would be use full to assign task and time based on skill and the importance of the feature.
+
+##### Backend
+
+1. **Profile Model**
+   - **Issue #2**
+2. **Post Model**
+   - **Issue #3**
+3. **Messages Model**
+   - **Issue #4**  
+4. **Circles Model**
+   - **Issue #5**
+5. **Like Model**
+   - **Issue #6**
+6. **CRUD Operations for Posts API**
+   - **Issue #7**
+7. **CRUD Operations for Messages API**
+   - **Issue #8**
+8. **CRUD Operations for Circles API**
+   - **Issue #9**
+9. **CRUD Operations for User Profiles API**
+   - **Issue #10**
+10. **User Registration**
+    - **Issue #11**
+11. **User Login API**
+    - **Issue #12**
+12. **Filter Posts by Categories API**
+    - **Issue #14**
+13. **Pagination for Feeds API**
+    - **Issue #15**
+14. **Pagination for Groups API**
+    - **Issue #16**
+15. **Followers Model**
+    - **Issue #17**
+
+
+##### Frontend
+
+1. **Reusable Components**
+   - **Issue #1**  
+2. **State Management**
+   - **Issue #2**  
+3. **Routing**
+   - **Issue #3**
+4. **Forms and Validation**
+   - **Issue #4**  
+5. **Media Handling**
+   - **Issue #5**  
+6. **Infinite Scroll**
+   - **Issue #6**  
+7. **View Profile Page**
+   - **Issue #7**  
+8. **View Interest Circles**
+   - **Issue #8**  
+9. **View Chats**
+   - **Issue #9**  
+10. **Create a Post**
+    - **Issue #11**  
+11. **Follow Profile**
+    - **Issue #12**  
+12. **Pagination for Feeds API**
+    - **Issue #13**
+
+Once the Stories were setup I then created a project [LearnWithMe User Stories](https://github.com/users/JAmcevoy/projects/4/views/3). Using the kanban view, I will able to drag and drop stories under progress heading to remind me of what stages what feature were at. 
+
+![Project - User Stories](docs/images/user-stories-project.PNG)
+
 ## Features
 
 ### Existing Features
@@ -384,6 +453,11 @@ The goal of this user test is to evaluate the usability, design, and overall use
 - **Tool Used**: [W3](https://validator.w3.org/nu/?doc=https%3A%2F%2Flearn-with-me-593ba116ca81.herokuapp.com%2F)  
   **Result**: Passed w3 checks without significant issues.
 ![W3 Results](docs/images/val-url-check.PNG)
+
+#### Python Code Checker (Backend)
+- **Tool Used**: [Python Code Checker](https://extendsclass.com/python-tester.html)  
+  **Result**: Passed Python syntax checker checks without significant issues. I used Browse Python file and uploaded my Repositories file.
+![Python Code Checker Results](docs/images/python-val.PNG)
 
 ---
 

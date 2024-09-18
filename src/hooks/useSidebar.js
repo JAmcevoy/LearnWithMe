@@ -7,7 +7,7 @@ const debounce = (func) => {
   let timeout;
   return (...args) => {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), 1000); // 1 second (1000 ms)
+    timeout = setTimeout(() => func(...args));
   };
 };
 
