@@ -369,11 +369,6 @@ The goal of this user test is to evaluate the usability, design, and overall use
 
 ### Validator Testing
 
-#### JavaScript (React Frontend)
-- **Tool Used**: [ESLint](https://eslint.org/)  
-  ESLint was used to validate JavaScript and JSX files, ensuring best practices and compliance with React-specific rules.  
-  **Result**: Passed ESLint checks without significant issues.
-
 #### W3 (Webpage)
 - **Tool Used**: [W3](https://validator.w3.org/nu/?doc=https%3A%2F%2Flearn-with-me-593ba116ca81.herokuapp.com%2F)  
   **Result**: Passed Pylint checks without significant issues.
