@@ -4,6 +4,8 @@
 
 [Learn With Me](https://learn-with-me-593ba116ca81.herokuapp.com)
 
+[LWM-API](https://github.com/JAmcevoy/LWM-API)
+
 Welcome to **Learn with Me**, the ultimate learning app designed to empower users by sharing and discovering knowledge. Whether you're a student, professional, or lifelong learner, this app is your go-to platform for mastering new skills and expanding your horizons.
 
 ## What is *Learn with Me*?
@@ -200,6 +202,35 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 
 ---
 
+## Bugs
+
+### Bugs I Faced Along the Way
+
+1. **Slow Loading Times for Large Feeds**: Implemented lazy loading and infinite scroll to handle large amounts of posts and improve performance.
+2. **Chat Page Layout on Mobile**: Addressed layout issues on mobile devices with responsive CSS to ensure a consistent chat interface.
+3. **Go Back Button Visibility on Small Screens**: Adjusted the button size and position to improve accessibility on mobile.
+4. **React Logout Bug**: Encountered a known bug in React where users can sometimes experience issues logging out due to client-side caching or session persistence. This issue occurs when React fails to fully clear the user’s session or authentication state. A workaround was implemented by manually clearing the local storage and session data on logout, but the issue can still occasionally persist under certain conditions.
+5. **Circle and Message Handling in DRF**: Initially, when accessing a specific circle, the API would only pull a single message by its ID rather than all the messages associated with that circle. To fix this, I had to create a new endpoint in Django REST Framework (DRF) to handle the proper flow: from the main page > Interest Circles > specific circle > retrieving all chats related to that circle. This change ensures that when a user navigates to a circle, they can see the entire chat history instead of just a single message, improving the overall user experience.
+6. **Pulling User’s Recent Posts and Likes**: I encountered difficulties retrieving a specific user's recent posts and recent likes for their profile page. Initially, the query was not pulling the correct data, but by creating custom fields in the serializer, I was able to resolve this issue. This approach allowed me to accurately display both recent posts and likes on the profile page, ensuring that the sections worked as intended.
+7. **Pagination on Categories**: Initially, the categories were paginated, and I was limited to displaying only 10 categories. I fixed this by fetching all the categories before rendering the dropdown, ensuring that users could see the full list of categories at once.
+8. **Not Enough Space on Navbar**: On smaller screens, not all icons and text fit in the navbar. To resolve this, I created a media query that hides the text on screens under 530px, ensuring the navbar remains clean and functional on small devices.
+9. **The Default Image For New Profile**: When a user created a new profile the deafult image wouldnt show, Turns out the pathway in the backend was incorrect.
+
+---
+
+### Bugs Yet to Fix
+
+1. **Error Handling for Network Issues**: Need to implement better notifications for lost network connections or server downtime.
+2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties with file size management.
+3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens, for now on smaller screen I put it in the navbar. Additionally, the back button pushes back through all previous pages, including forms, instead of stopping at the home page. This can cause the user to continue navigating back farther than expected.
+4. **The Sort Order of Chats**: The chat function was difficult to implement correctly, particularly with loading messages in the right order (starting from the bottom with older messages above). Currently, the chat loads at the top and scrolls to the bottom, which may cause a poor user experience in chats with many users.
+5. **Circle Name Visibility in Chats**: When entering a chat with no messages, the circle name does not show until a message is sent. This can confuse users as they may not immediately recognize which circle they are in.
+6. **401 Unauthorized Error for manifest.json**: The manifest.json file should be publicly accessible, but it is currently returning a 401 error, indicating that authentication is required to access it. This needs to be fixed by ensuring the file is served publicly.
+7. **WebSocket Connection Failed**: WebSocket connection issues (`ERR_CONNECTION_TIMED_OUT`) have occurred due to an unreachable or incorrectly configured WebSocket server. This issue remains unresolved and needs further debugging to ensure proper WebSocket communication.
+8. **Sorting of Circles After Editing**: When a user edits a circle, the page refreshes and pushes the most recently edited circle to the bottom of the page. This creates a poor user experience, but I currently lack the knowledge to fix it. The desired behavior is to maintain the circle's original position after editing or to allow for customizable sorting.
+
+---
+
 ## Testing
 
 ### Manual Testing
@@ -249,6 +280,93 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
 
 ---
 
+### User Testing
+
+**Objective**:  
+The goal of this user test is to evaluate the usability, design, and overall user experience of the Learn with Me app. The test will focus on critical components such as the Feed Page, Profile Page, Interest Circles, and the Search Bar functionality. The secondary objective is to gather user feedback on the intuitive nature of the Go Back Button for navigation.
+
+**Test Participants**:  
+- **User 1**: Casual learner, minimal tech background.  
+- **User 2**: College student, moderate tech experience.  
+- **User 3**: Professional developer, high tech expertise.
+
+**Test Environment**:  
+- **Devices**:  
+  - User 1: Laptop  
+  - User 2: Smartphone  
+  - User 3: Tablet  
+- **Browsers**:  
+  - User 1 and User 2: Chrome  
+  - User 3: Safari
+
+**Tasks**:  
+1. **Explore the Feed Page**:  
+   - Scroll through posts, interact with a post by liking it, and click on a post to view its details.
+2. **Search Using the Search Bar**:  
+   - Search for a post by title or owner name and clear the search using the "Clear Search" button.
+3. **Navigate to Profile Page**:  
+   - View the user's own profile and check recent posts and likes.
+4. **Join an Interest Circle**:  
+   - Browse available Interest Circles, click to view the details of one, and join it.
+5. **Send a Message in an Interest Circle Chat**:  
+   - Navigate to a circle's chat page and send a message.
+6. **Use the Go Back Button**:  
+   - After completing a task, use the "Go Back" button to return to the previous screen.
+
+**Observations & Results**:
+
+- **User 1 (Casual Learner)**:  
+  - **Feed Page**: Successfully liked a post but struggled to find where to view post details. Suggested making the clickable area larger or more distinct.  
+  - **Search Bar**: Found the search feature intuitive but did not immediately notice the "Clear Search" button.  
+  - **Profile Page**: Easily navigated but suggested more visual feedback when viewing likes.  
+  - **Interest Circles**: Joined an interest circle without issues but found the join button too small on a laptop screen.  
+  - **Chat**: Successfully sent a message but found the chat page design "a little plain" and suggested more vibrant visuals.  
+  - **Go Back Button**: Worked as intended but was slightly hard to notice on smaller screens.
+
+  **Key Takeaways**:  
+  - Consider enlarging buttons or increasing contrast for important actions.  
+  - Enhance visual appeal of the chat page.
+
+- **User 2 (College Student)**:  
+  - **Feed Page**: Navigated the feed smoothly and appreciated the layout.  
+  - **Search Bar**: Found the search easy to use but noted that partial name searches didn’t always yield correct results. The clear button was immediately noticed.  
+  - **Profile Page**: No difficulties, liked the layout but recommended a more prominent edit button.  
+  - **Interest Circles**: Found the page straightforward and liked the modal for detailed info.  
+  - **Chat**: Messaging was quick and easy; appreciated the edit and delete options.  
+  - **Go Back Button**: Worked as expected but suggested increasing icon size on mobile.
+
+  **Key Takeaways**:  
+  - Minor improvements in mobile experience (e.g., icon sizes).  
+  - Improve search results for partial matches.
+
+- **User 3 (Professional Developer)**:  
+  - **Feed Page**: Efficiently navigated and found the UI clean.  
+  - **Search Bar**: Search and clear functionality worked perfectly; recommended auto-suggestions for quicker searches.  
+  - **Profile Page**: No issues; liked the consolidated view of recent posts and activity.  
+  - **Interest Circles**: Easy to understand and join; suggested adding filtering options based on interests.  
+  - **Chat**: Sent messages successfully and suggested adding features like message reactions.  
+  - **Go Back Button**: Worked smoothly; suggested an alternative navigation gesture for small screens.
+
+  **Key Takeaways**:  
+  - Add advanced search features like auto-suggestions.  
+  - Introduce filtering options for Interest Circles.  
+  - Add features like message reactions in chats.
+
+**Overall Results**:  
+- **Search Bar**: Easy to use but could benefit from additional features and clearer visual cues for clearing searches.  
+- **Go Back Button**: Effective, but improvements in visibility and size on mobile are needed.  
+- **Feed Page**: Generally intuitive, though making interaction areas more prominent is recommended.  
+- **Interest Circles**: Liked by users, but additional filtering and detail options would enhance the experience.  
+- **Chats**: Functional but could be more engaging with features like reactions and improved visual design.
+
+**Actionable Insights**:  
+- Improve mobile navigation by resizing the Go Back Button or adding alternative gestures.  
+- Add search auto-suggestions and improve results for partial matches.  
+- Enhance visual elements in chat and add interactive features like message reactions.  
+- Provide more detailed filters and search options for Interest Circles to improve discoverability.
+
+---
+
 ### Validator Testing
 
 #### JavaScript (React Frontend)
@@ -256,60 +374,263 @@ Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulti
   ESLint was used to validate JavaScript and JSX files, ensuring best practices and compliance with React-specific rules.  
   **Result**: Passed ESLint checks without significant issues.
 
-#### Python (Backend)
-- **Tool Used**: [Pylint](https://www.pylint.org/)  
-  Pylint was used to ensure code adheres to PEP 8 standards and identify potential issues.  
+#### W3 (Webpage)
+- **Tool Used**: [W3](https://validator.w3.org/nu/?doc=https%3A%2F%2Flearn-with-me-593ba116ca81.herokuapp.com%2F)  
   **Result**: Passed Pylint checks without significant issues.
 
----
-
-## Bugs
-
-### Bugs I Faced Along the Way
-
-1. **Slow Loading Times for Large Feeds**: Implemented lazy loading and infinite scroll to handle large amounts of posts and improve performance.
-2. **Chat Page Layout on Mobile**: Addressed layout issues on mobile devices with responsive CSS to ensure a consistent chat interface.
-3. **Go Back Button Visibility on Small Screens**: Adjusted the button size and position to improve accessibility on mobile.
-4. **React Logout Bug**: Encountered a known bug in React where users can sometimes experience issues logging out due to client-side caching or session persistence. This issue occurs when React fails to fully clear the user’s session or authentication state. A workaround was implemented by manually clearing the local storage and session data on logout, but the issue can still occasionally persist under certain conditions.
-5. **Circle and Message Handling in DRF**: Initially, when accessing a specific circle, the API would only pull a single message by its ID rather than all the messages associated with that circle. To fix this, I had to create a new endpoint in Django REST Framework (DRF) to handle the proper flow: from the main page > Interest Circles > specific circle > retrieving all chats related to that circle. This change ensures that when a user navigates to a circle, they can see the entire chat history instead of just a single message, improving the overall user experience.
-6. **Pulling User’s Recent Posts and Likes**: I encountered difficulties retrieving a specific user's recent posts and recent likes for their profile page. Initially, the query was not pulling the correct data, but by creating custom fields in the serializer, I was able to resolve this issue. This approach allowed me to accurately display both recent posts and likes on the profile page, ensuring that the sections worked as intended.
-7. **Pagination on Categories**: Initially, the categories were paginated, and I was limited to displaying only 10 categories. I fixed this by fetching all the categories before rendering the dropdown, ensuring that users could see the full list of categories at once.
-8. **Not Enough Space on Navbar**: On smaller screens, not all icons and text fit in the navbar. To resolve this, I created a media query that hides the text on screens under 530px, ensuring the navbar remains clean and functional on small devices.
-9. **The Default Image For New Profile**: When a user created a new profile the deafult image wouldnt show, Turns out the pathway in the backend was incorrect.
-
-
----
-
-### Bugs Yet to Fix
-
-1. **Error Handling for Network Issues**: Need to implement better notifications for lost network connections or server downtime.
-2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties with file size management.
-3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens, for now on smaller screen I put it in the navbar. Additionally, the back button pushes back through all previous pages, including forms, instead of stopping at the home page. This can cause the user to continue navigating back farther than expected.
-4. **The Sort Order of Chats**: The chat function was difficult to implement correctly, particularly with loading messages in the right order (starting from the bottom with older messages above). Currently, the chat loads at the top and scrolls to the bottom, which may cause a poor user experience in chats with many users.
-5. **Circle Name Visibility in Chats**: When entering a chat with no messages, the circle name does not show until a message is sent. This can confuse users as they may not immediately recognize which circle they are in.
-6. **401 Unauthorized Error for manifest.json**: The manifest.json file should be publicly accessible, but it is currently returning a 401 error, indicating that authentication is required to access it. This needs to be fixed by ensuring the file is served publicly.
-7. **WebSocket Connection Failed**: WebSocket connection issues (`ERR_CONNECTION_TIMED_OUT`) have occurred due to an unreachable or incorrectly configured WebSocket server. This issue remains unresolved and needs further debugging to ensure proper WebSocket communication.
-8. **Sorting of Circles After Editing**: When a user edits a circle, the page refreshes and pushes the most recently edited circle to the bottom of the page. This creates a poor user experience, but I currently lack the knowledge to fix it. The desired behavior is to maintain the circle's original position after editing or to allow for customizable sorting.
+![W3 Results](docs/images/val-url-check.PNG)
 
 ---
 
 ## Deployment
 
-### API Deployment
+### GitHub Setup for API and Frontend
 
-1. **Prepare the API for Production**: Handled errors gracefully, secured endpoints, and configured environment variables for sensitive data.
-2. **Hosting**: Hosted the API on [Heroku](https://heroku.com), integrated with GitHub for continuous deployment.
-3. **Deployment Process**: 
-   - Created the app on Heroku and linked it to the GitHub repository.  
-   - Configured environment variables and ran necessary database migrations.  
-   - Monitored performance through Heroku’s dashboard and metrics.
-
-### GitHub
-
-1. **Repository Setup**: The code was managed on GitHub, with branches used for feature development and bug fixes.
-2. **Continuous Deployment**: The GitHub repository was linked to Heroku for automatic deployments on push to the main branch.
+Before deploying the API (Django) and frontend (React) applications to Heroku, the repositories were set up in GitHub to ensure smooth integration with Heroku's deployment process. Below is a step-by-step guide for setting up GitHub repositories for both the API and the frontend.
 
 ---
+
+### Setting up GitHub for API Deployment: LWM-API (Django Rest Framework)
+
+1. **Create a New Repository in GitHub**:
+   - Navigate to [GitHub](https://github.com) and log in to your account.
+   - Click on the **+** icon in the top-right corner and select **New repository**.
+   - Name the repository (e.g., `lwm-api`), add a description, and choose the repository type (Public or Private).
+   - Initialize the repository with a README file and set up a `.gitignore` file specific to **Python/Django** to ignore unnecessary files during deployment.
+
+---
+
+### Setting up GitHub for Frontend Deployment: LearnWithMe (React)
+
+1. **Create a New Repository in GitHub**:
+   - Navigate to [GitHub](https://github.com) and log in to your account.
+   - Click on the **+** icon in the top-right corner and select **New repository**.
+   - Name the repository (e.g., `learnwithme`), add a description, and choose the repository type (Public or Private).
+
+---
+
+### API Deployment: LWM-API (Django Rest Framework)
+
+1. **Prepare the API for Production**:
+   - Before deploying the API, I ensured that all aspects of the code were production-ready. This included handling errors gracefully to prevent the API from exposing internal logic or server details to users.
+   - I secured all API endpoints to ensure that only authorized users could access specific data or functionalities. This was achieved through authentication mechanisms like JWT tokens, API keys, or OAuth, depending on the use case.
+   - Sensitive data, such as API keys, database credentials, and other secrets, were stored using environment variables. This helps in maintaining security by keeping such data out of the codebase.
+
+   - **Adding Django Rest Auth Library and Rest Framework’s Authtoken**:
+     - I installed and configured Django Rest Auth and the necessary packages for token authentication:
+       ```bash
+       pip install dj-rest-auth==2.1.9
+       ```
+     - In `LWM-API/settings.py`, I added the following apps:
+       ```python
+       INSTALLED_APPS = [
+         'django_filters',
+         'rest_framework.authtoken',
+         'dj_rest_auth',
+         'profiles',
+       ]
+       ```
+     - I updated the `LWM-API/urls.py` to include the required auth endpoints:
+       ```python
+       urlpatterns = [
+         path('api-auth/', include('rest_framework.urls')),
+         path('dj-rest-auth/', include('dj_rest_auth.urls')),
+         path('', include('profiles.urls')),
+       ]
+       ```
+     - After making these changes, I ran the following migration command:
+       ```bash
+       python manage.py migrate
+       ```
+
+   - **Adding User Registration**:
+     - I enabled user registration with Django All-Auth and Rest-Auth for social authentication:
+       ```bash
+       pip install 'dj-rest-auth[with_social]'
+       ```
+     - I updated the `INSTALLED_APPS` in `LWM-API/settings.py`:
+       ```python
+       INSTALLED_APPS = [
+         'dj_rest_auth',
+         'django.contrib.sites',
+         'allauth',
+         'allauth.account',
+         'allauth.socialaccount',
+         'dj_rest_auth.registration',
+         'profiles',
+       ]
+       ```
+     - I added the required URLs for user registration in `LWM-API/urls.py`:
+       ```python
+       urlpatterns = [
+         path('dj-rest-auth/', include('dj_rest_auth.urls')),
+         path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+         path('', include('profiles.urls')),
+       ]
+       ```
+
+   - **Adding JWT Tokens Functionality**:
+     - To secure API endpoints, I implemented JWT token authentication:
+       ```bash
+       pip install djangorestframework-simplejwt==4.7.2
+       ```
+     - In `env.py`, I created a session authentication value to differentiate between development and production:
+       ```python
+       os.environ['DEV'] = '1'
+       ```
+     - I updated `LWM-API/settings.py` to use JWT authentication in production:
+       ```python
+       REST_FRAMEWORK = {
+         'DEFAULT_AUTHENTICATION_CLASSES': [
+           'rest_framework.authentication.SessionAuthentication'
+           if 'DEV' in os.environ
+           else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
+         ],
+       }
+       REST_USE_JWT = True
+       JWT_AUTH_COOKIE = 'my-app-auth'
+       JWT_AUTH_SECURE = True
+       JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+       ```
+
+   - **Adding Profile Fields to User Details**:
+     - To include profile fields in user responses, I created a custom user serializer:
+       ```python
+       from dj_rest_auth.serializers import UserDetailsSerializer
+       from rest_framework import serializers
+
+       class CurrentUserSerializer(UserDetailsSerializer):
+           profile_id = serializers.ReadOnlyField(source='profile.id')
+           profile_image = serializers.ReadOnlyField(source='profile.image.url')
+
+           class Meta(UserDetailsSerializer.Meta):
+               fields = UserDetailsSerializer.Meta.fields + ('profile_id', 'profile_image')
+       ```
+     - I updated the default serializer in `LWM-API/settings.py`:
+       ```python
+       REST_AUTH_SERIALIZERS = {
+         'USER_DETAILS_SERIALIZER': 'LWM-API.serializers.CurrentUserSerializer'
+       }
+       ```
+     - I ran the migration and updated the `requirements.txt` file:
+       ```bash
+       python manage.py migrate
+       pip freeze > requirements.txt
+       ```
+
+   - **Adding the Root Route**:
+     - I created a root route to return a welcome message when accessing the API root:
+       ```python
+       from rest_framework.decorators import api_view
+       from rest_framework.response import Response
+
+       @api_view()
+       def root_route(request):
+           return Response({"message": "Welcome to my Django REST framework API!"})
+       ```
+     - I added this route to `LWM-API/urls.py`:
+       ```python
+       urlpatterns = [
+         path('', root_route),
+       ]
+       ```
+
+   - **Adding JSON Renderer and Pagination**:
+     - I configured the API to handle pagination and JSON responses in production:
+       ```python
+       REST_FRAMEWORK = {
+         'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+         'PAGE_SIZE': 10,
+       }
+       if 'DEV' not in os.environ:
+         REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+           'rest_framework.renderers.JSONRenderer'
+         ]
+       ```
+
+   - **General Formatting**:
+     - To improve date formatting, I customized the format in the settings file:
+       ```python
+       REST_FRAMEWORK = {
+         'DATETIME_FORMAT': '%d %b %Y'
+       }
+       ```
+
+   - **Creating Heroku App with PostgreSQL**:
+     - I created a Heroku app and configured PostgreSQL via ElephantSQL.
+     - After creating the ElephantSQL database, I copied the database URL and added it to Heroku's config vars.
+
+   - **Configuring Heroku**:
+     - I configured the production database in `LWM-API/settings.py`:
+       ```python
+       import dj_database_url
+       DATABASES = {
+         'default': dj_database_url.parse(os.environ.get('DATABASE_URL')) if 'DEV' not in os.environ else {
+           'ENGINE': 'django.db.backends.sqlite3',
+           'NAME': BASE_DIR / 'db.sqlite3',
+         }
+       }
+       ```
+     - I installed the required dependencies for deployment and created a `Procfile`:
+       ```bash
+       pip install dj_database_url gunicorn
+       ```
+       ```bash
+       release: python manage.py makemigrations && python manage.py migrate
+       web: gunicorn LWM-API.wsgi
+       ```
+
+   - **Final Steps**:
+     - I updated `LWM-API/settings.py` with the allowed hosts:
+       ```python
+       ALLOWED_HOSTS = ['your-heroku-app.herokuapp.com', 'localhost']
+       ```
+     - I installed and configured CORS for cross-origin requests:
+       ```bash
+       pip install django-cors-headers
+       ```
+     - In `LWM-API/settings.py`, I added:
+       ```python
+       INSTALLED_APPS = [
+         'corsheaders',
+         ...
+       ]
+
+       MIDDLEWARE = [
+         'corsheaders.middleware.CorsMiddleware',
+         ...
+       ]
+
+       CORS_ALLOWED_ORIGINS = [
+         os.environ.get('CLIENT_ORIGIN'),
+       ]
+       ```
+     - I set the `SECRET_KEY` and other environment variables in `env.py`:
+       ```python
+       os.environ['SECRET_KEY'] = 'CreateRandomValue'
+       ```
+
+---
+
+### Frontend Deployment: LearnWithMe (React)
+
+1. **Prepare the Frontend for Production**:
+   - I optimized the React app by running a production build using:
+     ```bash
+     npm run build
+     ```
+   - I configured environment variables for the API URL to connect the frontend to the backend.
+
+---
+
+2. **Hosting**:
+   - The frontend was hosted on **Heroku**, alongside the API, to keep the infrastructure unified.
+   - The deployment process was integrated with **GitHub** using manual deployment to allow for controlled and monitored deployments.
+
+---
+
+3. **Deployment Process**:
+   - I created a Heroku application for the frontend and linked it to the **GitHub repository** where the React app was stored.
 
 ## Credits
 

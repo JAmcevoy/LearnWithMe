@@ -1,31 +1,34 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+/**
+ * Custom hook to manage interest circles.
+ * Handles fetching, filtering, creating, editing, and deleting circles.
+ */
 const useInterestCircles = (history) => {
-  // State Hooks
-  const [circles, setCircles] = useState({ results: [], next: null }); // Correct initialization
-  const [filteredCircles, setFilteredCircles] = useState([]); // Add filteredCircles state
+  // State management for circles, categories, loading states, and errors
+  const [circles, setCircles] = useState({ results: [], next: null });
+  const [filteredCircles, setFilteredCircles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [modal, setModal] = useState({
-    visible: false,
-    type: '',
-    circle: null,
-  });
+  const [modal, setModal] = useState({ visible: false, type: '', circle: null });
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [circleToDelete, setCircleToDelete] = useState(null);
-  const [searchQuery, setSearchQuery] = useState(''); // Search query state
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch Functions
+  /**
+   * Fetches the list of interest circles from the API.
+   */
   const fetchCircles = useCallback(async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get('/interest-circles/');
       setCircles(data);
-      setFilteredCircles(data.results); // Initially set filteredCircles as all circles
+      setFilteredCircles(data.results); // Initialize filtered circles with all results
     } catch (err) {
       handleError('Error fetching interest circles', err);
     } finally {
@@ -33,6 +36,9 @@ const useInterestCircles = (history) => {
     }
   }, []);
 
+  /**
+   * Fetches the list of categories from the API.
+   */
   const fetchCategories = useCallback(async () => {
     try {
       const { data } = await axios.get('/categories/');
@@ -42,50 +48,65 @@ const useInterestCircles = (history) => {
     }
   }, []);
 
+  // Fetch circles and categories on component mount
   useEffect(() => {
     fetchCircles();
     fetchCategories();
   }, [fetchCircles, fetchCategories]);
 
-  // Handle Search and Filters
+  /**
+   * Filters the circles based on the search query.
+   */
   const handleSearchChange = (e) => {
-    const query = e.target.value;
+    const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-
-    // Filter circles based on the search query
     const filtered = circles.results.filter((circle) =>
-      circle.name.toLowerCase().includes(query.toLowerCase())
+      circle.name.toLowerCase().includes(query)
     );
     setFilteredCircles(filtered);
   };
 
+  /**
+   * Clears the search filters and resets the filtered circles.
+   */
   const handleClearFilters = () => {
     setSearchQuery('');
-    setFilteredCircles(circles.results); // Reset the filtered list
+    setFilteredCircles(circles.results);
   };
 
-  // Error Handling
+  /**
+   * Handles error reporting and logging.
+   */
   const handleError = (message, err) => {
-    setError(`${message}: ${err.message}`);
-    console.error(message, err);
+    const errorMessage = `${message}: ${err.message}`;
+    setError(errorMessage);
+    console.error(errorMessage);
   };
 
-  // Modal Handlers
+  /**
+   * Opens the modal for editing or viewing circle details.
+   */
   const openModal = (type, circle = null) => setModal({ visible: true, type, circle });
+
+  /**
+   * Closes the currently open modal.
+   */
   const closeModal = () => setModal({ visible: false, type: '', circle: null });
 
-  // Save Changes
+  /**
+   * Saves changes to a circle.
+   */
   const handleSaveChanges = async () => {
     if (!modal.circle) return;
 
+    setSaveLoading(true);
     try {
-      setSaveLoading(true);
       await axios.put(`/interest-circles/${modal.circle.id}/`, {
         name: modal.circle.name,
         description: modal.circle.description,
         category: selectedCategory,
       });
-      await fetchCircles();
+      await fetchCircles(); // Refresh circles after save
       closeModal();
     } catch (err) {
       handleSaveError(err);
@@ -94,42 +115,50 @@ const useInterestCircles = (history) => {
     }
   };
 
+  /**
+   * Handles save-related errors.
+   */
   const handleSaveError = (err) => {
     let message = 'Error saving changes';
     if (err.response?.status === 401) {
-      message = "Unauthorized. Please log in.";
+      message = 'Unauthorized. Please log in.';
     } else if (err.response?.status === 403) {
-      message = "Forbidden. You don't have permission to edit this circle.";
+      message = "You don't have permission to edit this circle.";
     }
     handleError(message, err);
   };
 
+  /**
+   * Updates the modal fields for circle editing.
+   */
   const handleModalChange = (field, value) => {
-    setModal((prevModal) => ({
-      ...prevModal,
-      circle: {
-        ...prevModal.circle,
-        [field]: value,
-      },
+    setModal((prev) => ({
+      ...prev,
+      circle: { ...prev.circle, [field]: value },
     }));
   };
 
-  // Delete Circle
+  /**
+   * Prepares to delete a circle by opening the confirmation modal.
+   */
   const handleDeleteClick = (circleId) => {
     setCircleToDelete(circleId);
     setDeleteModalVisible(true);
   };
 
+  /**
+   * Confirms and deletes the selected circle.
+   */
   const handleConfirmDelete = async () => {
+    setDeleteLoading(true);
     try {
-      setDeleteLoading(true);
       await axios.delete(`/interest-circles/${circleToDelete}/`);
-      setCircles((prevCircles) => ({
-        ...prevCircles,
-        results: prevCircles.results.filter((circle) => circle.id !== circleToDelete),
+      setCircles((prev) => ({
+        ...prev,
+        results: prev.results.filter((circle) => circle.id !== circleToDelete),
       }));
-      setFilteredCircles((prevFilteredCircles) =>
-        prevFilteredCircles.filter((circle) => circle.id !== circleToDelete)
+      setFilteredCircles((prev) =>
+        prev.filter((circle) => circle.id !== circleToDelete)
       );
       setDeleteModalVisible(false);
       setCircleToDelete(null);
@@ -140,25 +169,37 @@ const useInterestCircles = (history) => {
     }
   };
 
+  /**
+   * Handles errors during the delete process.
+   */
+  const handleDeleteError = (err) => {
+    let message = 'Error deleting the circle.';
+    if (err.response?.status === 401) {
+      message = 'Unauthorized. Please log in.';
+    } else if (err.response?.status === 403) {
+      message = "You don't have permission to delete this circle.";
+    } else if (err.response?.status === 404) {
+      message = 'Circle not found.';
+    }
+    handleError(message, err);
+  };
+
+  /**
+   * Cancels the delete action.
+   */
   const handleCancelDelete = () => {
     setDeleteModalVisible(false);
     setCircleToDelete(null);
   };
 
-  const handleDeleteError = (err) => {
-    let message = 'Error deleting the circle.';
-    if (err.response?.status === 401) {
-      message = "Unauthorized. Please log in.";
-    } else if (err.response?.status === 403) {
-      message = "Forbidden. You don't have permission to delete this circle.";
-    } else if (err.response?.status === 404) {
-      message = "Circle not found.";
-    }
-    handleError(message, err);
-  };
-
-  // Event Handlers
+  /**
+   * Navigates to the chat page for a circle.
+   */
   const handleCircleClick = (id) => history.push(`/interest-circles/${id}/chats`);
+
+  /**
+   * Navigates to the page for creating a new circle.
+   */
   const handleCreateCircle = () => history.push('/interest-circles/create');
 
   return {
