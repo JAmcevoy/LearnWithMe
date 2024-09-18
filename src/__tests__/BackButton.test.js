@@ -1,43 +1,31 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useHistory } from 'react-router-dom';
-import BackButton from '../components/BackButton';
+import BackButton from '../components/BackButton'; // Adjust the path based on your file structure
 
-// Mock the useHistory hook
+// Mock useHistory hook
 jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(),
 }));
 
-describe('BackButton component', () => {
-  it('renders the back button with correct text and icon', () => {
-    // Render the component
+describe('BackButton Component', () => {
+  it('should render the back button and handle back navigation', () => {
+    const mockGoBack = jest.fn(); // Mock the goBack function
+    useHistory.mockReturnValue({ goBack: mockGoBack });
+
+    // Render the BackButton component
     render(<BackButton />);
 
-    // Find elements by accessible roles and text
-    const button = screen.getByRole('button', { name: /go back/i });
-    const buttonText = screen.getByText(/back/i);
+    // Get the button element by its text "Back"
+    const backButton = screen.getByRole('button', { name: /back/i });
 
-    // Assert the elements are rendered
-    expect(button).toBeInTheDocument();
-    expect(buttonText).toBeInTheDocument();
-  });
+    // Assert that the back button is in the document
+    expect(backButton).toBeInTheDocument();
 
-  it('calls history.goBack when the button is clicked', () => {
-    const goBack = jest.fn();
+    // Simulate a click event on the button
+    fireEvent.click(backButton);
 
-    // Mock the useHistory hook to return goBack
-    useHistory.mockReturnValue({ goBack });
-
-    // Render the component
-    render(<BackButton />);
-
-    // Find the button element
-    const button = screen.getByRole('button', { name: /go back/i });
-
-    // Simulate button click
-    fireEvent.click(button);
-
-    // Assert that goBack was called
-    expect(goBack).toHaveBeenCalled();
+    // Assert that history.goBack was called when the button was clicked
+    expect(mockGoBack).toHaveBeenCalled();
   });
 });

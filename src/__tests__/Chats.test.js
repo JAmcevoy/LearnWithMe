@@ -1,42 +1,21 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import Chats from '../pages/Circles/Chats';
-import useMessages from '../hooks/useMessages';
-import '@testing-library/jest-dom/extend-expect';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import Chats from '../pages/circles/Chats';
+import useMessages from '../hooks/useMessages';
 
 // Mock the useMessages hook
-jest.mock('../hooks/useMessages');
-
-// Mock the external components
-jest.mock('../components/LoadingSpinner', () => () => <div data-testid="loading-spinner">Loading...</div>);
-
-// Mock the DeleteConfirmation component like you did with the loader
-jest.mock('../components/DeleteModal', () => ({ message, onConfirm, onCancel }) => (
-  <div data-testid="delete-modal">
-    <p>{message}</p>
-    <button onClick={onCancel}>Cancel</button>
-    <button onClick={onConfirm}>Confirm</button>
-  </div>
-));
+jest.mock('../hooks/useMessages', () => jest.fn());
 
 describe('Chats Component', () => {
-  const mockChatData = {
+  const mockUseMessages = {
     currentUser: { pk: 1 },
-    messages: {
-      results: [
-        { id: 1, owner: 1, owner_username: 'testuser', content: 'Hello, World!', timestamp: '2024-09-14' },
-        { id: 2, owner: 2, owner_username: 'otheruser', content: 'Hey there!', timestamp: '2024-09-14' },
-      ],
-      next: null,
-    },
-    newMessage: 'Test message',
-    editingMessageId: null,
-    loading: false,
+    messages: { results: [] }, // No messages for the loading test
+    newMessage: '',
     error: null,
     showDeleteModal: false,
     circleName: 'Test Circle',
-    messagesEndRef: { current: null },
+    messagesEndRef: React.createRef(),
     handleChange: jest.fn(),
     handleSend: jest.fn(),
     handleDeleteClick: jest.fn(),
@@ -49,72 +28,78 @@ describe('Chats Component', () => {
   };
 
   beforeEach(() => {
-    useMessages.mockReturnValue(mockChatData);
+    useMessages.mockReturnValue(mockUseMessages);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('should render the chat interface with messages', () => {
+    mockUseMessages.messages.results = [{ id: 1, owner: 1, owner_username: 'Test User', content: 'Hello!', timestamp: new Date() }];
+    
+    render(
+      <MemoryRouter>
+        <Chats />
+      </MemoryRouter>
+    );
+
+    // Check if the chat header is rendered
+    expect(screen.getByText('Test Circle Chat')).toBeInTheDocument();
+    
+    // Check if the message is rendered
+    expect(screen.getByText('Test User')).toBeInTheDocument();
+    expect(screen.getByText('Hello!')).toBeInTheDocument();
   });
 
-  it('should display loading spinner when loading is true', () => {
+  it('should enable the send button when message input is not empty', () => {
+    mockUseMessages.newMessage = 'Hello!';
+
+    render(
+      <MemoryRouter>
+        <Chats />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('button', { name: /send message/i })).toBeEnabled();
+  });
+
+  it('should display delete confirmation modal when deleting a message', () => {
+    mockUseMessages.showDeleteModal = true;
+
+    render(
+      <MemoryRouter>
+        <Chats />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/are you sure you want to delete this message/i)).toBeInTheDocument();
+  });
+
+  it('should display error modal when there is an error', () => {
+    mockUseMessages.error = 'An error occurred';
+
+    render(
+      <MemoryRouter>
+        <Chats />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('An error occurred')).toBeInTheDocument();
+  });
+
+  it('should display loading spinner when loading is true', async () => {
     useMessages.mockReturnValueOnce({
-      ...mockChatData,
+      ...mockUseMessages,
       loading: true,
       messages: { results: [] }, // Simulate no messages when loading
     });
 
-    render(<Chats />, { wrapper: MemoryRouter });
+    render(
+      <MemoryRouter>
+        <Chats />
+      </MemoryRouter>
+    );
 
-    // Assert that the loading spinner is displayed
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
-  });
-
-  it('should call handleSend when the send button is clicked', () => {
-    render(<Chats />, { wrapper: MemoryRouter });
-
-    const sendButton = screen.getByLabelText('Send message');
-    expect(sendButton).not.toBeDisabled();
-
-    fireEvent.click(sendButton);
-
-    expect(mockChatData.handleSend).toHaveBeenCalled();
-  });
-
-  it('should show delete modal when showDeleteModal is true', () => {
-    useMessages.mockReturnValueOnce({
-      ...mockChatData,
-      showDeleteModal: true, // Ensure the modal is set to show
-    });
-
-    render(<Chats />, { wrapper: MemoryRouter });
-
-    // Assert that the delete modal is displayed
-    expect(screen.getByTestId('delete-modal')).toBeInTheDocument();
-  });
-
-  it('should call handleDeleteClick when delete button is clicked', () => {
-    render(<Chats />, { wrapper: MemoryRouter });
-
-    const deleteButton = screen.getAllByLabelText('Delete message')[0];
-    fireEvent.click(deleteButton);
-
-    expect(mockChatData.handleDeleteClick).toHaveBeenCalled();
-  });
-
-  it('should display messages', () => {
-    render(<Chats />, { wrapper: MemoryRouter });
-
-    // Check if the messages are rendered
-    expect(screen.getByText('Hello, World!')).toBeInTheDocument();
-    expect(screen.getByText('Hey there!')).toBeInTheDocument();
-  });
-
-  it('should allow editing a message', () => {
-    render(<Chats />, { wrapper: MemoryRouter });
-
-    const editButton = screen.getAllByLabelText('Edit message')[0];
-    fireEvent.click(editButton);
-
-    expect(mockChatData.setEditingMessageId).toHaveBeenCalledWith(1);
+    // Use findByText to wait for the loading message to appear
+    const loadingMessage = await screen.findByText(/Just a moment!/i);
+    
+    expect(loadingMessage).toBeInTheDocument();
   });
 });

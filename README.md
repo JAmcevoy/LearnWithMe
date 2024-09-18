@@ -351,6 +351,7 @@ Once the Stories were setup I then created a project [LearnWithMe User Stories](
 8. **Sorting of Circles After Editing**: When a user edits a circle, the page refreshes and pushes the most recently edited circle to the bottom of the page. This creates a poor user experience, but I currently lack the knowledge to fix it. The desired behavior is to maintain the circle's original position after editing or to allow for customizable sorting.
 9. **The Circles List View** The circles list is kind of messy and unless you know what to look for it might be hard to locate and when you go into a circle and back out it bring you back to the top making it difficult for user to pop in and out of chats easily.
 10. **Chats Refresh** When multiple users are in a chats it doesnt auto refresh for other users the user has to phyically refresh the page to see updated messages. I just dont have the knowledge right now to complete this!
+11. **Large React File**: Some of the components, particularly the pages like the chat page, became too large because I was unable to properly refactor and break them up into separate components and hooks. While trying to clean this up, I encountered issues and ultimately ran out of time to fully address this. As a result, files like the chat component contain a lot of code in one place, which is not ideal and does not adhere to React's best practices for clean and maintainable code. This is something that needs to be refactored in the future.
 
 ---
 
@@ -493,8 +494,20 @@ The goal of this user test is to evaluate the usability, design, and overall use
 ### Jest Testing
 
 #### Jest Testing (Frontend)
-  **Result**: Passed Jest checks without significant issues.
-![jest](docs/images/val-url-check.PNG)
+  **Result**: Passed Jest test (12) without significant issues. I test what I believe to be the main component mocking hooks and other imported components.
+    - BackButton.test.js
+    - Chats.test.js
+    - DeleteModal.test.js
+    - ErrorModal.test.js
+    - InterestCircles.test.js
+    - LogoutModal.test.js
+    - PostList.test.js
+    - Profile.test.js
+    - ProtectedRoute.test.js
+    - SearchBar.test.js
+    - Sidebar.test.js
+
+![jest](docs/images/jest-test.PNG)
 
 ---
 
@@ -765,10 +778,10 @@ Before deploying the API (Django) and frontend (React) applications to Heroku, t
 ## Credits
 
 ### Code
-- Protected routes implementation inspired by [Medium](https://medium.com/@yogeshmulecraft/implementing-protected-routes-in-react-js-b39583be0740).
 - Tailwind CSS styles and documentation from [Tailwind CSS](https://tailwindcss.com/docs/).
 - [Django verbose_name documentation](https://docs.djangoproject.com/en/1.10/ref/models/options/#verbose-name).
 - [sweetAlert2](https://sweetalert2.github.io/#usage)
+- Protected routes implementation inspired by [ProtectedRoutes](https://dev.to/collins87mbathi/reactjs-protected-route-m3j)
 
 ### Content
 - Wireframes created with [Wireframe.cc](https://wireframe.cc/).

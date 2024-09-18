@@ -8,6 +8,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import ErrorModal from '../../components/ErrorModal';
 import useMessages from '../../hooks/useMessages';
 
+
 const Chats = () => {
   const { id } = useParams(); // Circle ID from URL
   const {

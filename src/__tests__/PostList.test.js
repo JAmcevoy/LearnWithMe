@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import PostList from '../pages/Posts/PostList';
+import PostList from '../pages/posts/PostList';
 import usePostContent from '../hooks/usePostList';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -19,7 +19,7 @@ jest.mock('../components/SearchBar', () => ({ searchQuery, onSearchChange, onCle
     <button onClick={onClearFilters}>Clear Filters</button>
   </div>
 ));
-jest.mock('../pages/Posts/PostItem', () => ({ post, onPostClick, onToggleLike }) => (
+jest.mock('../pages/posts/PostItem', () => ({ post, onPostClick, onToggleLike }) => (
   <div data-testid="post-item">
     <h2>{post.title}</h2>
     <button onClick={() => onPostClick(post.id)}>View Post</button>

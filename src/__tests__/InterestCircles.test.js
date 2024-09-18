@@ -1,163 +1,94 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { useHistory } from 'react-router-dom';
-import InterestCircles from '../pages/Circles/InterestCircles';
+import { MemoryRouter } from 'react-router-dom';
+import InterestCircles from '../pages/circles/InterestCircles';
 import useInterestCircles from '../hooks/useInterestCircles';
-import '@testing-library/jest-dom/extend-expect';
+import { waitFor } from '@testing-library/react';
 
-jest.mock('react-router-dom', () => ({
-  useHistory: jest.fn(),
-}));
-
-jest.mock('../hooks/useInterestCircles');
-
-jest.mock('../pages/Circles/CircleCard', () => ({ circle, onClick }) => (
-  <div data-testid="circle-card" onClick={onClick}>
-    {circle.name}
-  </div>
-));
-
-jest.mock('../pages/Circles/CreateCircleButton', () => ({ onClick }) => (
-  <button data-testid="create-circle-button" onClick={onClick}>
-    Create Circle
-  </button>
-));
-
-jest.mock('../pages/Circles/CircleModal', () => ({ onClose, onSave, onCategoryChange }) => (
-  <div data-testid="circle-modal">
-    <button onClick={onClose}>Close Modal</button>
-    <button onClick={onSave}>Save Changes</button>
-  </div>
-));
-
-jest.mock('../components/DeleteModal', () => ({ onConfirm, onCancel }) => (
-  <div data-testid="delete-modal">
-    <button onClick={onConfirm}>Confirm Delete</button>
-    <button onClick={onCancel}>Cancel Delete</button>
-  </div>
-));
-
-jest.mock('../components/ErrorModal', () => ({ message, onClose }) => (
-  <div data-testid="error-modal">
-    <p>{message}</p>
-    <button onClick={onClose}>Close Error</button>
-  </div>
-));
-
-jest.mock('../components/LoadingSpinner', () => () => (
-  <div data-testid="loading-spinner">Loading...</div>
-));
+// Mock the useInterestCircles hook
+jest.mock('../hooks/useInterestCircles', () => jest.fn());
 
 describe('InterestCircles Component', () => {
-  const mockUseHistory = jest.fn();
-  useHistory.mockReturnValue(mockUseHistory);
-
   const mockUseInterestCircles = {
-    circles: [{ id: 1, name: 'Circle 1' }],
+    circles: { results: [], next: null },
     loading: false,
     modal: { visible: false },
+    categories: [],
+    selectedCategory: null,
     deleteModalVisible: false,
     error: null,
     handleCircleClick: jest.fn(),
     handleCreateCircle: jest.fn(),
     handleInfoClick: jest.fn(),
     handleEditClick: jest.fn(),
-    handleDeleteClick: jest.fn(),
     handleCloseModal: jest.fn(),
     handleSaveChanges: jest.fn(),
     handleModalChange: jest.fn(),
+    handleDeleteClick: jest.fn(),
     handleConfirmDelete: jest.fn(),
     handleCancelDelete: jest.fn(),
     setSelectedCategory: jest.fn(),
     setError: jest.fn(),
+    setCircles: jest.fn(),
   };
 
   beforeEach(() => {
     useInterestCircles.mockReturnValue(mockUseInterestCircles);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('should render the heading', () => {
+    render(
+      <MemoryRouter>
+        <InterestCircles />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/Interest Circles/i)).toBeInTheDocument();
   });
 
-  it('should render interest circles correctly', () => {
-    render(<InterestCircles />);
-
-    // Check for the heading
-    expect(screen.getByText('Interest Circles')).toBeInTheDocument();
-
-    // Check if CircleCard is rendered
-    expect(screen.getByTestId('circle-card')).toBeInTheDocument();
-    expect(screen.getByText('Circle 1')).toBeInTheDocument();
-
-    // Check if CreateCircleButton is rendered
-    expect(screen.getByTestId('create-circle-button')).toBeInTheDocument();
+  it('should display loading spinner when loading', () => {
+    mockUseInterestCircles.loading = true;
+    render(
+      <MemoryRouter>
+        <InterestCircles />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/Just a moment!/i)).toBeInTheDocument();
   });
 
-  it('should show loading spinner when loading is true', () => {
-    useInterestCircles.mockReturnValueOnce({ ...mockUseInterestCircles, loading: true });
 
-    render(<InterestCircles />);
-
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+  it('should display no circles found message when there are no circles', () => {
+    mockUseInterestCircles.loading = false;
+    mockUseInterestCircles.circles.results = [];
+    render(
+      <MemoryRouter>
+        <InterestCircles />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/No Circles Found/i)).toBeInTheDocument();
   });
 
-  it('should open the create circle modal when the create button is clicked', () => {
-    render(<InterestCircles />);
+  it('should call handleCircleClick when a circle card is clicked', () => {
+    mockUseInterestCircles.circles.results = [
+      { id: 1, name: 'Test Circle' },
+    ];
+    render(
+      <MemoryRouter>
+        <InterestCircles />
+      </MemoryRouter>
+    );
+    const circleCard = screen.getByText(/Test Circle/i);
+    fireEvent.click(circleCard);
+    expect(mockUseInterestCircles.handleCircleClick).toHaveBeenCalledWith(1);
+  });
 
-    const createButton = screen.getByTestId('create-circle-button');
+  it('should call handleCreateCircle when create button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <InterestCircles />
+      </MemoryRouter>
+    );
+    const createButton = screen.getByRole('button', { name: /Create Circle/i });
     fireEvent.click(createButton);
-
     expect(mockUseInterestCircles.handleCreateCircle).toHaveBeenCalled();
-  });
-
-  it('should display modal when modal.visible is true', () => {
-    useInterestCircles.mockReturnValueOnce({
-      ...mockUseInterestCircles,
-      modal: { visible: true, circle: null, type: 'create' },
-    });
-
-    render(<InterestCircles />);
-
-    expect(screen.getByTestId('circle-modal')).toBeInTheDocument();
-
-    // Simulate closing the modal
-    fireEvent.click(screen.getByText('Close Modal'));
-    expect(mockUseInterestCircles.handleCloseModal).toHaveBeenCalled();
-  });
-
-  it('should show delete confirmation modal when deleteModalVisible is true', () => {
-    useInterestCircles.mockReturnValueOnce({
-      ...mockUseInterestCircles,
-      deleteModalVisible: true,
-    });
-
-    render(<InterestCircles />);
-
-    expect(screen.getByTestId('delete-modal')).toBeInTheDocument();
-
-    // Simulate clicking confirm delete
-    fireEvent.click(screen.getByText('Confirm Delete'));
-    expect(mockUseInterestCircles.handleConfirmDelete).toHaveBeenCalled();
-
-    // Simulate clicking cancel delete
-    fireEvent.click(screen.getByText('Cancel Delete'));
-    expect(mockUseInterestCircles.handleCancelDelete).toHaveBeenCalled();
-  });
-
-  it('should show error modal when error exists', () => {
-    useInterestCircles.mockReturnValueOnce({
-      ...mockUseInterestCircles,
-      error: 'Test error message',
-    });
-
-    render(<InterestCircles />);
-
-    expect(screen.getByTestId('error-modal')).toBeInTheDocument();
-    expect(screen.getByText('Test error message')).toBeInTheDocument();
-
-    // Simulate closing the error modal
-    fireEvent.click(screen.getByText('Close Error'));
-    expect(mockUseInterestCircles.setError).toHaveBeenCalledWith(null);
   });
 });

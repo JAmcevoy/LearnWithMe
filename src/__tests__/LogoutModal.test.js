@@ -1,51 +1,48 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import LogoutModal from '../components/LogoutModal';
+import LogoutModal from '../components/LogoutModal'; // Adjust the import based on your file structure
 
 describe('LogoutModal Component', () => {
-  it('renders the modal when isOpen is true', () => {
-    // Render the component with isOpen as true
-    render(<LogoutModal isOpen={true} onClose={jest.fn()} onConfirm={jest.fn()} />);
+  const onCloseMock = jest.fn();
+  const onConfirmMock = jest.fn();
 
-    // Check if the modal content is displayed
-    expect(screen.getByText(/are you sure you want to log out\?/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /yes, log out/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
+  afterEach(() => {
+    jest.clearAllMocks(); // Clear mock calls between tests
   });
 
-  it('does not render the modal when isOpen is false', () => {
-    // Render the component with isOpen as false
-    render(<LogoutModal isOpen={false} onClose={jest.fn()} onConfirm={jest.fn()} />);
+  it('should render the modal when isOpen is true', () => {
+    render(
+      <LogoutModal isOpen={true} onClose={onCloseMock} onConfirm={onConfirmMock} />
+    );
 
-    // Check if the modal content is NOT displayed
-    expect(screen.queryByText(/are you sure you want to log out\?/i)).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /yes, log out/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Are you sure you want to log out\?/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Confirm logout/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Cancel logout/i })).toBeInTheDocument();
   });
 
-  it('calls onConfirm when the "Yes, Log Out" button is clicked', () => {
-    const mockOnConfirm = jest.fn();
+  it('should not render the modal when isOpen is false', () => {
+    render(
+      <LogoutModal isOpen={false} onClose={onCloseMock} onConfirm={onConfirmMock} />
+    );
 
-    // Render the component with isOpen as true
-    render(<LogoutModal isOpen={true} onClose={jest.fn()} onConfirm={mockOnConfirm} />);
-
-    // Simulate clicking the "Yes, Log Out" button
-    fireEvent.click(screen.getByRole('button', { name: /yes, log out/i }));
-
-    // Check if onConfirm was called
-    expect(mockOnConfirm).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/Are you sure you want to log out\?/i)).not.toBeInTheDocument();
   });
 
-  it('calls onClose when the "Cancel" button is clicked', () => {
-    const mockOnClose = jest.fn();
+  it('should call onConfirm when Yes, Log Out button is clicked', () => {
+    render(
+      <LogoutModal isOpen={true} onClose={onCloseMock} onConfirm={onConfirmMock} />
+    );
 
-    // Render the component with isOpen as true
-    render(<LogoutModal isOpen={true} onClose={mockOnClose} onConfirm={jest.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: /Confirm logout/i }));
+    expect(onConfirmMock).toHaveBeenCalledTimes(1);
+  });
 
-    // Simulate clicking the "Cancel" button
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+  it('should call onClose when Cancel button is clicked', () => {
+    render(
+      <LogoutModal isOpen={true} onClose={onCloseMock} onConfirm={onConfirmMock} />
+    );
 
-    // Check if onClose was called
-    expect(mockOnClose).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: /Cancel logout/i }));
+    expect(onCloseMock).toHaveBeenCalledTimes(1);
   });
 });

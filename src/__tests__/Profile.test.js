@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Profile from '../pages/Profiles/Profile';
+import Profile from '../pages/profiles/Profile';
 import useProfile from '../hooks/useProfile';
 import '@testing-library/jest-dom/extend-expect';
 
