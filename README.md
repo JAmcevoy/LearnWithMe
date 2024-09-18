@@ -66,31 +66,77 @@ Welcome to **Learn with Me**, the ultimate learning app designed to empower user
 
 ---
 
-## Tailwind CSS 
+### Tailwind CSS 
 
-### Why Tailwind CSS?
+#### Why Tailwind CSS?
 
-#### **Design Flexibility**
+##### **Design Flexibility**
 Tailwind CSS provides utility-first styling, which gives granular control directly in the HTML. This is great for creating custom designs easily without being restricted by predefined components.
 
-#### **Customizability**
+##### **Customizability**
 Tailwind’s configuration file allows for defining your own design system, including colors, spacing, and breakpoints. This flexibility is a significant advantage when compared to frameworks like Bootstrap.
 
-#### **File Size and Performance**
+##### **File Size and Performance**
 Tailwind CSS uses PurgeCSS to remove unused styles from the final build, resulting in smaller CSS files and faster load times. This helps keep the performance optimal, unlike Bootstrap's larger default builds.
 
-#### **Summary**
+##### **Summary**
 - **Design Flexibility**: Allows for unique and customized designs.
 - **Customizability**: Extensively tailors the design system to your project needs.
 - **Performance**: Smaller, faster CSS builds due to Tailwind’s purging mechanism.
 
+##### Install Tailwind CSS
+
+**Step 1**: Install Tailwind CSS
+- Open your terminal and navigate to your React project directory.
+- Install **Tailwind CSS**, **PostCSS**, and **Autoprefixer** as development dependencies using npm (Node Package Manager).
+
+  ```
+    npm install -D tailwindcss postcss autoprefixer
+  ```
+
+**Step 2**: Generate Configuration Files
+- After installation, generate the necessary configuration files for Tailwind by running the initialization command.
+
+  ```
+    npx tailwindcss init -p
+  ```
+
+- This will create two important files:
+  - **`tailwind.config.js`**: This file is used to customize Tailwind's default settings.
+  - **`postcss.config.js`**: This file is used to configure PostCSS, including adding plugins like Autoprefixer.
+
+**Step 3**: Set Up Purging for Unused CSS
+- In your **`tailwind.config.js`** file, configure the paths where your React components are located.
+- This will ensure that Tailwind CSS removes any unused styles in production, reducing file size and improving performance.
+
+    ```
+      module.exports = {
+      purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+      darkMode: false, // or 'media' or 'class'
+      theme: {
+        extend: {},
+      },
+      plugins: [],
+  }
+    ```
+
+**Step 4**: Import Tailwind CSS Styles
+- Open your main CSS file (e.g., **`src/index.css`**) and import Tailwind's base, components, and utilities.
+- This will integrate Tailwind's utility-first classes into your project.
+
+  ```
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+  ```
+
 ---
 
-#### User Stories
+### User Stories
 
 Using the issues tab in Github I created user stories for both the frontend and the backend devlopement. Using the tags fucntion I was able to assign them specfic tags based on their fucntionality, in an agile development this would be use full to assign task and time based on skill and the importance of the feature.
 
-##### Backend
+#### Backend
 
 1. **Profile Model**
    - **Issue #2**
@@ -124,7 +170,7 @@ Using the issues tab in Github I created user stories for both the frontend and 
     - **Issue #17**
 
 
-##### Frontend
+#### Frontend
 
 1. **Reusable Components**
    - **Issue #1**  
@@ -296,7 +342,7 @@ Once the Stories were setup I then created a project [LearnWithMe User Stories](
 ### Bugs Yet to Fix
 
 1. **Error Handling for Network Issues**: Need to implement better notifications for lost network connections or server downtime.
-2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties with file size management.
+2. **Video Upload Handling**: Video uploads are not yet supported due to difficulties with file size management. So the backend still has the potitienal to add video.
 3. **Go Back Button**: Although functional, it still requires further adjustments to improve usability on smaller screens, for now on smaller screen I put it in the navbar. Additionally, the back button pushes back through all previous pages, including forms, instead of stopping at the home page. This can cause the user to continue navigating back farther than expected.
 4. **The Sort Order of Chats**: The chat function was difficult to implement correctly, particularly with loading messages in the right order (starting from the bottom with older messages above). Currently, the chat loads at the top and scrolls to the bottom, which may cause a poor user experience in chats with many users.
 5. **Circle Name Visibility in Chats**: When entering a chat with no messages, the circle name does not show until a message is sent. This can confuse users as they may not immediately recognize which circle they are in.
@@ -722,6 +768,7 @@ Before deploying the API (Django) and frontend (React) applications to Heroku, t
 - Protected routes implementation inspired by [Medium](https://medium.com/@yogeshmulecraft/implementing-protected-routes-in-react-js-b39583be0740).
 - Tailwind CSS styles and documentation from [Tailwind CSS](https://tailwindcss.com/docs/).
 - [Django verbose_name documentation](https://docs.djangoproject.com/en/1.10/ref/models/options/#verbose-name).
+- [sweetAlert2](https://sweetalert2.github.io/#usage)
 
 ### Content
 - Wireframes created with [Wireframe.cc](https://wireframe.cc/).
