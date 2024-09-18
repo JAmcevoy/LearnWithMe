@@ -7,6 +7,7 @@ import { useCurrentUser } from "../../context/CurrentUserContext";
 import DeleteConfirmation from '../../components/DeleteModal';
 import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Swal from 'sweetalert2';
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -72,16 +73,33 @@ const PostDetails = () => {
   };
 
   // Handle post deletion
-  const handleDelete = async () => {
-    try {
+  // Handle post deletion
+const handleDelete = async () => {
+  try {
       await axiosReq.delete(`/posts/${id}/`);
-      history.goBack();
-    } catch (err) {
-      console.log('Error deleting post:', err);
-      setError('Error deleting post.');
-      setShowErrorModal(true);
-    }
-  };
+      
+      // Show success message with SweetAlert
+      Swal.fire({
+          title: 'Deleted!',
+          text: 'Your post has been deleted.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+      }).then(() => {
+          history.push('/'); // Redirect to home after successful deletion
+      });
+
+  } catch (err) {
+      console.error('Error deleting post:', err);
+
+      // Show error message with SweetAlert
+      Swal.fire({
+          title: 'Error!',
+          text: 'Failed to delete the post. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+      });
+  }
+};
 
   const handleDeleteClick = () => setShowDeleteConfirmation(true);
 

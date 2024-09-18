@@ -8,22 +8,22 @@ import {
   FaSignInAlt,
   FaUserPlus,
   FaPlusCircle,
-  FaArrowLeft, // Back arrow icon for mobile view
+  FaArrowLeft, 
 } from 'react-icons/fa';
 import { NavLink, useHistory } from 'react-router-dom'; 
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import useSidebar from '../hooks/useSidebar';
 import { useCurrentUser, useSetCurrentUser } from '../context/CurrentUserContext';
-import LogoutModal from './LogoutModal';
+import LogoutModal from './LogoutModal'; 
 import styles from '../styles/Sidebar.module.css';
 
 const Sidebar = ({ isOpen = false, isMobile = false }) => {
-  // Use custom hook for sidebar state management
   const { isSidebarOpen, toggleSidebar, isMobileView, sidebarRef } = useSidebar(isOpen, isMobile);
 
-  const currentUser = useCurrentUser(); // Get the current user from context
-  const setCurrentUser = useSetCurrentUser(); // Setter to update the current user
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // Modal state for logout confirmation
+  const currentUser = useCurrentUser(); 
+  const setCurrentUser = useSetCurrentUser(); 
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); 
   const history = useHistory();
 
   /**
@@ -40,8 +40,18 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
     try {
       await axios.post('dj-rest-auth/logout/');
       setCurrentUser(null); // Clear current user on successful logout
+
+      // Show SweetAlert success message after logout
+      Swal.fire({
+        icon: 'success',
+        title: 'Logged out successfully!',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      history.replace('/'); // Redirect to the login page after logout
     } catch (err) {
-      console.error('Logout error:', err); // Log any errors
+      console.error('Logout error:', err);
     }
   };
 
@@ -49,8 +59,8 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
    * Confirm the logout and trigger the logout flow.
    */
   const handleLogoutConfirm = () => {
-    handleSignOut();
-    setIsLogoutModalOpen(false); // Close the logout modal
+    handleSignOut(); // Log out the user
+    setIsLogoutModalOpen(false); // Close the modal
   };
 
   /**
@@ -142,7 +152,7 @@ const Sidebar = ({ isOpen = false, isMobile = false }) => {
                         className={`rounded-full ${isSidebarOpen ? 'w-20 h-20' : 'w-8 h-8'}`}
                       />
                     ) : (
-                      <FaUserCircle size={isSidebarOpen ? 80 : 80} className="mb-4" />
+                      <FaUserCircle size={isSidebarOpen ? 40 : 40} className="mb-4" />
                     )}
                   </NavLink>
                   {isSidebarOpen && <p className="text-center">{currentUser.username}</p>}

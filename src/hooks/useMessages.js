@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { axiosReq } from '../api/axiosDefaults';
 import { fetchMoreData } from '../utils/utils';
 import { useCurrentUser } from '../context/CurrentUserContext';
+import Swal from 'sweetalert2';
 
 const useMessages = (id) => {
   const currentUser = useCurrentUser();
@@ -74,10 +75,11 @@ const useMessages = (id) => {
 
   /**
    * Handles error state and logging.
+   * Uses SweetAlert for error notifications.
    */
   const handleError = (message) => {
     setError(message);
-    console.error(message);
+    Swal.fire('Error', message, 'error');  // Show SweetAlert for errors
   };
 
   /**
@@ -87,6 +89,7 @@ const useMessages = (id) => {
 
   /**
    * Submits either a new message or an edited message.
+   * Validates that the message input is not blank.
    */
   const handleSend = async () => {
     if (newMessage.trim() === '') {
@@ -103,6 +106,7 @@ const useMessages = (id) => {
 
   /**
    * Submits a new message to the API.
+   * Uses SweetAlert for success notification after sending the message.
    */
   const handleNewMessageSubmit = async () => {
     try {
@@ -115,6 +119,7 @@ const useMessages = (id) => {
       if (response.status === 201) {
         setNewMessage(''); // Clear input
         refreshMessages(); // Reload messages to reflect the new one
+        Swal.fire('Success', 'Message sent!', 'success');  // Show SweetAlert for success
       }
     } catch (err) {
       handleError(`Error sending message: ${getErrorMessage(err)}`);
@@ -123,6 +128,7 @@ const useMessages = (id) => {
 
   /**
    * Submits an edited message to the API.
+   * Uses SweetAlert for success notification after editing the message.
    */
   const handleEditSubmit = async () => {
     try {
@@ -135,6 +141,7 @@ const useMessages = (id) => {
         setNewMessage(''); // Clear input
         setEditingMessageId(null); // Reset editing state
         refreshMessages(); // Reload messages
+        Swal.fire('Success', 'Message updated!', 'success');  // Show SweetAlert for success
       }
     } catch (err) {
       handleError(`Error editing message: ${getErrorMessage(err)}`);
@@ -155,6 +162,7 @@ const useMessages = (id) => {
 
   /**
    * Confirms deletion of a message.
+   * Uses SweetAlert for success notification after deleting the message.
    */
   const handleDeleteConfirm = async () => {
     try {
@@ -165,6 +173,7 @@ const useMessages = (id) => {
           results: prev.results.filter((msg) => msg.id !== messageToDelete.id),
         }));
         setShowDeleteModal(false); // Close delete modal after successful deletion
+        Swal.fire('Deleted', 'Message has been deleted', 'success');  // Show SweetAlert for success on deletion
       }
     } catch (err) {
       handleError(`Error deleting message: ${getErrorMessage(err)}`);

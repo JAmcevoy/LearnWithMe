@@ -258,6 +258,11 @@ Once the Stories were setup I then created a project [LearnWithMe User Stories](
 ![BackButton](docs/images/back-btn-feat.PNG)
 ![BackButton Mobile](docs/images/back-btn-mobile-feat.PNG)
 
+- **SweetAlert**
+  - SweetAlert was integrated to provide elegant and customizable pop-up alerts for actions such as confirming deletions, form submissions, or displaying success and error messages. SweetAlert enhances user experience with a clean and simple alert interface compared to traditional browser alerts.
+
+  ![SweetAlert Example](docs/images/sweetalert-feat.PNG)
+
 ---
 
 ### Features Left to Implement

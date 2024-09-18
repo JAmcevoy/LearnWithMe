@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Swal from 'sweetalert2'; 
 
 const ProfileEdit = () => {
     const [username, setUsername] = useState('');
@@ -19,7 +20,6 @@ const ProfileEdit = () => {
 
     // Fetch profile details and categories when component mounts
     useEffect(() => {
-        // Fetch profile details
         const fetchProfileDetails = async () => {
             try {
                 const { data } = await axios.get(`/profiles/${id}/`);
@@ -33,7 +33,6 @@ const ProfileEdit = () => {
             }
         };
 
-        // Fetch categories with pagination handling
         const fetchCategories = async () => {
             setLoadingCategories(true);
             let allCategories = [];
@@ -45,7 +44,7 @@ const ProfileEdit = () => {
                     const response = await axios.get(`/categories/?page=${page}`);
                     if (response.data && Array.isArray(response.data.results)) {
                         allCategories = [...allCategories, ...response.data.results];
-                        hasMore = !!response.data.next; // Continue if there are more pages
+                        hasMore = !!response.data.next;
                         page += 1;
                     } else {
                         throw new Error('Unexpected data format while fetching categories.');
@@ -67,32 +66,46 @@ const ProfileEdit = () => {
     // Handle image selection
     const handleImageChange = (e) => {
         if (e.target.files[0]) {
-            setImage(e.target.files[0]); // Store selected image in state
+            setImage(e.target.files[0]);
         }
     };
 
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(''); // Clear any previous errors
-        setLoading(true); // Set loading state
+        setError('');
+        setLoading(true);
 
         const formData = new FormData();
         formData.append('username', username.trim());
         formData.append('about_me', aboutMe.trim());
         formData.append('main_interest', selectedCategory);
         if (image) {
-            formData.append('image', image); // Append image if selected
+            formData.append('image', image);
         }
 
         try {
             await axios.put(`/profiles/${id}/`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            history.push(`/profile/${id}`); // Redirect to profile page after successful update
+            // Show success alert using SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated',
+                text: 'Your profile has been updated successfully!',
+                confirmButtonText: 'Ok'
+            }).then(() => {
+                history.push(`/profile/${id}`); // Redirect after confirmation
+            });
         } catch (err) {
             console.error('Error updating profile:', err);
-            setError('Failed to update the profile. Please check your details and try again.');
+            // Show error alert using SweetAlert2
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'Failed to update your profile. Please try again.',
+                confirmButtonText: 'Retry'
+            });
         } finally {
             setLoading(false);
         }
@@ -108,7 +121,6 @@ const ProfileEdit = () => {
                     <h2 className="text-2xl md:text-3xl font-extrabold mb-6 text-gray-900">Edit Profile</h2>
                     {error && <p className="text-red-500 mb-6">{error}</p>} {/* Show error message if any */}
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Username input */}
                         <div>
                             <label htmlFor="username" className="block text-lg font-semibold text-gray-700">Username</label>
                             <input
@@ -122,7 +134,6 @@ const ProfileEdit = () => {
                             />
                         </div>
 
-                        {/* About Me input */}
                         <div>
                             <label htmlFor="aboutMe" className="block text-lg font-semibold text-gray-700">About Me</label>
                             <textarea
@@ -136,7 +147,6 @@ const ProfileEdit = () => {
                             />
                         </div>
 
-                        {/* Category selection */}
                         <div>
                             <label htmlFor="category" className="block text-lg font-semibold text-gray-700">Main Interest</label>
                             <select
@@ -162,7 +172,6 @@ const ProfileEdit = () => {
                             </select>
                         </div>
 
-                        {/* Submit button */}
                         <button
                             type="submit"
                             className="w-full bg-blue-600 text-white font-bold p-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
@@ -173,7 +182,6 @@ const ProfileEdit = () => {
                     </form>
                 </div>
 
-                {/* Image upload */}
                 <div className="flex-none w-full md:w-80 h-80 bg-gray-200 rounded-lg flex items-center justify-center relative">
                     {image ? (
                         <img

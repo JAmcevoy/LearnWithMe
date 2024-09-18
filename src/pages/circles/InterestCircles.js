@@ -9,6 +9,7 @@ import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import useInterestCircles from '../../hooks/useInterestCircles';
 import { fetchMoreData } from '../../utils/utils';
+import Swal from 'sweetalert2';
 
 const InterestCircles = () => {
   const history = useHistory();
@@ -57,9 +58,25 @@ const InterestCircles = () => {
   const handleSaveChangesWithErrorHandling = async () => {
     try {
       await handleSaveChanges(); // Assume this function saves data
+  
+      // Show success notification
+      Swal.fire({
+        title: 'Success!',
+        text: 'Circle changes saved successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+  
     } catch (err) {
       console.error('Error saving changes:', err);
-      setError('An error occurred while saving changes. Please try again.');
+      
+      // Show error notification
+      Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred while saving changes. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     }
   };
 
@@ -67,9 +84,25 @@ const InterestCircles = () => {
   const handleConfirmDeleteWithErrorHandling = async () => {
     try {
       await handleConfirmDelete(); // Assume this function confirms deletion
+  
+      // Show success notification
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'The interest circle has been deleted successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+  
     } catch (err) {
       console.error('Error confirming delete:', err);
-      setError('An error occurred while deleting the circle. Please try again.');
+  
+      // Show error notification
+      Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred while deleting the circle. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     }
   };
 

@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Swal from 'sweetalert2'; 
 
 const PostEdit = () => {
     const { id } = useParams(); // Extract post ID from URL params
@@ -83,11 +84,24 @@ const PostEdit = () => {
             await axios.put(`/posts/${id}/`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            history.push(`/posts/${id}`); // Navigate to the updated post page
+            // Show success alert using SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Post Updated',
+                text: 'Your post has been updated successfully!',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                history.push(`/posts/${id}`); // Navigate to the updated post page after alert
+            });
         } catch (err) {
             console.error('Error updating post:', err);
-            setError('Failed to update the post. Please try again.');
-            setShowErrorModal(true);
+            // Show error alert using SweetAlert2
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'Failed to update the post. Please try again.',
+                confirmButtonText: 'Retry'
+            });
         } finally {
             setLoading(false); // Stop loading state
         }

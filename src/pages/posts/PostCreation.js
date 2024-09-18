@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { FaUpload } from 'react-icons/fa';
 import ErrorModal from '../../components/ErrorModal';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Swal from 'sweetalert2';
 
 const PostCreation = () => {
   const [title, setTitle] = useState('');
@@ -59,7 +60,7 @@ const PostCreation = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+  
     const formData = new FormData();
     formData.append('title', title.trim());
     formData.append('steps', steps.trim());
@@ -67,16 +68,34 @@ const PostCreation = () => {
     if (image) {
       formData.append('image_or_video', image);
     }
-
+  
     try {
       const response = await axios.post('/posts/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      history.push(`/posts/${response.data.id}`);
+      
+      // Show success message with SweetAlert
+      Swal.fire({
+        title: 'Post Created!',
+        text: 'Your post has been successfully created.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        history.push(`/posts/${response.data.id}`); // Redirect after creation
+      });
+  
     } catch (err) {
       console.error('Error creating post:', err);
+      
+      // Show error message with SweetAlert
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to create the post. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+  
       setError('Failed to create the post. Please try again.');
-      setShowErrorModal(true);
     } finally {
       setLoading(false);
     }

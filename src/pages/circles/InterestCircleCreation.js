@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import ErrorModal from '../../components/ErrorModal';
+import Swal from 'sweetalert2';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 const CreateCircle = () => {
@@ -13,7 +13,6 @@ const CreateCircle = () => {
   const [fieldErrors, setFieldErrors] = useState({});  // Field-specific errors
   const [loadingCategories, setLoadingCategories] = useState(false);  // Loading state for categories
   const [loading, setLoading] = useState(false);  // Form submission loading state
-  const [showErrorModal, setShowErrorModal] = useState(false);  // Modal visibility
   const history = useHistory();
 
   // Fetch categories when the component mounts
@@ -39,7 +38,6 @@ const CreateCircle = () => {
         setCategories(allCategories);
       } catch (err) {
         setError(`Error fetching categories: ${err.message}`);
-        setShowErrorModal(true);
       } finally {
         setLoadingCategories(false);
       }
@@ -80,10 +78,20 @@ const CreateCircle = () => {
 
     try {
       // Submit the form data
-      await axios.post('/interest-circles/', formData, {
+      const response = await axios.post('/interest-circles/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      history.push('/interest-circles');  // Redirect after successful creation
+
+      // Show success notification
+      Swal.fire({
+        title: 'Success!',
+        text: 'The interest circle has been created successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        history.push('/interest-circles');  // Redirect after successful creation
+      });
+      
     } catch (err) {
       if (err.response && err.response.data) {
         const serverErrors = err.response.data;
@@ -111,12 +119,15 @@ const CreateCircle = () => {
         // Handle general (non-field-specific) errors
         if (serverErrors.non_field_errors) {
           setError(serverErrors.non_field_errors[0]);
-          setShowErrorModal(true);
         }
       } else {
-        // Handle generic errors
-        setError('Failed to create the interest circle. Please try again.');
-        setShowErrorModal(true);
+        // Show error notification
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to create the interest circle. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       }
     } finally {
       setLoading(false);
@@ -131,9 +142,6 @@ const CreateCircle = () => {
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-700 leading-relaxed">
         Create Interest Circle
       </h1>
-
-      {/* Display error modal for general errors */}
-      {showErrorModal && <ErrorModal message={error} onClose={() => setShowErrorModal(false)} />}
 
       <form onSubmit={handleSubmit} className="max-w-md mx-auto">
         <FormInput
